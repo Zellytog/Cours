@@ -1,0 +1,16 @@
+\node (A) at (0,0) {$\lambda$};
+\node (B) at (0,-1) {$ $};
+\node (C) at (-1,-2) {$\lambda$};
+\node (D) at (1,-2) {$0$};
+\node (E) at (-1,-3) {$ $};
+\node (F) at (-2,-4) {$1$};
+\node (G) at (-0,-4) {$0$};
+\draw (A) -- (B);
+\draw (B) -- (C);
+\draw (B) -- (D);
+\draw (C) -- (E);
+\draw (E) -- (F);
+\draw (E) -- (G);
+\draw[->,>= latex,color=red] (D) to[bend right] (A);
+\draw[->,>= latex,color=red] (F) to[bend left] (A);
+\draw[->,>= latex,color=red] (G) to[bend right] (C);

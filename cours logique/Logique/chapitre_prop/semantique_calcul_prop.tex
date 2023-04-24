@@ -1,0 +1,332 @@
+\section{Liens entre syntaxe et sémantique}
+
+Nous avons défini, dans notre syntaxe, le connecteur $\to$, qui se traduit en général par \og $P\to Q$ signifie que $Q$ est une conséquence logique de $P$\fg{}. Cependant, ce connecteur ne possède pas de sens en lui-même : il n'a de sens qu'à travers notre règle d'induction pour la définition de $\nu^*$, car c'est bien le comportement des connecteurs vis à vis des valuations qui détermine le sens de ces connecteurs (plus précisément : le sens est donné par les valuations, c'est pour cela qu'on considère que celles-ci sont un aspect sémantique de notre logique, là où les suites de symboles que sont les propositions sont purement syntaxiques). Cependant, de par la forme des propositions, on peut établir un système qui, sans utiliser de valuations, va pouvoir exprimer des notions de conséquence (entre autres choses).
+
+\begin{defi}[Conséquence sémantique]
+    Soit $\mathbf P\subseteq\mathcal P$ un ensemble de proposition et $P$ une proposition, on dit que $P$ est conséquence sémantique de $\mathbf P$ si pour toute valuation $\nu\models\mathbf P$, on a $\nu\models P$. 
+\end{defi}
+
+\begin{expl}
+    Il est évident que si $P\in\mathbf P$, alors $P$ est conséquence sémantique de $\mathbf P$. On peut aussi montrer que si $P\in\mathbf P$ et $Q\in\mathbf P$ alors $P\land Q$ est conséquence sémantique de $\mathbf P$.
+\end{expl}
+
+\begin{exo}
+    Montrer qu'une formulation équivalente du théorème de compacité est la suivante : une proposition $P$ est conséquence sémantique d'un ensemble de propositions $\mathbf P$ si et seulement si elle est conséquence sémantique d'une partie finie de $\mathbf P$.
+\end{exo}
+
+\subsection{Déduction naturelle avec présentation en séquents}
+
+A partir de nos exemples se dessine un schéma de règles assez naturel : pour un ensemble de propositions, on peut directement dériver des propositions qui en sont des conséquences sémantiques, sans avoir à raisonner réellement sur les valuations. Nous allons donc définir un système syntaxique appelé déduction naturelle permettant de formaliser cette idée.
+
+\begin{defi}[Séquent en déduction naturelle]
+    Soit $\Gamma$ un ensemble de propositions (présenté sous forme de liste) et $P$ une propositions, on note $\Gamma\vdash P$, et on lit \og gamma thèse $P$\fg{} le séquent exprimant que $P$ peut se déduire des hypothèses $\Gamma$. Ceci constitue une relation inductive dont les règles de constructions sont précisées dans la figure \ref{fig:deducnat} ci-dessous.
+\end{defi}
+
+\begin{figure}[htb]
+    \centering
+    \rule{17cm}{0.5pt}\\
+    \vspace{0.5cm}
+    \begin{prooftree}
+        \infer0[$\top_\mathrm{i}$]{\Gamma\vdash \top}
+    \end{prooftree}
+    \quad
+    \begin{prooftree}
+        \infer0[Ax]{\Gamma,P\vdash P}
+    \end{prooftree}
+    \quad
+    \begin{prooftree}
+        \hypo{\Gamma,P\vdash Q}
+        \infer1[$\to_\mathrm i$]{\Gamma\vdash P\to Q}
+    \end{prooftree}
+    \quad
+    \begin{prooftree}
+        \hypo{\Gamma\vdash P\to Q}
+        \hypo{\Gamma\vdash P}
+        \infer2[$\to_\mathrm e$]{\Gamma\vdash Q}
+    \end{prooftree}
+    \\
+    \vspace{0.5cm}
+    \begin{prooftree}
+        \hypo{\Gamma\vdash P}
+        \hypo{\Gamma\vdash Q}
+        \infer2[$\land_\mathrm i$]{\Gamma\vdash P\land Q}
+    \end{prooftree}
+    \quad
+    \begin{prooftree}
+        \hypo{\Gamma\vdash P\land Q}
+        \infer1[$\land_\mathrm e^\mathrm g$]{\Gamma\vdash P}
+    \end{prooftree}
+    \quad
+    \begin{prooftree}
+        \hypo{\Gamma\vdash P\land Q}
+        \infer1[$\land_\mathrm e^\mathrm d$]{\Gamma\vdash Q}
+    \end{prooftree}
+    \\
+    \vspace{0.5cm}
+    \begin{prooftree}
+        \hypo{\Gamma\vdash P}
+        \infer1[$\lor_\mathrm i^\mathrm g$]{\Gamma\vdash P \lor Q}
+    \end{prooftree}
+    \quad
+    \begin{prooftree}
+        \hypo{\Gamma\vdash Q}
+        \infer1[$\lor_\mathrm i^\mathrm d$]{\Gamma\vdash P \lor Q}
+    \end{prooftree}
+    \quad
+    \begin{prooftree}
+        \hypo{\Gamma\vdash P \lor Q}
+        \hypo{\Gamma,P\vdash C}
+        \hypo{\Gamma,Q\vdash C}
+        \infer3[$\lor_\mathrm e$]{\Gamma\vdash C}
+    \end{prooftree}
+    \\
+    \vspace{0.5cm}
+    \begin{prooftree}
+        \hypo{\Gamma,A\vdash \bot}
+        \infer1[$\lnot_\mathrm i$]{\Gamma\vdash \lnot A}
+    \end{prooftree}
+    \quad
+    \begin{prooftree}
+        \hypo{\Gamma\vdash A}
+        \hypo{\Gamma\vdash \lnot A}
+        \infer2[$\lnot_\mathrm e$]{\Gamma\vdash \bot}
+    \end{prooftree}
+    \quad
+    \begin{prooftree}
+        \hypo{\Gamma,\lnot A\vdash \bot}
+        \infer1[$\bot_\mathrm c$]{\Gamma\vdash A}
+    \end{prooftree}
+    \\
+    \vspace{0.5cm}
+    \rule{17cm}{0.5pt}
+    \caption{Règles de la déduction naturelle}
+    \label{fig:deducnat}
+\end{figure}
+
+\begin{rmk}
+    On appelle un arbre de preuve une dérivation, à partir de ces règles, d'un séquent.
+
+    Si $\Gamma=\varnothing$, on notera directement $\vdash P$.
+\end{rmk}
+
+\begin{expl}
+Voici un exemple de dérivation de $P\to P$ :
+\begin{center}
+    \begin{prooftree}
+        \infer0[Ax]{P\vdash P}
+        \infer1[$\to_\mathrm i$]{\vdash P \to P}
+    \end{prooftree}
+\end{center}
+\end{expl}
+
+\begin{exo}
+    Pour chaque proposition, construire un arbre de preuve :
+    \begin{itemize}[label=$\bullet$]
+        \item $\vdash P \to Q \to P$
+        \item $\vdash (P \to Q \to R) \to (P \to Q) \to P \to R$
+        \item $(P\lor Q)\land R\vdash (P\land R)\lor (Q\land R)$
+        \item $\lnot\lnot A \to A$
+        \item $\lnot A \lor A$
+    \end{itemize}
+\end{exo}
+
+\begin{exo}[Principe d'explosion]
+    Une règle importante en logique, nommée \textit{ex falso quodlibet}, stipule que si l'on prouve $\bot$ (la formule fausse) alors on peut prouver n'importe quoi, elle s'écrit \begin{center}
+        \begin{prooftree}
+            \hypo{\Gamma\vdash \bot}
+            \infer1[$\bot_\mathrm i$]{\Gamma\vdash A}
+        \end{prooftree}
+    \end{center}
+    Montrer que $\bot_\mathrm i$ est dérivable, c'est-à-dire que l'on peut construire un arbre partant de la prémisse de la règle pour arriver à sa conclusion (la lettre i pour désigner cette règle fait référence à l'intuitionnisme, car cette règle remplace $\bot_\mathrm c$, l'absurde classique, en logique intuitionniste).
+\end{exo}
+
+Nous pouvons remarquer que chaque règle d'induction correspond à une règle logique évidente :
+\begin{itemize}[label=$\bullet$]
+    \item La règle $\top_\mathrm i$ dit simplement que l'on peut toujours déduire la formule vraie.
+    \item La règle Ax dit que l'on peut déduire $P$ directement si l'on a fait l'hypothèse $P$.
+    \item La règle $\to_\mathrm i$ dit que pour montrer $P\to Q$ il suffit de supposer $P$ pour montrer $Q$.
+    \item La règle $\to_\mathrm e$, aussi appelée \textit{modus ponens}, dit que si l'on a prouvé $P\to Q$ et $P$, alors on peut en déduire $Q$.
+    \item Les règles liées à $\lor$, $\land$ et $\lnot$ sont assez lisibles, à l'exception de $\lor_\mathrm e$ : elle correspond à la disjonction de cas. En effet, si l'on a prouvé $P\lor Q$, alors prouver $C$ revient à le prouver sous l'hypothèse $P$ et sous l'hypothèse $Q$.
+    \item La règle $\bot_\mathrm c$, appelée raisonnement par l'absurde, permet de déduire $A$ du fait que $\lnot A$ mène à une contradiction.
+\end{itemize}
+
+L'exercice suivant est un résultat de structure de notre système, qui sera utile par la suite :
+
+\begin{exo}[Affaiblissement]
+    Montrer par induction que s'il existe une dérivation de $\Gamma\vdash P$ alors pour toute proposition $A$, il existe une dérivation de $\Gamma,A\vdash P$ (ceci signifie que si l'on a prouvé un résultat, on peut encore le prouver en rajoutant des hypothèses).
+\end{exo}
+
+\begin{exo}[Codage de la négation]
+    Montrer que le séquent suivant est dérivable : $$\vdash (\lnot P \to (P\to\bot))\land((P\to\bot)\to\lnot P)$$
+\end{exo}
+
+\subsection{Correction et complétude du calcul propositionnel}
+
+Ces règles paraissent dont très convaincantes pour créer un formalisme robuste de raisonnement. Pourtant, ce ne sont que des règles formelles : des enchaînements de symboles qui n'ont \textit{a priori} pas de lien avec la sémantique de nos propositions. Heureusement, il existe une paire de théorème nous permettant d'établir l'équivalence entre la conséquence sémantique et la conséquence syntaxique (c'est-à-dire le fait de prouver $\Gamma\vdash P$).
+
+\begin{them}[Correction du calcul propositionnel]
+    Si $\Gamma\vdash P$ pour $\Gamma$ un ensemble de propositions, alors $P$ est conséquence sémantique de $\Gamma$, i.e. pour toute valuation $\nu$, si $\nu\models\Gamma$ alors $\nu\models P$.
+\end{them}
+
+\begin{proof}
+    La preuve se fait par induction sur $\Gamma\vdash P$, il suffit donc de montrer que pour chaque règle, si le théorème est vrai pour ses prémisses, alors il est vrai pour sa conclusion. Nous laissons en exercice au lecteur le traitement de la plupart des règles, mais donnerons le traitement de deux règles pour l'exemple :
+    \begin{itemize}[label=$\bullet$]
+        \item Cas de $\to_\mathrm e$ : supposons que $\Gamma\vdash P\to Q$ et $\Gamma\vdash P$, et de plus que cela $P\to Q$ et $P$ sont conséquences sémantiques de $\Gamma$ (par hypothèse d'induction), montrons qu'alors $Q$ est conséquence sémantique de $\Gamma$. Soit $\nu$ satisfaisant $\Gamma$, alors par hypothèse, $\nu(P) = 1$ et $\nu(P\to Q)=1$, or $\nu(P\to Q) = 1 - \nu(P)+\nu(P)\nu(Q)$ donc en simplifiant, on en déduit que $\nu(Q) = 1$ : donc $Q$ est conséquence sémantique de $\Gamma$.
+        \item Cas de $\lor_\mathrm e$ : on suppose donc que $P\lor Q$ est conséquence sémantique de $\Gamma$, que $C$ est conséquence sémantique de $\Gamma,P$ et de $\Gamma,Q$, et on veut montrer que $C$ est conséquence sémantique de $\Gamma$. Soit $\nu$ satisfaisant $\Gamma$, alors $\nu(P\lor Q) = 1$, c'est-à-dire $\nu(P)+\nu(Q)-\nu(P)\nu(Q)=1$. Alors soit $\nu(P)=1$, soit $\nu(Q)=1$ (possiblement les deux). Supposons sans perte de généralité que $\nu(P)=1$ : cela signifie que $\nu$ satisfait $\Gamma,P$, donc comme $C$ est conséquence logique de $\Gamma,P$, $\nu(C)=1$. Donc $C$ est conséquence logique de $\Gamma$. 
+    \end{itemize}
+\end{proof}
+
+\begin{exo}
+    Montrer le théorème pour les autre règles d'induction.
+\end{exo}
+
+Ce théorème nous dit donc que ce qu'on prouve avec ces règles est correct. La question naturelle qui s'ensuit est \og peut-on prouver tout ce qui est vrai ?\fg{} Il se trouve que c'est le cas, c'est ce que montre le prochain théorème.
+
+Pour préparer ce résultat, nous aurons besoin d'une suite de lemmes (le premier sera ici donné en exercice). Ces lemmes ont des preuves principalement techniques et il est conseillé pour le lecteur de ne pas s'attarder sur celles-ci.
+
+\begin{exo}
+    Montrer que $P$ est conséquence sémantique d'un ensemble fini de propositions $\Gamma$ si et seulement si $\left(\displaystyle{\bigwedge_{\gamma\in\Gamma}}\gamma \right)\to P$ est une tautologie. Où cette notation signifie que l'on considère la conjonction (connecteur \og et\fg{}) sur toutes les formules de $\Gamma$.
+\end{exo}
+
+Nous allons construire, pour une valuation $\nu$, une proposition permettant de représenter, en quelque sorte, $\nu$. La preuve se basera sur le fait que $\nu\models P$ pourra s'interpréter comme $\vdash \nu\to P$.
+
+\begin{lem}
+    Soit $P$ une proposition et $\nu$ une valuation sur les variables de $P$, on note $V(\nu)$ une proposition correspondant à une conjonction contenant toutes les propositions $x_i$ telles que $\nu(x_i)=1$ et les négations des propositions $x_j$ telles que $\nu(x_j) = 0$. Par exemple pour $\nu(x_0)=1,\nu(x_1)=0$ on a au moins $V(\nu) = x_0\land \lnot x_1$. Alors :
+    \begin{itemize}[label=$\bullet$]
+        \item soit $\nu(P) = 1$ et alors $V(\nu) \vdash P$
+        \item soit $\nu(P) = 0$ et alors $V(\nu) \vdash \lnot P$.
+    \end{itemize}
+\end{lem}
+
+\begin{proof}
+    Procédons par induction sur $P$ :
+    \begin{itemize}[label=$\bullet$]
+        \item Les cas $\top$ et $\bot$ sont évidents, puisqu'ils ne font pas intervenir de variables.
+        \item Cas $x_i$ : soit $V(\nu)$ avec $\nu$ une valuation sur $x_i$. Supposons que $\nu(x_i)=1$. Alors \begin{center}
+            \begin{prooftree}
+                \infer0[Ax]{V(\nu)\vdash V(\nu)}
+                \infer1[$\land_\mathrm e$]{V(\nu)\vdash x_i}
+            \end{prooftree}
+        \end{center} où l'on note $\land_\mathrm e$ pour choisir le $x_i$ précis dans $V(\nu)$ (on peut se convaincre qu'une suite finie d'applications de $\land_\mathrm e$ permet de faire ceci). La preuve est la même si $\nu(x_i) = 0$ (on obtiendra simplement $\lnot x_i$ à la place).
+        \item Cas $\lor$ : soit $\nu$ une valuation contenant les variables de $P$ et de $Q$, et $V(\nu)$ une proposition associée à $\nu$. Quatre cas peuvent alors arriver, mais nous ne traiterons que deux d'entre eux (le lectuer assidu vérifiera les autres) : si $\nu(P)=1$ et $\nu(Q)=0$ (et donc que $\nu(P\lor Q) = 1$) alors on sait que $V(\nu)\vdash P$ et $V(\nu)\vdash \lnot Q$. On construit alors :
+        \begin{center}
+            \begin{prooftree}
+                \hypo{V(\nu)\vdash P}
+                \infer1[$\lor_\mathrm i$]{V(\nu)\vdash P\lor Q}
+            \end{prooftree}
+        \end{center}
+        Si $\nu(P)=\nu(Q)=0$ alors $V(\nu)\vdash \lnot P$, $V(\nu)\vdash \lnot Q$ et on veut montrer que $V(\nu)\vdash \lnot (P\lor Q)$ :
+        \begin{center}
+        \scalebox{0.7}{
+            \begin{prooftree}
+                \infer0[Ax]{V(\nu),P\lor Q\vdash P\lor Q}
+                \hypo{V(\nu),P\lor Q,P\vdash \lnot P}
+                \infer0[Ax]{V(\nu),P\lor Q,P\vdash P}
+                \infer2[$\lnot_\mathrm e$]{V(\nu),P\lor Q,P\vdash \bot}
+                \hypo{V(\nu),P\lor Q,Q\vdash \lnot Q}
+                \infer0[Ax]{V(\nu),P\lor Q,Q\vdash Q}
+                \infer2[$\lnot_\mathrm e$]{V(\nu),P\lor Q,Q\vdash \bot}
+                \infer3[$\lor_\mathrm e$]{V(\nu),P\lor Q\vdash\bot}
+                \infer1[$\lnot_\mathrm i$]{V(\nu)\vdash \lnot (P\lor Q)}
+            \end{prooftree}
+        }
+        \end{center}
+        \item Cas $\land$ : soit $\nu$ une valuation contenant les variables de $P$ et de $Q$ et $V(\nu)$ une proposition associée à $\nu$. Là encore, quatre cas sont possibles. Si $\nu(P)=\nu(Q)=0$ alors par hypothèse d'induction $V(\nu)\vdash \lnot P$, $V(\nu)\vdash \lnot Q$, et alors :
+        \begin{center}
+            \begin{prooftree}
+                \hypo{V(\nu),P\land Q\vdash \lnot P}
+                \infer0[Ax]{V(\nu),P\land Q\vdash P\land Q}
+                \infer1[$\land_\mathrm e^\mathrm g$]{V(\nu),P\land Q\vdash P}
+                \infer2[$\lnot_\mathrm e$]{V(\nu),P\land Q\vdash \bot}
+                \infer1[$\lnot_\mathrm i$]{V(\nu)\vdash \lnot(P\land Q)}
+            \end{prooftree} 
+        \end{center}
+        Si $\nu(P)=0$ et $\nu(Q) = 1$, remarquons que l'arbre plus haut est encore parfaitement utilisable puisque $\nu(P\land Q) = 0$. De même en inversant les rôles de $P$ et $Q$, on peut prouver le cas où $\nu(P)=1$ et $\nu(Q)=0$. Enfin, si $\nu(P)=\nu(Q)=1$ :
+        \begin{center}
+            \begin{prooftree}
+                \hypo{V(\nu)\vdash P}
+                \hypo{V(\nu)\vdash Q}
+                \infer2[$\land_\mathrm i$]{V(\nu)\vdash P\land Q}
+            \end{prooftree}
+        \end{center}
+        \item Cas $\lnot$ : soit $\nu$ une valuation contenant les variables de $P$, et $V(\nu)$ une proposition associée. Si $\nu(P) = 1$ alors $\nu(\lnot(P))=0$, on veut donc montrer qu'à partir de $V(\nu)\vdash P$ on peut déduire $V(\nu)\vdash \lnot\lnot P$ :
+        \begin{center}
+            \begin{prooftree}
+                \hypo{V(\nu),\lnot P\vdash P}
+                \infer0[Ax]{V(\nu),\lnot P\vdash \lnot P}
+                \infer2[$\lnot_\mathrm e$]{V(\nu),\lnot P\vdash \bot}
+                \infer1[$\lnot_\mathrm i$]{V(\nu)\vdash \lnot \lnot P}
+            \end{prooftree}
+        \end{center}
+        Si $\nu(P)=0$, alors on veut montrer qu'à partir de $V(\nu)\vdash \lnot P$ on peut en déduire que $V(\nu)\vdash \lnot P$, ce qui est évident.
+        \item Cas $\to$ : soit $\nu$ une valuation contenant les variables de $P$ et $Q$, et $V(\nu)$ une proposition associée. Il reste encore quatre cas à traiter. Si $\nu(P)=\nu(Q)=0$, alors on veut montrer que $V(\nu)\vdash P\to Q$ à partir de $V(\nu)\vdash \lnot P$ et $V(\nu)\vdash \lnot Q$ :
+        \begin{center}
+            \begin{prooftree}
+                \hypo{V(\nu),P\vdash \lnot P}
+                \infer0[Ax]{V(\nu),P\vdash P}
+                \infer2[$\lnot_\mathrm e$]{V(\nu),P\vdash\bot}
+                \infer1[$\bot_\mathrm i$]{V(\nu),P\vdash Q}
+                \infer1[$\to_\mathrm i$]{V(\nu)\vdash P\to Q}
+            \end{prooftree}
+        \end{center}
+        Remarquons que nous n'avons, là encore, pas eu besoin d'utiliser l'hypothèse sur $Q$. On peut donc traiter avec le même arbre le cas où $\nu(P)=0$ et $\nu(Q)=1$. Si $\nu(P) = 1$ et $\nu(Q)=0$, il nous faut prouver $V(\nu)\vdash \lnot (P\to Q)$ avec les hypothèses $V(\nu)\vdash P$ et $V(\nu)\vdash \lnot Q$ :
+        \begin{center}
+            \begin{prooftree}
+                \hypo{V(\nu),P\to Q\vdash \lnot Q}
+                \hypo{V(\nu),P\to Q\vdash P}
+                \infer0[Ax]{V(\nu),P\to Q\vdash P \to Q}
+                \infer2[$\to_\mathrm e$]{V(\nu),P\to Q\vdash Q}
+                \infer2[$\lnot_\mathrm e$]{V(\nu),P\to Q\vdash \bot}
+                \infer1[$\lnot_\mathrm i$]{V(\nu)\vdash \lnot (P\to Q)}
+            \end{prooftree}
+        \end{center}
+        Enfin, si $\nu(P)=\nu(Q)=1$, alors par $\to_\mathrm i$ on déduit de $V(\nu),P\vdash Q$ que $V(\nu)\vdash P\to Q$.
+    \end{itemize}
+\end{proof}
+
+\begin{lem}
+    Soit $P$ une proposition. Si $P$ est une tautologie, alors $\vdash P$.
+\end{lem}
+
+\begin{proof}
+    Procédons par récurrence sur l'indice maximal des variables présentes dans $P$ :
+    \begin{itemize}[label=$\bullet$]
+        \item Si la seule variable apparaissant dans $P$ est $x_0$, alors comme $P$ est une tautologie et par le lemme précédent, on sait que $x_0\vdash P$ et $\lnot x_0\vdash P$, ce qui nous permet de déduire que $\vdash P$ (en utilisant un exercice précédent où l'on a montré que $\vdash A\lor\lnot A$) :
+        \begin{center}
+            \begin{prooftree}
+                \hypo{\vdash x_0\lor\lnot x_0}
+                \hypo{x_0\vdash P}
+                \hypo{\lnot x_0\vdash P}
+                \infer3[$\lor_\mathrm e$]{\vdash P}
+            \end{prooftree}
+        \end{center}
+        \item Supposons que pour toute proposition faisant intervenir des variables jusqu'à $i$, être une tautologie implique d'être dérivable dans notre système. Soit alors une proposition $P$ faisant intervenir des variables jusqu'à $i+1$. Soit $\nu$ une valuation sur les $i$ premières variables. Comme $P$ est une tautologie, alors $P$ est satisfaite par $\nu'$ valant $\nu$ jusqu'à $x_i$ et $1$ en $x_{i+1}$, et par $\nu''$ valant $\nu$ jusqu'à $x_i$ et $0$ en $x_{i+1}$. On en déduit donc que $V(\nu')\vdash P$ et $V(\nu'')\vdash P$, soit $V(\nu)\land x_{i+1}\vdash P$ et $V(\nu)\land \lnot x_{i+1}\vdash P$. Par introductions successives de l'implication, on a alors $x_{i+1}\vdash V(\nu)\to P$ et $\lnot x_{i+1}\vdash V(\nu)\to P$, nous ramenant (en utilisant le même raisonnement que le cas précédent) à $\vdash V(\nu)\to P$, ce qui revient à $V(\nu)\vdash P$ qui est dérivable par le lemme précédent.
+    \end{itemize}
+
+    Donc par induction, $\vdash P$.
+\end{proof}
+
+\begin{rmk}
+    Nous avons ici utilisé que si $P\land Q \vdash R$ alors $Q\vdash P\to R$. Ceci n'est pas une règle de à proprement parler, mais on peut prouver ce résultat par induction sur les arbres de preuve. Cela peut faire un exercice, mais il est surtout fastidieux et l'idée est principalement que l'on peut remplacer $P\land Q\vdash R$ par $P,Q\vdash R$ en remplaçant chaque utilisation de l'axiome pour $P$ ou pour $Q$ par un axiome pour $P\land Q$ puis une élimination du $\land$. Nous pouvons le statuer comme une sorte de meta-règle (qui nous permet de dire qu'un séquent est dérivable à partir d'un autre séquent qui est dérivable), qu'on appelle une règle admissible.
+\end{rmk}
+
+\begin{them}[Complétude du calcul propositionnel]
+    Soit $\Gamma$ un ensemble de propositions et $P$ une proposition. Si $P$ est conséquence sémantique de $\Gamma$, i.e. pour toute valuation $\nu$, si $\nu\models\Gamma$ alors $\nu\models P$, alors $\Gamma\vdash P$.
+\end{them}
+
+\begin{proof}
+    Sous nos hypothèses, avec le théorème de compacité, on peut considérer une partie finie $\Gamma_0\subseteq\Gamma$ telle que $P$ en est conséquence sémantique. On veut donc prouver que $\Gamma_0\vdash P$, ce qui revient à montrer que $\vdash \left(\displaystyle{\bigwedge_{\gamma\in\Gamma_0}}\gamma \right)\to P$, et la condition sémantique est équivalente à dire que $\left(\displaystyle{\bigwedge_{\gamma\in\Gamma_0}}\gamma \right)\to P$ est une tautologie. Nous n'avons donc à montrer que le résultat (plus faible) suivant : si $P$ est une tautologie, alors $\vdash P$ est dérivable. C'est justement le résultat du lemme précédent.
+\end{proof}
+
+\begin{exo}[\'Enoncé équivalent du théorème de complétude]
+    Montrer que le théorème de complétude revient à l'énoncé suivant : si $\Gamma$ est contradictoire, alors $\Gamma\vdash \bot$.
+\end{exo}
+
+Nous savons maintenant qu'avec notre système de calcul, la preuve syntaxique et la correspondance sémantique sont équivalentes. Ainsi, être conséquence sémantique ou syntaxique correspond à la même chose, d'où la  définition suivante :
+
+\begin{defi}[Conséquence, équivalence]
+    On dit qu'une proposition $Q$ est conséquence d'une proposition $P$ si l'un des conditions équivalentes est vérifiées : $P\vdash Q$ ; $Q$ est conséquence sémantique de $P$ ; $\vdash P \to Q$ ; $P\to Q$ est une tautologie. On notera parfois cela $P\implies Q$ (mais on évitera en général de le faire pour ne pas confondre avec $\to$, qui est un connecteur logique, là où $\implies$ représente donc une méta-proposition, une propriété sur nos propositions elles-mêmes).
+
+    On dit que deux propositions $P$ et $Q$ sont équivalentes lorsque $P$ est conséquence de $Q$ et $Q$ est conséquence de $P$. On notera alors $P\iff Q$ ou $P\equiv Q$ (la deuxième notation sera privilégiée).
+\end{defi}
+

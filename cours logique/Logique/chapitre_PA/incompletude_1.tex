@@ -1,0 +1,303 @@
+\section{Premier théorème d'incomplétude}
+
+Maintenant que nous avons montré que toute fonction récursive totale était représentable, nous pouvons nous attaquer au c\oe ur de la démonstration du premier théorème d'incomplétude de Gödel. La preuve se fait en deux parties : on montre que l'on peut représenter la fonction reconnaissant, étant donnée une proposition, si elle est vraie, puis on effectue un argument diagonal (un peu comme pour le problème de l'arrêt) pour construire une proposition dont la preuve implique la preuve de sa propre négation.
+
+La première partie peut se voir comme la réciproque de la fin de la section précédente : après avoir montré que les propositions pouvaient représenter des fonctions, on va montrer que les fonctions peuvent représenter des propositions. Pour cela, la première étape est de coder nos propositions en tant que nombre. Il y a de nombreuses façons de faire, et la façon historique est d'utiliser la décomposition en facteurs premiers d'un nombre, mais nous utiliserons plutôt une autre représentation.
+
+\subsection{Coder la logique dans PA}
+
+\begin{defi}
+    Il existe une fonction représentable $\langle -,-\rangle : \nat^2 \to \nat$ bijective, et deux fonctions $\pi_1,\pi_2 : \nat\to\nat$ toutes trois récursives et représentables, telles que $\pi_1\langle x,y\rangle = x$ et $\pi_2\langle x,y\rangle = y$.
+\end{defi}
+
+\begin{proof}
+    L'exercice \ref{exo:bij} consistait justement à prouver la bijectivité de $\langle -,-\rangle$ et son caractère récursif primitif (donc récursif). On pourrait s'en contenter, mais nous allons donner une représentation simple de cette fonction : $$z= \langle x,y\rangle \iff 2\times z = (x+y)\times (x+y+1)+y$$ et les représentations de $\pi_1$ (et on se doute que $\pi_2$ sera construit de façon analogue) : $$x = \pi_1(z) \iff \exists y. (y\leq z) \land (2\times z = (x+y)\times (x+y+1)+y)$$
+
+    On vérifie facilement que $\pi_1\langle x,y\rangle = x$ puisque cette proposition est équivalente à l'existence de $y'$ tel que $\langle x,y\rangle = \langle x,y'\rangle$, ce qui est vrai pour $y'=y$ de façon évidente (et pas pour un $y'$ inférieur puisque notre bijection est croissante, à $x$ fixé, en $y$).
+\end{proof}
+
+Cette fonction sera notre brique essentielle pour coder les propositions, que nous coderons comme des arbres binaires. Une autre façon de les représenter aurait pu être comme des chaînes de caractères, càd donner un nombre précis à chaque caractère et coder notre formule ainsi, mais le codage que nous allons avoir sera, somme toute, plus élégant.
+
+\begin{rmk}
+    Si à l'époque de Gödel, l'idée de coder uniquement par l'arithmétique des notions aussi complexes que la logique était révolutionnaire, il est beaucoup moins choquant aujourd'hui d'imaginer tout mettre en binaire et faire des opérations infiniment complexes avec de longues suites d'opérations arithmétiques simples sur ces suites binaires : nos ordinateurs le font en permanence.
+\end{rmk}
+
+Plutôt que de généraliser notre proposition avec une représentation bijective $\langle -,-\rangle : \nat^k\to\nat$, on se contentera d'écrire des $k-uplets$ comme des couples imbriqués vers la droite : $\langle a,b,c\rangle$ sera codé par $\langle a,\langle b,c\rangle\rangle$.
+
+\subsubsection{Coder les termes}
+
+Nous pouvons maintenant coder les termes dans le langage de l'arithmétique :
+
+\begin{defi}[Codage d'un terme]
+    Soit un terme $t$, on définit la fonction $\encode -$ qui associe à un terme un entier, de façon injective et représentable, par induction sur $t$ :
+    \begin{itemize}[label=$\bullet$]
+        \item si $t = 0$ alors on associe l'entier $\langle 0,0\rangle$
+        \item so $t = x_n$ une variable, on associe l'entier $\langle 0,n+1\rangle$
+        \item si $t = S t'$ alors on associe l'entier $\langle 1,\encode{t'}\rangle$
+        \item si $t = t' + t''$ alors on associe l'entier $\langle 2, \langle \encode{t'},\encode{t''}\rangle\rangle$
+        \item si $t = t' \times t''$ alors on associe l'entier $\langle 3, \langle \encode{t'},\encode{t''}\rangle\rangle$
+    \end{itemize}
+\end{defi}
+
+\begin{proof}
+    La fonction est injective par récursion sur le terme : à chaque constructeur différent d'un terme on associe un premier argument différent dans le couple qu'on code, et le codage du couple est bijectif donc injectif. Sa représentabilité découle purement de celle de $\langle -,-\rangle$.
+\end{proof}
+
+\begin{lem}
+    L'ensemble $\Term = \{ \encode t \mid t \text{ est un terme sur le langage de l'arithmétique}\}$ est récursif primitif.
+\end{lem}
+
+\begin{proof}
+    Construisons la fonction caractéristique en donnant un algorithme (qui fait une récursion dont le nombre d'étapes est strictement inférieur au nombre codé, d'où le caractère primitif) calculant $1_\Term(t)$ :
+    \begin{itemize}[label=$\bullet$]
+        \item si $\pi_1(t) = 0$ alors $1_\Term(t)=1$
+        \item si $\pi_1(t) = 1$ alors $1_\Term(t)=1_\Term(\pi_2(t))$
+        \item si $\pi_1(t) = 2$ ou $\pi_1(t) = 3$ alors $1_\Term(t)=\min(1_\Term(\pi_2(\pi_2(t))),1_\Term(\pi_2(\pi_2(t))))$
+        \item sinon, $1_\Term(t) = 0$
+    \end{itemize}
+\end{proof}
+
+\subsubsection{Coder les propositions et agir dessus}
+
+De même que les termes sont des objets inductifs, les propositions le sont, et le codage sera très similaire :
+
+\begin{defi}[Codage des propositions]
+    On définit la fonction de code $\encode -$ sur les propositions de la façon suivante, pour $P$ une proposition :
+    \begin{itemize}[label=$\bullet$]
+        \item on remplacera toutes les occurrences de $\top$ par $0=0$ et $\bot$ par $0=1$ (qui reviennent au même étant donné qu'on peut prouver que $\lnot (0=1)$ et que $0=0$ est vrai aussi)
+        \item si $P = (t_1=t_2)$ alors on associe l'entier $\langle 0,\langle\encode{t_1},\encode{t_2}\rangle\rangle$
+        \item si $P = \lnot P'$ alors on associe l'entier $\langle 1,\encode P\rangle$
+        \item si $P = P_1 \lor P_2$ alors on associe l'entier $\langle 2,\langle \encode{P_1},\encode{P_2}\rangle\rangle$
+        \item si $P = P_1 \land P_2$ alors on associe l'entier $\langle 3,\langle \encode{P_1},\encode{P_2}\rangle\rangle$
+        \item si $P = \exists x_i. P'$ alors on associe l'entier $\langle 4,\langle i,\encode{P'}\rangle\rangle$
+        \item si $P = \forall x_i. P'$ alors on associe l'entier $\langle 5,\langle i,\encode{P'}\rangle\rangle$
+    \end{itemize}
+    qui est injective et représentable, par le même argument que précédemment.
+\end{defi}
+
+\begin{lem}
+    L'ensemble $\Propo = \{\encode P\mid P \text{ est une proposition sur le langage de l'arithmétique}\}$ est primitif récursif.
+\end{lem}
+
+\begin{exo}
+    Prouver ce lemme.
+\end{exo}
+
+Nous voulons maintenant coder la substitution de propositions, c'est-à-dire une fonction prenant en entrée un entier $i$ et deux codes de termes $\encode t$ et $\encode u$ et retourne $\encode{t[x_i/u]}$, qui nous servira lorsque l'on voudra travailler sur une règle comme $\forall_\mathrm e$. De plus, on aura besoin d'un lemme pour caractériser la liberté d'une variable dans une proposition (par exemple pour la règle $\forall_\mathrm i$).
+
+\begin{lem}
+    Les ensembles suivants sont récursifs primitifs :
+    \begin{itemize}[label=$\bullet$]
+        \item $\Theta_0 = \{ \langle\encode t,n\rangle\mid t\text{ est un terme et } x_n\text{ n'a pas d'occurrence dans }t\}$
+        \item $\Theta_1 = \{ \langle\encode t,n\rangle\mid t\text{ est un terme et } x_n\text{ au au moins une occurrence dans }t\}$
+        \item $\Phi_0 = \{ \langle \encode P,n\rangle \mid P \text{ est une proposition et } x_n \text{ n'a pas d'occurrence dans }P\}$
+        \item $\Phi_1 = \{ \langle \encode P,n\rangle \mid P \text{ est une proposition et } x_n \text{ n'a pas d'occurrence libre dans }P\}$
+        \item $\Phi_2 = \{ \langle \encode P,n\rangle \mid P \text{ est une proposition et } x_n \text{ n'a pas d'occurrence liée dans }P\}$ 
+        \item $\Phi_2 = \{ \langle \encode P,n\rangle \mid P \text{ est une proposition et } x_n \text{ a au moins une occurrence libre dans }P\}$ 
+        \item $\Phi_2 = \{ \langle \encode P,n\rangle \mid P \text{ est une proposition et } x_n \text{ a au moins une occurrence liée dans }P\}$ 
+        \item $\Phi_5 = \{ \encode P \mid P\text{ est une formule close}\}$
+    \end{itemize}
+\end{lem}
+
+\begin{exo}
+    Prouver ce lemme (on fera pour chaque cas une récurrence et une disjonction de cas sur la forme du code).
+\end{exo}
+
+\begin{lem}[Substitution]
+    Il existe deux fonctions primitives récursives $\Subst$, que l'on notera ici $\Subst_t$ et $\Subst_p$ respectivement, qui étant donnés deux terme $t,u$ et une proposition $P$, sont telles que : $$\Subst_t (n,\encode t,\encode u) = \encode{u[x_n/t]}\qquad \Subst_p(n,\encode t,\encode P) = \encode{P[x_n/t]}$$
+\end{lem}
+
+\begin{proof}
+    On définit la fonction $\Subst_t$ par récursion et disjonction de cas sur $k := \encode u$ :
+    \begin{itemize}[label=$\bullet$]
+        \item si $\pi_1(k) = 0$ alors si $\pi_2(k) = n+1$, alors $\Subst_t(n,\encode t,k) = \encode t$, si $\pi_2(k)\neq n+1$ alors $\Subst_t(n,\encode t,k) = k$.
+        \item si $\pi_1(k) = 1$ alors $\Subst_t(n,\encode t,k) = \langle 1,\Subst_t(n,\encode t,\pi_2(k))\rangle$
+        \item si $\pi_2(k) = 2$ ou $\pi_2(k) = 3$ alors $$\Subst_t(n,\encode t,k) = \langle \pi_1(k),\langle \Subst_t(n,\encode t,\pi_1(\pi_2(k))),\Subst_t(n,\encode t,\pi_2(\pi_2(k)))\rangle\rangle$$
+        \item sinon, on associe $0$ (cela n'a pas d'importance)
+    \end{itemize}
+
+    De même on définit $\Subst_p$ par récursion et disjonction de cas sur $k := \encode P$ :
+    \begin{itemize}[label=$\bullet$]
+        \item si $\pi_1(k) = 0$ alors $$\Subst_p(n,\encode t,k) = \langle 0,\langle\Subst_t(n,\encode t,\pi_1(\pi_2(k))),\Subst_t(n,\encode t,\pi_2(\pi_2(k)))\rangle\rangle$$
+        \item si $\pi_1(k) = 1$ alors $\Subst_p(n,\encode t,k) = \langle 1,\Subst_p(n,\encode t,\pi_2(k))\rangle$
+        \item si $\pi_1(k) = 2$ ou $\pi_1(k) = 3$ alors $$\Subst_p(n,\encode t,k) = \langle\pi_1(k),\langle \Subst_p(n,\encode t,\pi_1(\pi_2(k))),\Subst_p(n,\encode t,\pi_2(\pi_2(k))) \rangle\rangle$$
+        \item si $\pi_1(k) = 4$ ou $\pi_1(k) = 5$, alors on regarde $j = \pi_1(\pi_2(k))$ : si $j = n$ alors $\Subst_p(n,\encode t,k) = k$ et sinon $\Subst_p(n,\encode t,k) = \langle \pi_1(k),\langle j,\Subst_p(n,\encode t,\pi_2(\pi_2(k)))\rangle$
+        \item sinon, on associe $0$ (cela n'a pas d'importance)
+    \end{itemize}
+\end{proof}
+
+Dans la suite, on dira simplement $\Subst$ puisque $\Subst_t$ ne sert qu'à définir $\Subst_p$, et c'est donc la dernière fonction qui sera désignée.
+
+\subsubsection{Coder un séquent}
+
+Nous allons maintenant définir un séquent, de la forme $\Gamma\vdash P$, pour pouvoir ensuite construire nos preuves.
+
+\begin{defi}[Codage d'un contexte]
+    On définit le codage d'un contexte par $\encode \varnothing = 0$ et $\encode{\Gamma,P} = 1 + \langle \encode \Gamma,P\rangle$.
+\end{defi}
+
+\begin{lem}[Contexte récursif et décodage unique]
+    La fonction de codage de contextes est injective, et l'ensemble $\mathrm{Ctx} = \{\encode\Gamma\mid \Gamma\text{ est un contexte}\}$ est primitif récursif.
+\end{lem}
+
+\begin{proof}
+    L'injectivité peut se montrer par double récurrence sur la longueur de deux contextes $\Gamma,\Gamma'$ : seul le contexte vide est envoyé sur $0$, et si $\encode \Gamma=\encode{\Gamma'}$ alors cette égalité est aussi vraie quand on retire $1$, et donc les deux contextes codent la même dernière proposition $P$ (parce que le codage de proposition est injectif et que la fonction donnant une paire est injective), ce qui signifie que les codes de leur contexte sans la dernière proposition sont égaux, ce qui par hypothèse de récurrence signifie que les deux contextes sont égaux. Le fait d'être primitif récursif est juste l'application de la même idée : on applique récursivement le test de supprimer 1, de vérifier si la composante de droite est le code d'une une proposition, puis de vérifier si la composante de gauche est le code d'un contexte.
+\end{proof}
+
+Un point important est alors le suivant :
+
+\begin{lem}[Liberté dans un contexte]
+    Vérifier si une variable donnée est libre dans un contexte est primitif récursif.
+\end{lem}
+
+\begin{proof}
+    On applique simplement la fonction de test de liberté de la variable à chaque proposition du contexte, récursivement.
+\end{proof}
+
+De plus, pour facilement utiliser la règle d'axiome, nous allons utiliser le lemme suivante :
+
+\begin{lem}
+    Vérifier si une proposition appartient à un contexte est primitif récursif.
+\end{lem}
+
+\begin{exo}
+    Prouver le lemme précédent.
+\end{exo}
+
+\subsubsection{Coder les preuves}
+
+Nous en venons alors à coder nos arbres de preuves. L'idée première serait d'écrire toutes les informations de l'arbre, ce qui donnerait un nombre énorme de données à coder (un contexte à chaque fois, déjà). Une analyse plus fine nous permet de remarquer qu'il est inutile d'aller jusque là, car si l'on part de la racine où l'on fixe le séquent, l'application d'une règle nous permet toujours de deviner le contexte résultant. Ceci signifie que coder un arbre de preuves peut se faire en ne codant qu'un arbre de couples avec une étiquette (pour le numéro de la règle) et la proposition à prouver, puis la liste des sous-arbres de preuves. Cependant, l'avantage de coder tous les contextes est de faire une définition inductive simple.
+
+\begin{defi}[Codage d'un arbre]
+    On définit donc la fonction $\encode -$ sur les arbres de preuve inductivement de la façon suivante :
+    \begin{itemize}[label=$\bullet$]
+        \item si la règle est une utilisation d'axiome sur $\Gamma\vdash P$ alors le code sera $\langle 0,\encode P\rangle$.
+        \item si la règle est un $\to_\mathrm i$ appliqué à $\Gamma\vdash P\to Q$ alors le code sera $\langle 1,\langle \encode{Q},\encode\alpha\rangle\rangle$ où $\alpha$ est un arbre de preuve de $\Gamma,P\vdash Q$.
+        \item si la règle est un $\to_\mathrm e$ appliqué à $\Gamma\vdash Q$ alors le code sera $\langle 2,\langle\langle\encode{P\to Q},\encode\alpha\rangle,\langle \encode Q,\encode\beta\rangle\rangle\rangle$ où $\alpha$ est un arbre de preuve de $\Gamma\vdash P \to Q$ et $\beta$ est un arbre de preuve de $\Gamma\vdash Q$.
+        \item si la règle est un $\land_\mathrm i$ appliqué à $\Gamma\vdash P\land Q$ alors le code sera, pour $\alpha$ un arbre de preuve de $\Gamma\vdash P$ et $\beta$ un arbre de preuve de $\Gamma\vdash Q$ : $\langle 3,\langle \langle \encode P,\encode\alpha \rangle,\langle\encode Q,\encode \beta\rangle \rangle\rangle$
+        \item si la règle est un $\land_\mathrm e^\mathrm g$ appliqué à $\Gamma\vdash P$ alors le code sera, pour $\alpha$ un arbre de preuve de $\Gamma\vdash P\land Q$ : $\langle 4,\langle \encode{P\land Q},\encode\alpha\rangle\rangle$
+        \item si la règle est un $\land_\mathrm e^\mathrm d$ appliqué à $\Gamma\vdash Q$ alors le code sera, pour $\alpha$ un arbre de preuve de $\Gamma\vdash P\land Q$ : $\langle 5,\langle \encode{P\land Q},\encode\alpha\rangle\rangle$
+        \item si la règle est un $\lor_\mathrm i^\mathrm g$ appliqué à $\Gamma\vdash P\lor Q$ alors le code sera, pour $\alpha$ un arbre de preuve de $\Gamma\vdash P$ : $\langle 6,\langle \encode P,\encode \alpha\rangle\rangle$
+        \item si la règle est un $\lor_\mathrm i^\mathrm d$ appliqué à $\Gamma\vdash P\lor Q$ alors le code sera, pour $\alpha$ un arbre de preuve de $\Gamma\vdash Q$ : $\langle 7,\langle \encode Q,\encode \alpha\rangle\rangle$
+        \item si la règle est un $\lor_\mathrm e$ appliqué à $\Gamma\vdash C$ alors, pour $\alpha$ un arbre de preuve de $\Gamma\vdash P\lor Q$, $\beta$ un arbre de preuve de $\Gamma,P\vdash C$ et $\gamma$ un arbre de preuve de $\Gamma,Q\vdash C$, le code sera $$\langle 8,\langle \langle \encode{P\lor Q},\encode\alpha \rangle,\langle \langle \encode C,\encode \beta\rangle,\langle\encode C,\encode\gamma\rangle  \rangle\rangle$$
+        \item si la règle est un $\lnot_\mathrm i$ appliqué à $\Gamma\vdash \lnot A$ alors pour $\alpha$ un arbre de preuve de $\Gamma\vdash (0=1)$ le code sera $\langle 9,\langle \encode{0=1},\alpha\rangle\rangle$
+        \item si la règle est un $\lnot_\mathrm e$ appliqué à $\Gamma\vdash (0=1)$ alors pour $\alpha$ un arbre de preuve de $\Gamma\vdash P$ et $\beta$ un arbre de preuve de $\Gamma\vdash \lnot P$ le code sera $\langle 10,\langle \langle\encode P,\encode \alpha\rangle,\langle\encode{\lnot P},\encode \beta\rangle\rangle\rangle$
+        \item si la règle est un $\bot_\mathrm c$ appliqué à $\Gamma\vdash P$ et que $\alpha$ est un arbre de preuve de $\Gamma,\lnot P\vdash (0=1)$ alors le code sera $\langle 11,\langle\encode{0=1},\encode\alpha\rangle\rangle$
+        \item si la règle est $\forall_\mathrm i$ appliqué à $\Gamma\vdash \forall x_n.P$ et que $\alpha$ est un arbre de preuve de $\Gamma\vdash P$ alors le code sera $\langle 12,\langle\encode P,\encode \alpha\rangle\rangle$
+        \item si la règle est $\forall_\mathrm e$ appliqué à $\Gamma\vdash P[x_n/a]$ et que $\alpha$ est un arbre de preuve de $\Gamma\vdash \forall x_n.P$ alors le code sera $\langle 13,\langle \encode{\forall x_n.P},\encode\alpha\rangle\rangle$
+        \item si la règle est $\exists_\mathrm i$ appliqué à $\Gamma\vdash \exists x_n.P$ et que $\alpha$ est un arbre de preuve de $\Gamma\vdash P[x_n/t]$ alors le code sera $\langle 14,\langle \encode{P[x_n/t]},\encode\alpha\rangle\rangle$
+        \item si la règle est $\exists_\mathrm e$ appliqué à $\Gamma\vdash C$, que $\alpha$ est un arbre de preuve de $\Gamma\vdash \exists x_n.P$ et que $\beta$ est un arbre de preuve de $\Gamma,P\vdash C$ alors le code sera $\langle 15,\langle\langle\encode{\exists x_n.P}\encode\alpha\rangle,\langle\encode C,\encode\beta\rangle\rangle\rangle$
+        \item si la règle est $=_\mathrm i$ appliqué à $\Gamma\vdash t=t$, alors le code sera $\langle 16,\encode{t=t}\rangle$
+        \item si la règle est $=_\mathrm e$ appliqué à $\Gamma\vdash P[x_n/u]$, que $\alpha$ est un arbre de preuve de $\Gamma\vdash t = u$ et que $\beta$ est un arbre de preuve de $\Gamma\vdash P[x_n/t]$ alors le code sera $\langle 17,\langle\langle\encode{t=u},\encode\alpha\rangle,\langle\encode{P[x_n/t]},\encode\beta\rangle\rangle\rangle$
+        \item sinon, on associe n'importe quoi, disons $0$
+    \end{itemize}
+\end{defi}
+
+On a alors la proposition suivante :
+
+\begin{prop}
+    Le langage $\Prooft_{\Gamma} =\{\langle\encode P,\encode\alpha\rangle\mid \alpha\text{ est un arbre de preuve valide de } \Gamma\vdash P\}$ est récursif si $\Gamma$ est un contexte récursif.
+\end{prop}
+
+\begin{exo}
+    Prouver cette proposition. \textit{Indication : on raisonnera par récurrence, et on utilisera les lemmes pour les substitutions et la liberté des variables.}
+\end{exo}
+
+\begin{rmk}
+    Le résultat est récursif primitif à l'exception du fait de vérifier la règle axiome, dont la complexité dépend directement du contexte.
+\end{rmk}
+
+De plus, on a le lemme suivant :
+
+\begin{lem}[Extraction d'une proposition]
+    Si $k\in\Prooft_\Gamma$ alors on peut trouver une proposition $P$ telle que $k$ code une démonstration de $P$.
+\end{lem}
+
+\begin{proof}
+    Il suffit d'appliquer des projections.
+\end{proof}
+
+\subsection{Prédicat de démonstration et diagonalisation}
+
+On déduit alors le théorème suivant :
+
+\begin{them}
+    Soit $T$ une théorie récursivement axiomatisable, il existe une proposition à une variable libre, notée $\Demonstr_T$ telle que $\Demonstr_T(\encode P)$ si et seulement si $P$ est démontrable dans la théorie $T$.
+\end{them}
+
+\begin{proof}
+    On utilise la représentation de $\pi_1$ qui extrait du code d'un arbre la proposition prouvée, et de $\Prooft_T$ qui dit qu'un nombre correspond à un arbre valide dans la théorie $T$, puis on définit $$\Demonstr_T(\encode P) = \exists z. \Prooft_T(z) \land \pi(\encode P,z)$$ qui est, par définition, équivalente au fait qu'il existe un arbre de preuve valide de racine $P$, c'est-à-dire une preuve de $P$, dans la théorie $T$.
+\end{proof}
+
+\begin{rmk}
+    La récursivité nous a permis de justifier la représentabilité de la fonction vérifiant un arbre de preuve, et celle de la théorie axiomatique utilisée nous a permis de justifier, plus précisément, la représentabilité au niveau de la règle axiome.
+\end{rmk}
+
+Nous pouvons alors énoncer la premier théorème d'incomplétude, de Gödel :
+
+\begin{them}[Premier théorème d'incomplétude]
+    Soit $T$ une théorie récursivement axiomatisable, pouvant prouver les axiomes de $\PA_0$ et cohérente, alors il existe une proposition $G$ telle que ni $G$ ni $\lnot G$ ne sont démontrables dans $T$.
+\end{them}
+
+\begin{proof}
+    Avec la construction précédente, nous savons qu'il existe dans $T$ un codage $\encode -$ des propositions et un prédicat $\Demonstr_T$ tel que $\Demonstr_T(\encode P)$ si et seulement si $P$ est démontrable dans $T$. De plus, on note $\Subst$ la fonction représentant la fonction $\Subst$. On construit alors la proposition $$\Delta(x_0) := \forall z.(\Subst(z,0,x_0,x_0) \implies \lnot\Demonstr_T(z))$$ qui signifie donc \og toute proposition appliquée à son propre code ne peut être démontrée\fg{} et on appelle $G := \Delta(\encode\Delta)$
+
+    Cela signifie que $\Subst(G,0,\encode\Delta,\encode\Delta)$ donc si $G$ est démontrable, alors en spécialisant $G$ en $\Delta$, on aurait $\lnot\Demonstr_T(\encode G)$. Au contraire, si $\lnot G$ était démontrable, alors on aurait un code $z$ tel que $\Subst(z,0,\encode\Delta,\encode\Delta)$ et $\Demonstr_T(z)$, ce qui signifie donc que $\Demonstr_T(\encode G)$, donc que $G$ est démontrable, ce qui est absurde.
+\end{proof}
+
+\begin{cor}
+    Les théories $\PA_0$ et $\PA$ ne sont pas complètes.
+\end{cor}
+
+Une conséquence assez directe est la suivante : 
+
+\begin{them}[Church]
+    Soit $\LL$ un langage contenant l'arithmétique, alors l'ensemble des théorèmes logiques sur $\LL$ n'est pas récursif : la théorie $\varnothing$ n'est pas décidable.
+\end{them}
+
+\begin{proof}
+    On définit $\mathcal T = \bigvee_{i=1}^7 A_i$ la conjonction des axiomes de $\PA_0$, et on va noter $T_0$ l'ensemble des théorèmes logiques sur $\LL$. On peut vérifier facilement que $\PA_0\vdash P$ si et seulement si $\vdash \mathcal T \implies P$, càd $(\mathcal T \implies P)\in T_0$, or si $T_0$ était récursive cela signifierait que $\PA_0$ serait décidable : on sait que ça n'est pas le cas puisqu'il existe des énoncés de $\PA_0$ indécidables.
+\end{proof}
+
+\begin{rmk}
+    La théorie des ensembles usuelle, ZF, permet de formaliser l'arithmétique (nous le verrons dans le prochain chapitre), ce qui signifie que c'est une théorie (récursivement axiomatisable aussi) qui peut démontrer les axiomes de $\PA_0$, donc elle n'est elle non plus pas complète.
+\end{rmk}
+
+\section{Sur le deuxième théorème d'incomplétude}
+
+Le second théorème d'incomplétude est considéré comme une conséquence du premier, mais utilisant des hypothèses plus fortes. La première chose à remarquer est que la définition de $\Demonstr_T$ signifie qu'on peut définir une proposition $\Coh(T) := \lnot \Demonstr_T(\bot)$, qui signifie que la théorie $T$ est cohérente (la proposition dit précisément que $T$ ne démontre pas l'absurde). Le second théorème d'incomplétude nous dit alors que $T\nvdash\Coh(T)$. Paul Bernays a précisé trois conditions essentielles sur $T$ pour permettre de démontrer le second théorème d'incomplétude.
+
+\begin{defi}[Conditions de Hilbert-Bernays-Löb]
+    Les conditions sont les suivantes :
+    \begin{itemize}[label=$\bullet$]
+        \item Si $P$ est démontrable dans $T$, alors $\Demonstr_T(\encode P)$ est démontrable dans $T$.
+        \item On peut démontrer dans $T$ la proposition $\Demonstr_T(\encode P)\implies \Demonstr_T(\encode{\Demonstr_T(\encode P)})$
+        \item On peut démontrer dans $T$ la proposition $$\Demonstr_T(\encode{P\implies Q})\implies \Demonstr_T(\encode P)\implies \Demonstr_T(\encode Q)$$
+    \end{itemize}
+\end{defi}
+
+Ces conditions sont vérifiées dans $\PA$, mais pas dans $\PA_0$. En effet, la deuxième condition porte sur le fait de pouvoir encoder notre preuve de \og validité\fg{} de $\Demonstr_T$ : il faut pour cela utiliser la récurrence (toutes nos preuves sur le codage et sur la vérification qu'un arbre est valide reposent sur des récurrences). Les deux autres conditions, elles, sont principalement techniques.
+
+Si on veut expliciter ce que signifie chacune : la première condition énonce simplement que notre prédicat de prouvabilité est valide. La deuxième condition, elle, dit que l'on peut formaliser la première condition au sein de la théorie $T$. La troisième condition dit que notre encodage est stable par \textit{modus ponens}, qui tient principalement au fait que nous possédons la règle $\to_\mathrm e$ dans notre logique (et donc dans notre définition de $\Demonstr_T$). Remarquons qu'alors, en utilisant le fait que $\lnot P \equiv P\implies \bot$, on peut écrire avec la troisième condition que $$\Demonstr_T(\lnot P)\implies\Demonstr_T(P)\implies\lnot \Coh(T)$$
+
+Nous n'allons pas démontrer que ces trois conditions sont respectées, et nous contenterons des arguments donnés plus haut. Une preuve rigoureuse est possible, mais elle est principalement technique.
+
+Nous avons alors
+
+\begin{them}[Second théorème d'incomplétude]
+    Si une théorie $T$, récursivement axiomatisable et cohérente, permet de démontrer les axiomes de $\PA$, alors $T\nvdash \Coh(T)$, donc on ne peut prouver la cohérence d'une théorie au sein de cette théorie.
+\end{them}
+
+\begin{proof}
+    La théorie $T$ vérifie les conditions de Hilbert-Bernays-Löb, puisqu'elle démontre les axiomes de $\PA$ et est récursivement axiomatisable. Soit $G$ la formule construire dans le premier théorie d'incomplétude, dont on ne peut prouver ni la démontrabilité ni la non démontrabilité.
+    
+    Si $T$ est cohérente, cela entraine $T\vdash \lnot\Demonstr_T(\encode G)$ par définition de $G$. La deuxième condition, appliquée au premier théorème d'incomplétude, nous permet de déduire que $T\vdash \Demonstr_T(\encode{G\implies \lnot\Demonstr_T(\encode G)})$, donc avec la troisième condition $$T\vdash \Demonstr_T(\encode G)\implies \Demonstr_T(\encode{\lnot \Demonstr_T(\encode G)})$$ or en utilisant la deuxième condition sur $\Demonstr_T(\encode G)$ (à gauche dans la formule) et la troisième condition dans le cas particulier de la négation, on en déduit que $$T\vdash \Demonstr_T(\encode G)\implies \lnot\Coh(T)$$ ce qui, par définition de $G$, signifie que $T\vdash \lnot G\implies \lnot\Coh(T)$ donc, par contraposée $$T\vdash \Coh(T)\implies G$$ or $G$ n'est pas démontrable dans $T$, donc $\Coh(T)$ non plus : $T\nvdash \Coh(T)$.
+\end{proof}
+
+\begin{rmk}
+    D'après le second théorème d'incomplétude, pour une théorie $T$ (ayons $\PA$ à l'esprit) respectant les conditions précédentes, alors $T\cup \{\Coh(T)\}$ est cohérente, et même $T\cup\{\lnot\Coh(T)\}$ l'est. Si cela peut sembler perturbant, il faut garder à l'esprit que les deux prédicats $\Coh(T)$ et $\lnot\Coh(T)$ n'ont de sens que dans $T$ : dans la nouvelle théorie à laquelle on ajoute l'axiome que $T$ est cohérente, alors $\Demonstr_{T'}$ est un prédicat qui n'a plus rien à voir, et il ne faut donc certainement pas comprendre que $T\cup\{\lnot\Coh(T)\}$ est par essence incohérente : elle l'est autant que $T$ (donc généralement pas).
+\end{rmk}
+
+\begin{rmk}
+    Si l'on ne peut prouver la cohérence d'une théorie au sein même de cette théorie, on peut bien prouver la cohérence d'une théorie si l'on dispose d'une théorie plus forte. Par exemple, Gentzen a démontré dans ZF (la théorie usuelle des ensembles) que l'arithmétique de Peano était cohérente, en effectuant une récursion transfinie jusqu'à $\varepsilon_0$.
+\end{rmk}

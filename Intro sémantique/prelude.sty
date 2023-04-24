@@ -1,0 +1,154 @@
+\ProvidesPackage{prelude}
+
+
+\usepackage[T1]{fontenc}
+\usepackage[french]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{amssymb}
+\usepackage{cancel}
+\usepackage{comment}
+\usepackage{ebproof}
+\usepackage{stmaryrd}
+
+\usepackage{geometry}
+\geometry{
+	a4paper,
+	total={170mm,260mm},
+	left=20mm,
+	top=20mm,
+}
+
+\usepackage{caption}
+\usepackage{graphicx}
+\usepackage{longtable}
+\usepackage[titletoc]{appendix}
+
+\usepackage{enumitem}
+
+\usepackage{subcaption}
+\usepackage{tikz}
+\usepackage{tikz-cd}
+\usetikzlibrary{optics}
+\usepackage{indentfirst}
+
+\graphicspath{{images/}}
+
+\renewcommand{\contentsname}{Table des matières}
+\renewcommand{\refname}{Références}
+\renewcommand{\abstractname}{}
+\renewcommand{\appendixname}{Appendice}
+\renewcommand{\tablename}{Tableau}
+
+\usepackage{epstopdf} % Permet la conversion des .eps en .pdf pour les inclure
+
+\usepackage{tabularx} % gestion avancée des tableaux
+
+\usepackage{psfrag} % remplacement du texte d'une figure ps par du texte latex
+
+\usepackage{eurosym} % symbole
+
+\usepackage{xcolor} % gestion de différentes couleurs
+
+\definecolor{linkcolor}{rgb}{0,0,0.6} % définition de la couleur des liens pdf
+\usepackage[ pdftex,colorlinks=true,
+pdfstartview=FitV,
+linkcolor= black,
+citecolor= linkcolor,
+urlcolor= linkcolor,
+hyperindex=false,
+hyperfigures=false]
+{hyperref}
+
+\usepackage{fancyhdr} % entêtes et pieds de pages personnalisés
+
+\pagestyle{fancy}
+\fancyhead[L]{\scriptsize \textsc{Partie \thepart}} % À changer
+\fancyhead[R]{\scriptsize \textsc{\leftmark}} % À changer
+\fancyfoot[C]{ \thepage}
+
+\tikzset{CrochetStyle/.style ={black, line width=2pt}}
+
+%Série de macros
+\newcommand{\cpx}[0] {\mathbb{C}}
+\newcommand{\nat}[0] {\mathbb{N}}
+\newcommand{\reel} {\mathbb{R}}
+\newcommand{\ev}[0]{\mathrm{ev}}
+\newcommand{\blank} {\newline \quad \newline}
+\newcommand{\compre}[2]{\{#1\;|\;#2\}}
+\newcommand{\Bcompre}[2]{\Bigg\{#1\;\Bigg|\;#2\Bigg\}}
+\newcommand{\Pset}[1]{\mathcal P (#1)}
+\newcommand{\includefig}[2]{\begin{figure}[htb]
+\centering
+\begin{tikzpicture}[scale = .8]
+\input{#1}
+\end{tikzpicture}
+\caption{#2}
+\end{figure}}
+\newcommand{\RR}[0]{\mathcal R}
+\newcommand{\quot}[2]{\raisebox{0.1cm}{$#1$}\!/\!\raisebox{-0.1cm}{$#2$}}
+\newcommand{\toot}[0]{\longleftrightarrow}
+\newcommand{\card}[1]{\mathrm{card}(#1)}
+\newcommand{\syst}[4]{\left\{ 
+\begin{array}{rcl}
+#1&=&#2 \\
+#3&=&#4
+\end{array}
+\right.}
+\newcommand{\barre}[1]{\overline{#1}}
+\newcommand{\varlib}[1]{\mathrm{vl}(#1)}
+\newcommand{\varlie}[1]{\mathrm{vlie}(#1)}
+\newcommand{\id}[0]{\mathrm{id}}
+\newcommand{\betareq}[0]{\to_\beta}
+\newcommand{\comma}[0]{,}
+
+\newcommand{\fonction}[5]{\begin{array}[t]{lrcl}
+#1: & #2 & \longrightarrow & #3 \\
+    & #4 & \longmapsto & #5 \end{array}}
+    
+\newcommand{\ifthenelse}[3]{\texttt{if } #1 \texttt{ then } #2\texttt{ else }#3}
+\newcommand{\eqz}[0]{\texttt{eq0}}
+\newcommand{\intt}[0]{\texttt{int}}
+\newcommand{\boolt}[0]{\texttt{bool}}
+\newcommand{\fun}[0]{\texttt{fun}}
+\newcommand{\letrec}[3]{\texttt{let rec }#1 = #2\texttt{ in }#3}
+\newcommand{\letin}[3]{\texttt{let }#1 = #2\texttt{ in } #3}
+\newcommand{\andt}[0]{\texttt{\&\&}}
+\newcommand{\nott}[0]{\texttt{not}}
+\newcommand{\unit}[0]{\texttt{unit}}
+\newcommand{\pare}[0]{\texttt{()}}
+\newcommand{\true}[0]{\texttt{true}}
+\newcommand{\false}[0]{\texttt{false}}
+\newcommand{\fact}[0]{\texttt{fact}}
+
+\newcommand{\subsetdir}[0]{\subseteq_{\mathrm{dir}}}
+\newcommand{\dcpo}[0]{\mathbf{Dcpo}}
+\newcommand{\cpo}[0]{\mathbf{Cpo}}
+\newcommand{\adcpo}[0]{\mathbf{Adcpo}}
+\newcommand{\acpo}[0]{\mathbf{Acpo}}
+\newcommand{\pto}[0]{\rightharpoonup}
+\newcommand{\compact}[1]{\mathcal{K}(#1)}
+\newcommand{\scott}[0]{\mathbf{S}}
+\newcommand{\ocaml}[0]{\mathbf{OCaml}}
+\newcommand{\cat}[0]{\mathbf{C}}
+
+% permet de centrer les colonnes dans les tableaux
+\newcolumntype{M}[1]{\rangle{\centering\arraybackslash}m{#1}}
+
+\theoremstyle{definition}
+\newtheorem{defi}{Définition}[section]
+\newtheorem{expl}{Exemple}[section]
+\newtheorem{exo}{Exercice}[section]
+
+\theoremstyle{plain}
+\newtheorem{them}{Théorème}[section]
+\newtheorem{lem}[them]{Lemme}
+\newtheorem{cor}{Corollaire}[them]
+\newtheorem{prop}{Proposition}[subsection]
+\newtheorem{ax}{Axiome}[section]
+
+\theoremstyle{remark}
+\newtheorem*{rmk}{Remarque}
+\newtheorem*{correction}{Correction}

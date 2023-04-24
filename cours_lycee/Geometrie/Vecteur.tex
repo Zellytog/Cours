@@ -1,0 +1,274 @@
+\section{Construction des vecteurs}
+
+Nous allons dans cette section définir formellement les vecteurs et en donner les propriétés immédiates. Donnons d'abord les notions que l'on considère comme étant axiomatique, c'est-à-dire acceptées comme connues sans devoir être définie, dans le cadre de la géométrie affine (c'est la géométrie étudiant les points du plan et leurs transformations).
+
+Nous admettrons l'existence de la relation de parallélisme ainsi que ses propriétés, la perpendicularité et ses propriétés, ainsi que la notion d'angle et de distance entre deux point, permettant donc de définir par exemple la médiatrice d'un segment ou le milieu de deux points.
+
+De plus, on notera $\mathcal P$ le plan, qui est considéré comme un ensemble de points, et $\mathcal D$ l'ensemble des droites du plan : $\mathcal D \subseteq 2^{\mathcal P}$.
+
+Un vecteur est un déplacement rectiligne du plan. On peut le voir comme un élément de $\mathcal F(\mathcal P,\mathcal P)$ ou comme un ensemble de couples du plan, ce que l'on va considérer ici. Un vecteur est défini par sa norme, sa direction et son sens. On pourrait alors définir une relation d'équivalence sur les couples de points en cherchant à définir norme, direction et sens, de sorte que deux couples appartiennent au même vecteur s'ils définissent la même norme, direction et sens. Cependant, nous allons plutôt utiliser une propriété annexe des vecteurs, qui est que si $\vecteur{AB}=\vecteur{CD}$ alors $(ABDC)$ est un parallélogramme, et réciproquement. Définissons donc un vecteur à partir de cette propriété.
+
+\begin{defi}[Bipoint]
+    On appelle \og bipoint\fg{} un élément de $\mathcal P^2$, qui est donc l'ensemble des bipoints. Ce bipoint $(A,B)$ représente le segment orienté $[\overset{\longrightarrow}{AB}]$.
+\end{defi}
+
+Nous allons donc définir la relation d'équivalence signifiant moralement \og ces deux bipoints définissent le même vecteur\fg{} :
+
+\begin{defi}[Equipollence]
+    On définit la relation $\sim$ d'équivalence sur les bipoints par :
+    $$(A,B)\sim (C,D) \iff I_{AD} = I_{BC}$$ où $I_{AD}$ désigne le milieu du segment $[AD]$.
+    
+    Cette définition est équivalente à dire que $(ABDC)$ est un parallélogramme.
+\end{defi}
+\begin{proof}
+    Nous devons donc montrer que la relation $\sim$ est une relation d'équivalence :
+    \begin{itemize}[label=$\bullet$]
+        \item \fbox{$(A,B)\sim(A,B)$} puisque $I_{AB}=I_{AB}$.
+        \item si $(A,B)\sim(C,D)$ alors par symétrie de l'égalité, \fbox{$(C,D)\sim(A,B)$.}
+        \item si $(A,B)\sim(C,D)$ et $(C,D)\sim(E,F)$, alors on sait que $(AB)$ et $(EF)$ sont parallèles à $(CD)$, ce qui signifie que \underline{les deux droites sont parallèles entre elles.} Nous allons maintenant utiliser la réciproque du théorème de Thalès généralisé, en utilisant le fait que $\dfrac{AC}{BD}=\dfrac{CE}{DF}=\dfrac{EA}{FB}=1$ (de par le fait que $(ABDC)$ et $(EFDC)$ sont des parallélogrammes) et que $(AC)$ et $(BD)$ sont parallèles ainsi que $(CE)$ et $(DF)$. On en déduit donc que \underline{$(AE)$ et $(BF)$ sont parallèles.} Ainsi $(ABFE)$ est un parallélogramme, d'où \fbox{$(A,B)\sim(E,F)$.}
+    \end{itemize}
+\end{proof}
+
+\includefig{Geometrie/Figures/parallelogramme.tex}{Illustration du cas de la transitivité}
+
+On définit alors $\mathcal V$ l'ensemble des vecteurs du plan.
+
+\begin{defi}[Vecteur]
+    L'ensemble $\mathcal V$ est défini par $$\mathcal V = \quot{\mathcal P^2}{\sim}$$
+\end{defi}
+
+On met donc dans la même classe deux bipoints qui désignent un mouvement dans la même direction et le même sens d'une longueur égale.
+
+\subsection{Propriétés d'un vecteur}
+
+Nous allons maintenant montrer qu'un vecteur définit le graphe d'une fonction du plan.
+
+\begin{defi}
+    Soit $\vecteur u$ un vecteur. $(\mathcal P,\mathcal P, \vecteur{u})$ est une fonction qui à un point $A$ associe un point $B$ qu'on nommera l'image de $A$ par le vecteur $\vecteur u$. On notera cela $$B=\vecteur{u} A$$
+\end{defi}
+\begin{proof}
+    Il faut donc prouver que si $(A,B)\sim (A,B')$ alors $B=B'$. Par hypothèse, $(ABB'A)$ est un parallélogramme, donc $BB'=AA=0$, donc $B'=B$. Il n'y a donc qu'un couple possible dans une classe d'équivalence donnée, donc \fbox{$(\mathcal P,\mathcal P, \vecteur{u})$ est bien une fonction du plan.}
+\end{proof}
+
+Nous allons montrer qu'un vecteur est caractérisé par sa norme, sa direction et son sens. Pour cela, nous allons montrer un lemme (c'est-à-dire un résultat intermédiaire).
+
+\begin{lem}
+    Soit $\vecteur u$ un vecteur. Alors l'ensemble des bipoints appartenant à $\vecteur u$ forment des segments de même longueur et des droites toutes parallèles entre elles.
+\end{lem}
+\begin{proof}
+    Cela découle directement des propriétés d'un parallélogramme : si $(A,B)\sim (C,D)$ alors le parallélogramme $(ABDC)$ possède des côtés opposés de même longueur, donc $AB=CD$. De plus, les côtés opposés étant parallèles, $(AB)$ et $(CD)$ sont parallèles.
+\end{proof}
+
+Il en découle qu'on peut définir la norme d'un vecteur, notée $\|\vecteur u\|$ comme étant la distance entre les points d'un bipoint du vecteur, et la direction comme l'ensemble des droites parallèles qui prolongent les segments des bipoints. Avoir le même sens signifie pour deux demi-droites parallèles que l'une des deux possède l'ensemble de ses projetés orthogonaux sur l'autre droite inclus dans la deuxième demi-droite.
+
+\begin{prop}
+    Soit $\vecteur u$ et $\vecteur{u'}$ de même norme, même direction et même sens. Alors $\vecteur u = \vecteur{u'}$.
+\end{prop}
+\begin{proof}
+    Soit un point $A$, montrons que $\vecteur u A = \vecteur{u'}A$. soit $B$ et $C$ respectivement l'image par $\vecteur u$ et l'image par $\vecteur{u'}$ de $A$. Soit alors le quadrilatère $(ABCA)$. Puisque $\vecteur u $ et $\vecteur{u'}$ ont la même direction, on en déduit que $B$ et $C$ sont alignés avec $A$. De plus, comme les vecteurs ont la même norme, soit ils sont de part et d'autre de $A$ et $A$ est le milieu de $[BC]$, soit ils sont superposés. Or puisque les vecteurs ont même sens, ils ne peuvent pas être de part et d'autre de $A$. Donc $B=C$, donc \fbox{$\vecteur u = \vecteur{u'}$.}
+\end{proof}
+
+\subsection{Addition et multiplication de vecteurs}
+
+Nous allons définir l'addition de deux vecteurs et la multiplication d'un vecteur par un nombre réel (appelé aussi scalaire).
+
+\begin{defi}
+    Soient $\vecteur u$ et $\vecteur v$ deux vecteurs. On définit $\vecteur u + \vecteur v$ par $$\vecteur u + \vecteur v = \vecteur u \circ \vecteur v$$ en considérant les vecteurs comme des fonctions.
+\end{defi}
+
+Nous allons montrer plusieurs propriétés de cette addition de vecteurs.
+
+\begin{prop}
+    L'addition de vecteurs est commutative, c'est-à-dire que pour tous vecteurs $\vecteur u$, $\vecteur v$, on a $\vecteur u + \vecteur v = \vecteur v + \vecteur u$.
+\end{prop}
+\begin{prop}
+    Soient $B$ et $C$ les images d'un point $A$ fixé par $\vecteur u$ et $\vecteur v$. De plus, soit $D$ l'image par $\vecteur u$ de $C$. Montrons que $D=\vecteur v B$.
+    
+    Par définition, $(ABDC)$ est un parallélogramme (puisque constitué de bipoints de $\vecteur u$). Ceci signifie que $AC$ et $BD$ sont parallèles, de même longueur, et de même sens. On en déduit donc que $\vecteur v=\vecteur{AC}=\vecteur{BD}$, donc que $D=\vecteur v B$. Ainsi \fbox{$\vecteur u + \vecteur v = \vecteur v + \vecteur u$.}
+\end{prop}
+
+De plus, comme le composition est associative, l'addition l'est.
+
+Nous allons montrer que le vecteur $\compre{(x,x)}{x\in\mathcal P}$, appelé vecteur nul et noté $\vecteur 0$, est neutre pour l'addition.
+
+\begin{prop}
+    Pour tout $\vecteur u\in\mathcal V$, $\vecteur 0 + \vecteur u=\vecteur u$.
+\end{prop}
+\begin{proof}
+    Notons $B$ l'image d'un point $A$ fixé. Alors $\vecteur 0 B = B$ par définition, ce qui signifie donc que \fbox{$\vecteur 0+\vecteur u = \vecteur u$.}
+\end{proof}
+
+Cette addition de vecteur possède une propriété appelée la relation de Chasles, elle dit qu'un mouvement d'un point $A$ à un point $B$ puis du point $B$ à un point $C$ équivaut à un mouvement du point $A$ au point $C$ directement.
+
+\begin{prop}[Relation de Chasles]
+    Soient $A,B,C$ trois points du plan. L'identité suivante est vérifiée :
+    $$\vecteur{AB}+\vecteur{BC}=\vecteur{AC}$$
+\end{prop}
+\begin{proof}
+    Par définition, la fonction donnée par $\vecteur{AB}+\vecteur{BC}$ envoie $A$ sur $C$, comme $\vecteur{AC}$, donc ces deux vecteurs ont même norme, même direction et même sens : \fbox{ils sont égaux.}
+\end{proof}
+
+\includefig{Geometrie/Figures/chasles.tex}{Illustration de la relation de Chasles}
+
+De plus, un vecteur $\vecteur u$ possède ce qu'on appelle un opposé.
+
+\begin{prop}
+    Pour tout $\vecteur u$, il existe un unique $\vecteur v$ tel que $\vecteur u + \vecteur v = \vecteur 0$. On note ce vecteur $-\vecteur u$.
+    
+    De plus, $-\vecteur{AB}=\vecteur{BA}$.
+\end{prop}
+\begin{proof}
+    Soit $\vecteur u$ un vecteur. On pose $-\vecteur u$ comme ayant la même direction, la même norme mais le sens opposé : on en déduit que $A=-\vecteur{u} (\vecteur{u} A)$ ce qui signifie que la composée des fonctions représentant $\vecteur u$ et $-\vecteur u$ vaut le vecteur $\vecteur{AA}=\vecteur 0$. Donc \fbox{on a trouvé $-\vecteur u$ tel que $\vecteur u + (-\vecteur{u})=\vecteur 0$.}
+    
+    Ce vecteur est unique car si on avait $\vecteur v$ un autre opposé, alors $$\underline{\vecteur v}=-\vecteur u + \vecteur u + \vecteur v = -\vecteur u + \vecteur 0 = \underline{-\vecteur u}$$ donc \fbox{l'opposé d'un vecteur est unique.}
+    
+    Enfin, on remarque que \fbox{$\vecteur{AB}+\vecteur{BA}=\vecteur 0$} par la relation de Chasles.
+\end{proof}
+
+Nous allons désormais définir la multiplication d'un vecteur par un scalaire.
+
+\begin{defi}
+    Soit $\vecteur u$ un vecteur et $k\in \reel$. On définit $k\vecteur u$ comme l'unique vecteur de même direction et même sens et de norme $k\|\vecteur u\|$.
+\end{defi}
+\begin{proof}
+    Ce vecteur est bien défini par la caractérisation d'un vecteur par sa norme, sa direction et son sens.
+\end{proof}
+
+\begin{exo}\label{exo_identites_vect}
+    Soit $\vecteur u$ et $\vecteur v$ deux vecteurs, $k$ et $k'$ deux réels. Montrer :
+    \begin{itemize}[label=$\bullet$]
+        \item $(k\times k')\vecteur u=k(k'\vecteur u)$
+        \item $k(\vecteur u + \vecteur v)=k\vecteur u + k\vecteur v$
+        \item $(k + k')\vecteur u = k\vecteur u + k'\vecteur u$
+        \item $1\vecteur u=\vecteur u$
+    \end{itemize}
+\end{exo}
+
+\subsection{Système de coordonnées}
+
+Nous allons maintenant étudier les repères et les bases du plan. Ceux-ci permettent de décrire de façon numérique les points du plan. Nous verrons d'abord ce qu'est une base puis ce qu'est un repère. Pour ce faire, nous allons commencer par définir la notion de colinéarité pour des vecteurs.
+
+\begin{defi}
+    On dit que deux vecteurs $\vecteur u$ et $\vecteur{v}$ sont colinéaires quand il existe un réel $k$ tel que $\vecteur u = k \vecteur v$. Cela est équivalent à dire que $\vecteur u$ et $\vecteur v$ ont même direction.
+\end{defi}
+\begin{proof}
+    Raisonnons par double implication.
+    \begin{itemize}[label=$\bullet$]
+        \item Si $\vecteur u=k\vecteur v$, alors par définition $\vecteur u$ et $\vecteur v$ ont la même direction, un sens opposé si $k<0$ et même sens si $k\geq 0$. Donc \underline{les deux vecteurs ont la même direction.}
+        \item Si les deux vecteurs ont la même direction, alors soit $\vecteur u=\vecteur v$ auquel cas $k=1$, soient ils sont différents, auquel cas on raisonne par disjonction de cas :
+        \begin{itemize}
+            \item Si les deux vecteurs ont le même sens, alors on pose $k=\dfrac{\|\vecteur u\|}{\|\vecteur v\|}$, donc $k\vecteur v$ a la même direction, le même sens et la même norme que $\vecteur u$ : ils sont égaux.
+            \item De la même façon, si les deux vecteurs ont des sens opposés, alors on prend l'opposé de la valeur donnée plus tôt.
+        \end{itemize}
+        Dans tous les cas, \underline{on a trouvé $k\in\reel,\vecteur u=k\vecteur v$.}
+    \end{itemize}
+    
+    \fbox{Les deux propositions sont donc équivalentes.}
+\end{proof}
+
+\begin{rmk}
+    Le vecteur nul est donc colinéaire à tous les vecteurs, en prenant $k=0$.
+\end{rmk}
+
+\begin{defi}
+    On appelle base du plan $\mathcal P$ un couple $(\vecteur u, \vecteur v)$ où $\vecteur u$ et $\vecteur v$ ne sont pas colinéaires.
+\end{defi}
+
+Une base est importante car elle permet d'écrire n'importe quel vecteur.
+
+\begin{prop}
+    Soit $\mathcal B=(\vecteur u,\vecteur v)$ une base du plan. Alors pour tout vecteur $\vecteur w$ il existe un unique couple $(x,y)$ tel que $\vecteur w = x\vecteur u + y\vecteur v$.
+\end{prop}
+\begin{proof}
+    Soit $A$ un point quelconque, $B=\vecteur w A$, $C=\vecteur v A$, $D=\vecteur u A$. On trace les droites $(AD)$ et $(AC)$ puis les parallèles à $(AD)$ passant par $B$ et à $(AC)$ passant par $B$. On note respectivement $J$ et $I$ les points d'intersections. Cette construction forme un parallélogramme, donc $\vecteur w=\vecteur{AI}+\vecteur{AJ}$ et comme $ADI$ sont alignés et $ACJ$, on en déduit qu'il existe $k_1,k_2$ tels que $\vecteur{AI}=k_1\vecteur u$ et $\vecteur{AJ}=k_2\vecteur v$. D'où \fbox{$\vecteur{w}=k_1\vecteur u+k_2\vecteur v$.}
+    
+    De plus, $k_1$ et $k_2$ sont uniques. En effet, s'il existe une autre décomposition alors on trouve un parallélogramme en $A$ et $B$ passant par $C$ et $D$ : il est unique et c'est déjà $(AIBJ)$. Donc les facteurs d'une autre décomposition sont $k_1$ et $k_2$, donc ces facteurs sont uniques.
+\end{proof}
+
+\includefig{Geometrie/Figures/decomposition_dans_unebase.tex}{Illustration de la décomposition dans une base}
+
+Une base permet donc de décomposer n'importe quel vecteur comme somme de deux vecteurs particuliers, qui sont colinéaires aux vecteurs de la base. On notera $(x_{\vecteur u},y_{\vecteur u})$ les coefficients tels que $\vecteur u = x_{\vecteur u} \vecteur e_1 + y_{\vecteur u} \vecteur e_2$ pour une base $(\vecteur e_1,\vecteur e_2)$.
+
+\begin{exo}
+    Soient $\vecteur u$ et $\vecteur v$ deux vecteurs. Montrer que $$ x_{\vecteur u+\vecteur v}=x_{\vecteur u}+x_{\vecteur v}\qquad y_{\vecteur u+\vecteur v}=y_{\vecteur u}+y_{\vecteur v}$$
+    
+    Montrer de plus que $$x_{k\vecteur u}=kx_{\vecteur u}\qquad y_{k\vecteur u}=ky_{\vecteur u}$$
+\end{exo}
+
+Nous pouvons alors définir un repère : celui-ci sert à repérer des points du plan, et à donner des coordonnées non pas aux vecteurs mais aux points directement.
+
+\begin{defi}
+    On appelle repère un triplet $(O,e_1,e_2)$ où $O$ est un point fixé, nommé l'origine du repère, et $(\vecteur e_1,\vecteur e_2)$ forme une base.
+\end{defi}
+
+\begin{prop}
+    Pour tout point $A$, il existe un unique couple de réels $(k_1,k_2)$ tel que $\vecteur{OA}=k_1\vecteur e_1 + k_2\vecteur e_2$.
+\end{prop}
+\begin{proof}
+    La démonstration est évidente en utilisant la propriété précédente.
+\end{proof}
+
+Nous allons maintenant voir les notions de base orthogonale et normée, puis étudier certaines propriétés des vecteurs liées aux coordonnées.
+
+\begin{defi}
+    Soit $\mathcal B$ une base. On dit que $\mathcal B$ est orthogonale si les deux vecteurs qui la constituent ont des directions perpendiculaires. On dit que $\mathcal B$ est normée si les vecteurs qui la constituent sont de norme $1$. Une base à la fois orthogonale et normée est appelée une base orthonormée.
+\end{defi}
+
+\begin{prop}
+    Soit $\vecteur u$ un vecteur, de coordonnées $(x,y)$ et $\vecteur v$ de coordonnées $(x',y')$. Alors $\vecteur u + \vecteur v$ a pour coordonnées $(x+x',y+y')$. De plus, $-\vecteur u$ a pour coordonnées $(-x,-y)$.
+\end{prop}
+\begin{proof}
+    On a les égalités $\vecteur u = x\vecteur e_1 + y\vecteur e_2$ et $\vecteur v = x'\vecteur e_1+y'\vecteur e_2$, donc $$\underline{\vecteur u+\vecteur v=(x+x')\vecteur e_1+(y+y')\vecteur e_2}$$ grâce à la troisième égalité de l'exercice \ref{exo_identites_vect}.
+    
+    On peut aussi montrer que le vecteur nul a comme coordonnées $(0,0)$ : il vaut $0\vecteur e_1+0\vecteur e_2$.
+    
+    Alors en notant $(x',y')$ les coordonnées de $-\vecteur u$, on sait en passant par les coordonnées que $x+x'=0$ et $y+y'=0$, donc $x'=-x$ et $y'=-y$. D'où \fbox{le fait que les coordonnées de $-\vecteur u$ sont $(-x,-y)$.}
+\end{proof}
+
+\begin{prop}
+    Soit $\vecteur u$ un vecteur, de coordonnées $(x,y)$. Alors $k\vecteur u$ a comme coordonnées $(kx,ky)$.
+\end{prop}
+\begin{proof}
+    En exercice pour le lecteur assidu.
+\end{proof}
+
+\begin{prop}
+    Si $\vecteur{AB}$ est un vecteur, que $(x_A,y_A)$ sont les coordonnées de $A$ et $(x_B,y_B)$ sont celles de $B$, alors les coordonnées de $\vecteur{AB}$ sont $(x_B-x_A,y_B-y_A)$.
+\end{prop}
+\begin{proof}
+    On remarque que $\vecteur{AB}=\vecteur{AO}+\vecteur{OB}$ par la relation de Chasles, or $\vecteur{OA}$ a pour coordonnées celles de $A$, et $\vecteur{OA}=-\vecteur{AO}$, donc $$\vecteur{AB}=\vecteur{OB}-\vecteur{OA}$$ ce qui nous donne bien que \fbox{les coordonnées de $\vecteur{AB}$ sont $(x_B-x_A,y_B-y_A)$.}
+\end{proof}
+
+\begin{prop}
+    Soit $\vecteur {AB}$ un vecteur. Si la base $\mathcal B$ est orthonormée et que les coordonnées du vecteur sont $(x,y)$ dans cette base, alors la norme du vecteur s'exprime :
+    $$\|\vecteur{AB}\| = \sqrt{x^2+y^2}$$
+\end{prop}
+\begin{proof}
+    Tout d'abord, on note $C=(x \vecteur e_1) A$. Puisque la base est orthonormée, le triangle $(ACB)$ est rectangle en $C$. Le théorème de Pythagore nous permet alors de déduire que $\|\vecteur{AB}\|=\sqrt{\|\vecteur{AC}\|^2+\|\vecteur{CB}\|^2}$ or par colinéarité avec les vecteurs de la base, normés, et en connaissant les coordonnées de $\vecteur{AB}$, on en déduit que \fbox{$\|\vecteur{AB}\| = \sqrt{x^2+y^2}$.}
+\end{proof}
+
+\subsection{Déterminant de deux vecteurs}
+
+Nous allons maintenant voir ce que l'on appelle le déterminant de deux vecteurs.
+
+\begin{defi}
+    Soient $\vecteur u$ et $\vecteur v$, deux vecteurs, $\mathcal B$ une base dans laquelle les vecteurs ont respectivement comme coordonnées $(x,y)$ et $(x',y')$. On appelle déterminant, que l'on note $\det(\vecteur u,\vecteur v)$ ou encore $[\vecteur u,\vecteur v]$, la quantité
+    $$\det(\vecteur u,\vecteur v)=xy'-x'y$$
+\end{defi}
+
+Cet outil nous donne un critère de colinéarité puissant.
+
+\begin{prop}
+    En reprenant les notations précédentes, $\vecteur u$ et $\vecteur v$ sont colinéaires si et seulement si $\det(\vecteur u,\vecteur v)=0$.
+\end{prop}
+\begin{proof}
+    En effet, si l'un des vecteurs est multiple de l'autre, on vérifie directement que le déterminant des deux vecteurs est nul. Réciproquement, si le déterminant est nul, alors on en déduit que $xy'=x'y$, ce qui signifie que soit $(y,y')=(0,0)$, auquel cas \underline{les deux vecteurs sont colinéaires,} soit en divisant par $y$ et $y'$, $\dfrac{x}{y}=\dfrac{x'}{y'}$. Ce qui montre que les deux vecteurs sont proportionnels, donc qu'\underline{ils sont colinéaires.}
+\end{proof}
+
+\begin{exo}
+    Soient deux droites passant respectivement par $A$ et $B$, et par $C$ et $D$. Montrer que les deux droites sont parallèles si et seulement si $\det(\vecteur{AB},\vecteur{CD})=0$.
+\end{exo}
+
+\includefig{Geometrie/Figures/base_orthonormee.tex}{Schéma d'une base orthonormée et de la décomposition d'un vecteur dans cette base}
+
+\newpage

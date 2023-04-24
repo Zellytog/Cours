@@ -1,0 +1,253 @@
+\section{Fonctions continues et limites}
+
+Cette section s'intéresse à la généralisation de la notion de limite pour une fonction, et la notion de continuité qui en est le prolongement direct. Enfin, nous allons donner les résultats fondamentaux sur les fonctions continues : le théorème des valeurs intermédiaires et le théorème des bornes atteintes.
+
+\subsection{Limite d'une fonction}
+
+Nous connaissons les limites de suites, mais la notion de limite s'étend à celle de fonctions. Cependant, un fait important pour les fonctions est que l'on peut étudier des limites en différents points (pas qu'en $\infty$). D'où la définition suivante de limite :
+
+\begin{defi}[Limite d'une fonction en un point]
+    Soit $f : F\to\reel, F\subseteq\reel$, $a\in\overline F$ et $b\in\reel\cup\{-\infty,+\infty\}$. On dit que $f$ tend vers $b$ en $a$, ce que l'on écrit $\displaystyle{\lim_{x\to a} f(x) = b}$, lorsque la propriété suivante est vérifiée : $$\forall V\in \mathcal V_{b},\exists V'\in\mathcal V_a, f(V')\subseteq V$$
+\end{defi}
+
+\begin{rmk}
+    On note $\overline\reel = \reel\cup\{-\infty,+\infty\}$, pour étendre notre notation d'adhérence aux limites infinies.
+\end{rmk}
+
+Dire que $f$ tend vers $b$ en $a$ signifie donc qu'aussi près que l'on se place de $b$, il existe un voisinage assez petit de $a$ qui est envoyé assez près de $b$. Nous allons reformuler cette définition avec une caractérisation par des $\varepsilon$ dans le cas d'une limite finie.
+
+\begin{prop}
+    Soit $f : F\to\reel,F\subseteq \reel$, $a\in\overline F$ et $b\in \reel$. Alors :
+    \begin{itemize}[label=$\bullet$]
+        \item si $a \in\reel$, alors $\displaystyle{\lim_{x\to a} f(x) = b}$ est équivalent à la proposition suivante : $$\forall \varepsilon > 0, \exists \delta > 0, \forall x\in\reel, |x-a| < \delta \implies |f(x)-b| < \varepsilon$$
+        \item si $a = +\infty$, alors $\displaystyle{\lim_{x\to a} f(x) = b}$ est équivalent à la proposition suivante : $$\forall \varepsilon > 0, \exists M \in\reel, \forall x\in\reel, x > M \implies |f(x)-b| < \varepsilon$$
+        \item si $a = -\infty$, alors $\displaystyle{\lim_{x\to a} f(x) = b}$ est équivalent à la proposition suivante : $$\forall \varepsilon > 0, \exists m \in \reel, \forall x\in\reel, x < m \implies |f(x)-b| < \varepsilon$$
+    \end{itemize}
+\end{prop}
+
+\begin{proof}
+    Traitons chaque cas :
+    \begin{itemize}[label=$\bullet$]
+        \item Soit $a\in\reel$, et supposons que $\displaystyle{\lim_{x\to a} f(x) = b}$. Soit $\varepsilon > 0$, comme $B(b,\varepsilon)\in\mathcal V_b$ on trouve par définition de la limite un voisinage $V\in\mathcal V_a$ tel que $f(V)\subseteq B(b,\varepsilon)$. Or l'inclusion signifie $\forall x\in\reel, x\in V\implies f(x)\in B(b,\varepsilon)$ soit $\forall x\in\reel, x\in V \implies |f(x)-b| < \varepsilon$. Par propriété du voisinage $V$, on trouve $\delta > 0$ tel que $\forall x\in \reel, |x-a| < \delta \implies x \in V$ d'où, par transitivité de l'implication, que \fbox{$\forall x\in\reel,|x-a| < \delta \implies |f(x)-b| < \varepsilon$.}
+        
+        Réciproquement, soit $V\in\mathcal V_b$ un voisinage de $b$. Par propriété de voisinage, on trouve $\varepsilon > 0$ tel que $\forall x\in\reel, |x-b| < \varepsilon \implies x\in V$. Soit alors $\delta > 0$ déduit de l'hypothèse appliquée à $\varepsilon$. On pose alors $V' = B(a,\delta)$, montrons que $f(V')\subseteq V$ : soit $x\in V'$, par construction de $\delta$ on sait que $|x-a| < \delta\implies |f(x) - b| < \varepsilon$, or la prémisse de cette implication est vraie car $x\in B(a,\delta)$, donc $|f(x)-b| < \varepsilon$, ce qui d'après la définition de $\varepsilon$ appliquée à $f(x)$ signifie que $f(x)\in V$. Donc \fbox{$f(V')\subseteq V$.}
+
+        \item Supposons que $\displaystyle{\lim_{x\to +\infty} f(x) = b}$. Soit $\varepsilon>0$, $B(b,\varepsilon=$ est un voisinage de $b$ donc on trouve un voisinage $V'$ de $+\infty$ tel que $f(V')\subseteq B(b,\varepsilon)$, i.e. tel que $\forall x\in V', |f(x)-b| < \varepsilon$, et par propriété d'un voisinage de $+\infty$ on trouve $M$ tel que $\forall x\in \reel, x > M \implies x\in V'$, d'où \fbox{$\forall x\in\reel, x > M \implies |f(x)-b| < \varepsilon$.}
+
+        Réciproquement, soit $V\in\mathcal V_b$, on trouve $\varepsilon$ tel que $B(b,\varepsilon)\subseteq V$. Par hypothèse appliquée à $\varepsilon$, on trouve $M\in\reel$ tel que $x > M \implies f(x)\in B(b,\varepsilon)$, ce qui équivaut à $f(]M;+\infty[)\subseteq B(b,\varepsilon)$, or $]M;+\infty[\in\mathcal V_{+\infty}$, et par transitivité de l'inclusion, \fbox{on a trouvé $V'$ tel que $f(V')\subseteq V$.}
+
+        \item Le cas $a = -\infty$ se traite de la même façon que pour $a = +\infty$ en inversant le sens des inégalités.
+    \end{itemize}
+\end{proof}
+
+\begin{exo}
+    Montrer que si $b = +\infty$ les énoncés équivalents à $\displaystyle{\lim_{x\to a} f(x) = b}$ sont les mêmes en remplaçant $\forall \varepsilon > 0$ par $\forall K\in \reel$ et $|f(x)-b| < \varepsilon$ par $f(x) > K$. De même pour $b=-\infty$ en remplaçant par $\forall k \in\reel$ et $f(x) < k$.
+\end{exo}
+
+Une caractérisation importante est la caractérisation séquentielle : l'idée est que \og tendre vers $a$\fg{} peut s'exprimer plus simplement par le fait de considérer toutes les suites de limite $a$.
+
+\begin{prop}[Caractérisation séquentielle]
+    Soit $f : F\to\reel,F\subseteq \reel, a\in\overline F$ et $b\in\overline\reel$. Alors $\displaystyle{\lim_{x\to a} f(x) = b}$ si et seulement si pour toute suite $(u_n)_{n\in\nat}\in F^\nat$ telle que $\lim u_n = a$ on a $\lim f(u_n) = b$.
+\end{prop}
+
+\begin{rmk}
+    Nous n'écrivons pas $n\to\infty$ pour accentuer la différence entre une limite de fonction et une limite de suite.
+\end{rmk}
+
+\begin{proof}
+    Supposons que $\displaystyle{\lim_{x\to a} f(x) = b}$, et soit $(u_n)$ une suite réelle de limite $a$. Montrons que $\lim f(u_n) = b$. Pour cela, soit $V\in\mathcal V_b$, par définition de la limite de $f$ en $a$ on trouve $V'\in\mathcal V_a$ tel que $f(V')\subseteq V$. Par définition de $\lim u_n = a$, on trouve un rang $n_0$ tel que pour tout $p > n_0, u_n\in V'$. En utilisant l'inclusion plus tôt, on en déduit $\forall p > n_0, f(u_n)\in V$, donc \fbox{$\lim f(u_n) = b$.}
+
+    Supposons maintenant que pour toute suite $(u_n)$ telle que $\lim u_n = a$, on ait $\lim f(u_n) = b$, et montrons que $\displaystyle{\lim_{x\to a} f(x) = b}$. Soit $V\in\mathcal V_b$, procédons par l'absurde : supposons que pour tout voisinage $V'\in\mathcal V_a$, on ait $f(V')\nsubseteq V$ et cherchons une contradiction. L'énoncé précédent est équivalent à dire que pour tout voisinage $V'\in\mathcal V_a$, il existe un élément $x_{V'}$ tel que $f(x_{V'})\notin V$. Soit $(V_n){n\in\nat}$ une base séquentielle de voisinages de $a$, qui existe car nous en avons exhibé une pour chaque élément $a\in\reel\cup\{-\infty,+\infty\}$ dans un exercice précédent. Alors on pose $x_n = x_{V_n}$, c'est-à-dire l'élément de $V_n$ tel que $f(x_n)\notin V$. Si l'on prend un voisinage $W$ de $a$, alors on trouve $n\in\nat$ tel que pour tout $p > n$, $V_p\subseteq W$, donc pour tout $p > n, x_p \in W$. Ainsi $\lim x_n = a$. On en déduit que $\lim f(x_n) = b$ par notre hypothèse, ce qui signifie qu'il existe $n_0\in\nat$ tel que pour tout $p > n_0, f(x_n)\in V$, pourtant par construction de $x_n$, $f(x_n)\notin V$ : on a bien une contradiction. Ainsi \fbox{$\displaystyle{\lim_{x\to a} f(x) = b}$.}
+\end{proof}
+
+\begin{prop}[Unicité de la limite]
+    Soit $f : F\to\reel,F\subseteq\reel,a\in\overline F$ et $b,c\in\overline\reel$, si $\displaystyle{\lim_{x\to a} f(x) = b}$ et $\displaystyle{\lim_{x\to a} f(x) = c}$ alors $b=c$.
+\end{prop}
+
+\begin{proof}
+    On va utiliser la caractérisation séquentielle : nos deux hypothèses disent que pour toute suite $(u_n)$ telle que $\lim u_n = a$, alors $\lim (u_n) = b$ et $\lim (u_n) = c$, donc par unicité de la limite d'une suite on en déduit que $b = c$.
+\end{proof}
+
+On pourra donc parler, quand elle existe, de \textbf{la} limite de $f$ en $a$.
+
+\begin{exo}
+    En utilisant la caractérisation séquentielle, démontrer le théorème d'encadrement pour les fonctions : soient $f,g,h : F\to\reel,F\subseteq \reel,a\in\overline F, b\in\reel$ tels que $\forall x\in\reel, f(x)\leq g(x)\leq h(x)$ et $\displaystyle{\lim_{x\to a} f(x) = \lim_{x\to a} h(x) = b}$, alors $\displaystyle{\lim_{x\to a} g(x) = b}$.
+
+    Montrer que ce théorème est encore vrai si l'on considère que l'encadrement n'est vrai qu'au voisinage de $a$, c'est-à-dire en affaiblissant l'hypothèse d'encadrement à $$\exists V\in\mathcal V_a, \forall x \in V, f(x)\leq g(x)\leq h(x)$$
+\end{exo}
+
+\begin{exo}
+    Grâce à la caractérisation séquentielle, montrer que le tableau des limites (Figure \ref{fig:tablelimite}) est encore valide pour des limites de fonction en un point $a$ donné. Plus généralement, montrer que les théorèmes de limites de suites (encadrement, majoration, valeurs usuelles) sont encore vrais pour les fonctions.
+\end{exo}
+
+\subsection{Limite à gauche, à droite}
+
+Une notion pouvant avoir son importance est celle de limite à gauche (respectivement à droite), qui correspond à étudier uniquement d'un côté du point de limite.
+
+\begin{defi}[Limite à gauche, à droite]
+    Soit $f : F \to\reel,F\subseteq\reel$ et $a\in\overline F$. On dit que $f(x)$ tend vers $b$ à gauche (respectivement à droite) en $a$ lorsque $$\forall V\in\mathcal V_b, \exists V'\in\mathcal V_a, f(V'\cap [a;+\infty[)\subseteq V$$ (respectivement $V'\cap ]-\infty,a]$)
+
+    On note alors $\displaystyle{\lim_{x\to a^+}f(x)=b}$ (respectivement $\displaystyle{\lim_{x\to a^-}f(x)=b}$).
+\end{defi}
+
+\begin{rmk}
+    La notion de limite a gauche ou à droite n'a de sens que pour $a\in\reel$.
+\end{rmk}
+
+On peut relier la limite et les limites à gauche et à droite.
+
+\begin{prop}
+    Soit $f : F \to\reel$, $a\in F$, alors $\displaystyle{\lim_{x\to a} f(x) = b}$ si et seulement si $\displaystyle{\lim_{x\to a^+} f(x) = b}$ et $\displaystyle{\lim_{x\to a^-} f(x) = b}$. Autrement dit la limite de $f$ en $a$ existe si et seulement si ses limites à gauche et à droite existent et qu'elles coïncident.
+\end{prop}
+
+\begin{proof}
+    Si $\displaystyle{\lim_{x\to a}f(x)=b}$ alors soit $V\in\mathcal V_b$, on trouve par hypothèse $V'\in\mathcal V_a$ tel que $f(V')\subseteq V$, donc $f(V'\cap [a;+\infty[)\subseteq V$ et $f(V'\cap ]-\infty;a])\subseteq V$, donc \fbox{$\displaystyle{\lim_{x\to a^+}f(x)=\lim_{x\to a^-}f(x)=b}$.}
+
+    Réciproquement, supposons que les limites à gauche et à droite existent et coïncident. Soit $V\in\mathcal V_a$, on trouve par la limite à gauche $V'\in\mathcal V_a$ tel que $f(V\cap ]-\infty,a])\subseteq V$ et par la limite à droite $V''\in\mathcal V_a$ tel que $f(V\cap [a;+\infty[)\subseteq V$. Soit alors $W = V\cap V' \in\mathcal V_a$, montrons que $f(W)\subseteq V$. Soit $x\in W$, si $x\leq a$ alors $x\in W\cap ]-\infty;a]$, et comme $W\subseteq V$, $x\in V\cap ]-\infty;a]$, donc $f(x) \in V$. Si $x \geq a$ alors $x\in W \cap [a;+\infty[$ donc $x\in V'\cap[a;+\infty[$, d'où $f(x)\in V$. Dans tous les cas, $f(x)\in V$, donc $f(x)\subseteq V$. Ainsi \fbox{$\displaystyle{\lim_{x\to a} f(x) = b}$.}
+\end{proof}
+
+\subsection{Continuité d'une fonction}
+
+Les fonctions continues sont fondamentales en analyse, et nous allons maintenant pouvoir les étudier. L'idée intuitive d'une fonction continue est souvent présentée par \og une fonction dont on peut tracer le graphe sans lever le crayon\fg{}, mais son formalisme mathématique nécessite de parler de limites. En fait, on peut considérer la continuité comme la préservation de voisinages, mais nous allons ici nous restreindre à un point de vue plus terre à terre : une fonction continue est une fonction dont les valeurs à des points proches sont proches. Nous allons d'abord présenter la notion de continuité locale, puis de continuité sur un ensemble.
+
+\begin{defi}[Continuité en un point]
+    Soit $f : F\to\reel,F\subseteq\reel$ et $a\in F$. On dit que $f$ est continue en $a$ lorsque $$\lim_{x\to a} f(x) = f(a)$$
+\end{defi}
+
+\begin{prop}
+    Une fonction $f$ est continue en $a$ si et seulement si la fonction $f$ admet une limite (réelle) en $a$.
+\end{prop}
+
+\begin{proof}
+    L'équivalence signifie que si la limite de $f$ en $a$ existe, alors elle vaut $f(a)$. En effet, supposons que $\lim_{x\to a} f(x) = b$ où $b\in \reel$. Par caractérisation séquentielle de la limite appliquée à la suite constante $(a)$, on en déduit que $\lim f(a) = b$, mais comme $(f(a))$ est une suite constante, on peut prouver que $\lim f(a) = f(a)$. Par unicité de la limite, on en déduit que $b=f(a)$.
+\end{proof}
+
+\begin{defi}[Continuité sur un ensemble]
+    Soit $f : F\to\reel, F\subseteq \reel$. On dit que $f$ est continue si $f$ est continue en $x$ pour tout $x\in F$. On dit que $f$ est continue sur $I\subseteq F$ si $f_{|I}$ est continue.
+\end{defi}
+
+\begin{prop}[Caractérisation de la continuité]
+    Une fonction $f : F \to \reel$ est continue si et seulement si $$\forall \varepsilon > 0, \forall x \in F, \exists \delta >0, \forall y\in F, |y-x| < \delta \implies |f(y)-f(x)| < \varepsilon$$
+\end{prop}
+
+\begin{proof}
+    La proposition est équivalente à si l'on avait écrit au début $\forall x \in F, \forall\varepsilon > 0$, et $f$ est continue si et seulement si pour tout $x\in F$, $\displaystyle{\lim_{y\to x}f(y) = f(x)}$, ce qui se réécrit (comme $y$ et $f(x)$ sont finis) $\forall \varepsilon > 0, \exists \delta > 0,\forall y\in F, |x-y| < \delta \implies |f(x)-f(y)| < \varepsilon$, d'où l'équivalence.
+\end{proof}
+
+Donnons plusieurs résultats de stabilité de la classe des fonctions continues, c'est-à-dire plusieurs façons de justifier qu'une fonction est continue à partir de la continuité de ses composantes.
+
+\begin{prop}[Stabilité par combinaisons linéaires]
+    Soient $f : F \to\reel$ et $g : F \to\reel$ deux fonctions continues, et $k,k'\in\reel$. Alors $$\fonction{kf+k'g}{F}{\reel}{x}{k\times f(x) + k' \times g(x)}$$ est continue.
+\end{prop}
+
+\begin{proof}
+    Soit $a\in F$, alors par les propriétés précédentes sur les limites finies $$\displaystyle{\lim_{x\to a} (k \times f(x) + k' \times g(x)) = k (\lim_{x\to a} f(x)) + k' (\lim_{x\to a} g(x))}$$ donc $kf + k'g$ a une limite finie en $a$.
+\end{proof}
+
+\begin{prop}[Stabilité par quotient, par produit]
+    Soient $f,g : F\to \reel$ deux fonctions continues, et $g$ une fonction ne s'annulant pas. Alors les fonctions $$\fonction{\frac{f}{g}}{F}{\reel}{x}{\displaystyle{\frac{f(x)}{g(x)}}}$$\begin{center}et\end{center} $$\fonction{f\times g}{F}{\reel}{x}{f(x)\times g(x)}$$ est continue (le produit est continu même lorsque $g$ s'annule).
+\end{prop}
+
+\begin{proof}
+    Là encore, le résultat découle directement des propriétés sur les limites finies.
+\end{proof}
+
+\begin{exo}
+    Soient $f : F \to\reel$ et $g : G\to\reel$ deux fonctions avec $F,G\subseteq\reel$ et $f(F)\subseteq G$. Montrer que $g\circ f : F\to\reel$ est continue.
+\end{exo}
+
+\begin{rmk}
+    Cet exercice nous permet de déduire de lla stabilité par produit celle par quotient puisqu'on peut composer par la fonction inverse.
+\end{rmk}
+
+\subsection{Continuité uniforme}
+
+Donnons tout de suite la définition de continuité uniforme, qui ne servira pas maintenant mais qui est un renforcement du fait d'être continu, consistant en une inversion de quantificateurs.
+
+\begin{defi}[Continuité uniforme]
+    Soit $f : F \to\reel,F\subseteq\reel$. On dit que $f$ est uniformément continue si la propriété suivante est vérifiée : $$\forall \varepsilon > 0,\exists \delta > 0,\forall x\in F,\forall y\in F, |x-y| < \delta \implies |f(x) - f(y)| < \varepsilon$$
+\end{defi}
+
+\begin{prop}
+    Si $f$ est uniformément continue, alors $f$ est continue.
+\end{prop}
+
+\begin{proof}
+    Supposons $f$ uniformément continue. Soit $\varepsilon > 0$, alors on trouve $\delta > 0$ vérifiant la propriété de la continuité uniforme. Soit alors $x\in F$ : en prenant ce $\delta$, on a bien $$\forall y\in F, |x-y| < \delta \implies |f(x)-f(y)| < \varepsilon$$ donc \fbox{$f$ est continue.}
+\end{proof}
+
+Profitons-en pour donner le théorème de Heine.
+
+\begin{them}[Heine]
+    Soit $f : [a,b] \to \reel, a,b\in\reel$ une fonction continue. Alors $f$ est uniformément continue.
+\end{them}
+
+\begin{proof}
+    Procédons par contraposée : supposons $f$ non uniformément continue et déduisons-en que $f$ n'est pas continue. Si $f$ n'est pas uniformément continue, alors on trouve $\varepsilon$ tel que pour tout $\delta > 0$, on trouve $x_\delta,y_\delta$ tels que $|x_\delta - y_\delta| < \delta \land |f(x_\delta)-f(y_\delta)| \geq \varepsilon$. En prenant la suite de valeurs $(1/n)$ pour $\delta$, on en déduit deux suites $(x_n)$ et $(y_n)$ telles que $|x_n - y_n| < \frac{1}{n}$ et $|f(x_n)-f(y_n)| \geq \varepsilon$. De plus, comme $x_n\in [a,b]$, la suite $(x_n)$ est bornée : par le théorème de Bolzano-Weierstrass, on en déduit qu'il existe une fonction $\varphi$ strictement croissante telle que $(x_{\varphi(n)})$ converge. Dans ce cas, on remarque que comme $|x_{\varphi(n)}-y_{\varphi(n)}| < \frac{1}{\varphi(n)}$ et que $\lim \varphi(n) = +\infty$, on a $\lim |x_{\varphi(n)}-y_{\varphi(n)}| = 0$, dont on déduit directement que $\lim x_{\varphi(n)} = \lim y_{\varphi(n)}$ (et donc que $(y_{\varphi(n)})$ converge). Si $f$ était continue, alors on aurait $\lim f(x_{\varphi(n)}) = \lim f(y_{\varphi(n)})$ grâce à l'égalité précédente, ce qui signifie que $\lim |f(x_{\varphi(n)})-f(y_{\varphi(n)})| = 0$, ce qui est contredit par le fait que pour tout $n$, $|f(x_{\varphi(n)})-f(y_{\varphi(n)})| \geq \varepsilon > 0$. Donc $f$ n'est pas continue.
+
+    Donc, par contraposée, \fbox{si $f$ est continue alors elle est uniformément continue.}
+\end{proof}
+
+\subsection{Théorèmes fondamentaux sur les fonctions continues}
+
+Parmi les théorèmes essentiels sur les fonctions continues d'une variable réelle, le plus connu est celui des valeurs intermédiaires, que nous allons énoncer et démontrer maintenant.
+
+\begin{them}[Valeurs intermédiaires]
+    Soit $f : [a,b] \to \reel$ une fonction continue et $y\in\reel$ compris entre $f(a)$ et $f(b)$. Alors il existe $c\in[a,b]$ tel que $f(c) = y$.
+\end{them}
+
+\begin{proof}
+    Pour démontrer ce résultat, nous allons construire une suite de fermés emboîtés $([a_n,b_n])$ qui convergera vers un singleton $c$ tel que $f(c) = y$. Dans un premier temps, on pose $[a_0,b_0] = [a,b]$, et l'on construit ensuite les segments par récurrence, de telle sorte que $y$ est compris entre $f(a_0)$ et $f(b_0)$.
+
+    Supposons construit le segment $[a_n,b_n]$. Soit alors $c_n = \displaystyle{\frac{a_n+b_n}{2}}$ le milieu du segment. Il y a alors deux possibilités : soit $y\in [f(a_n),f(c_n)]$ soit $y\in[f(c_n),f(b_n)]$ (ici on considère que $[f(a_n),f(c_n)] = [f(c_n),f(a_n)]$, càd qu'on ne considère pas l'ordre dans lequel les bornes sont données). Dans le premier cas on pose $[a_{n+1},b_{n+1}] = [a_n,c_n]$ et dans le deuxième cas on pose $[a_{n+1},b_{n+1}] = [c_n,b_n]$.
+    
+    Comme $c_n\in[a_n,b_n]$, on en déduit que $([a_n,b_n])$ est bien une suite de fermés emboîtés. De plus, la longueur de $[a_{n+1},b_{n+1}]$ est la moitié de celle de $[a_n,b_n]$, donc la suite des longueurs est une suite géométrique de raison $\frac{1}{2}$ et de premier terme $b_n-a_n$. On en déduit que la longueur des segments tend vers $0$. Enfin, par récurrence (le résultat est vrai à l'initialisation par hypothèse et héréditaire par construction de $[a_{n+1},b_{n+1}]$) on peut montrer que $y$ est compris entre $f(a_n)$ et $f(b_n)$ pour tout $n\in\nat$. Par le théorème des segments emboîtés, on en déduit qu'il existe un unique $c$ tel que $\displaystyle\bigcap_{n\in\nat}[a_n,b_n] = \{c\}$, et \underline{$c = \lim a_n = \lim b_n$.}
+
+    Comme $y$ est encadré par $f(a_n)$ et $f(b_n)$, on en déduit que $\lim f(a_n) = \lim f(b_n) = y$ par théorème d'encadrement, d'où par continuité de $f$, $f(\lim a_n) = y$, d'où \fbox{$f(c) = y$.}
+\end{proof}
+
+Donnons une autre formulation équivalente du TVI (théorème des valeurs intermédiaires).
+
+\begin{prop}[\'Enoncé équivalent du TVI]
+    Soit $f : F\to\reel,F\subseteq\reel$ une fonction continue et $I$ un intervalle inclus dans $F$. Alors $f(I)$ est aussi un intervalle.
+\end{prop}
+
+\begin{proof}
+    Pour montrer que $f(I)$ est un intervalle, il suffit de montrer que pour $x,z\in f(I)$ et $y\in\reel$ tel que $x < y < z$, on a $y\in f(I)$. Par définition de $f(I)$, on trouve $a,b\in I$ tels que $f(a)=x$ et $f(b) = z$. Supposons sans perte de généralité que $a < b$ (sinon on inverse simplement les deux). Alors $f_{|[a,b]}$ est une fonction continue et $y$ est compris entre $f(a)$ et $f(b)$, donc on trouve $c\in [a,b]$ tel que $f(x) = y$. Or $I$ est un intervalle, donc $c\in I$, donc $y\in f(I)$. Ainsi \fbox{$f(I)$ est une intervalle.}
+\end{proof}
+
+Un autre résultat important lié au TVI est appelé au choix \og corollaire du TVI\fg{} ou \og théorème de la bijection\fg{}. Nous emploierons plutôt la deuxième terminologie, pour mettre l'emphase sur l'intérêt du théorème.
+
+\begin{them}[Bijection]
+    Soit $f : [a,b] \to\reel$ une fonction continue et strictement monotone. Alors $f$ établit une bijection entre $[a,b]$ et $[f(a),f(b)]$ si $f$ est croissante, entre $[f(b),f(a)]$ si $f$ est décroissante.
+\end{them}
+
+\begin{proof}
+    Nous ne traiterons que le cas où $f$ est strictement croissante, l'autre cas étant analogue. Montrons successivement que $f$ est surjective sur $[f(a),f(b)]$ puis que $f$ est injective. Soit $y\in[f(a),f(b)]$, alors par le théorème des valeurs on trouve $x\in [a,b]$ tel que $f(x) = y$, donc \underline{$f$ est surjective.} Si l'on prend deux éléments $x,y$ tels que $x\neq y$, alors soit $x < y$ soit $x > y$, dans les deux cas, la croissance stricte de $f$ nous permet de déduire que $f(x)\neq f(y)$. Par contraposée cela signifie que $\forall x,y\in[a,b], f(x)=f(y)\implies x=y$, donc \underline{$f$ est injective.} Donc \fbox{$f$ est bijective sur $[f(a),f(b)]$.}
+\end{proof}
+
+\begin{exo}
+    Montrer que l'on peut étendre le théorème de la bijection à $f : I \to \reel$ strictement monotone continue, où $I$ est un intervalle : $f$ établit une bijection entre $I$ et $f(I)$. En déduire, pour les différents cas :
+    \begin{itemize}[label=$\bullet$]
+        \item Si $f$ est strictement croissante, que $I = \reel$, alors $f$ établit une bijection entre $\reel$ et l'intervalle $\displaystyle{\big]\lim_{x\to-\infty} f(x),\lim_{x\to+\infty}f(x)\big[}$
+        \item Si $f$ est strictement décroissante, que $I = \reel$, alors $f$ établit une bijection entre $\reel$ et l'intervalle $\displaystyle{\big]\lim_{x\to+\infty} f(x),\lim_{x\to-\infty}f(x)\big[}$
+        \item Si $f$ est strictement croissante, que $I = ]-\infty,a]$, alors $f$ établit une bijection entre $]-\infty,a]$ et l'intervalle $\displaystyle{\big]\lim_{x\to-\infty}f(x),f(a)\big[}$
+    \end{itemize}
+    Donner les autres cas pour chaque forme de $I$ intervalle et selon la monotonie de $f$, et le démontrer.
+\end{exo}
+
+Enfin, concluons sur un dernier théorème essentiel.
+
+\begin{them}[Bornes atteintes]
+    Soit $f : [a,b] \to\reel$ une fonction continue. Alors $f([a,b])$ est borné et $f$ atteint ses bornes, c'est-à-dire qu'il existe $c\in[a,b]$ et $d\in[a,b]$ tels que $f([a,b]) = [f(c),f(d)]$.
+\end{them}
+
+\begin{proof}
+    Soit une telle fonction $f$. Tout d'abord, montrons que $f$ est bornée. Supposons que $f$ n'est pas bornée. Alors elle n'est pas majorée ou elle n'est pas minorée. Supposons sans perte de généralité que $f$ n'est pas majorée. On trouve alors pour chaque $M\in\reel$ un élément $x_M \in [a,b]$ tel que $f(x_M) > M$. En prenant $M = n$ pour chaque $n\in\nat$, on obtient donc une suite $(x_n)$ telle que $\lim f(x_n) = +\infty$, mais comme $(x_n)$ est bornée, on peut en extraire une sous-suite convergente $(x_{\varphi(n)})$. On a alors $\lim f(x_{\varphi(n)})$ finie puisque $f$ est continue sur $[a,b]$ et que $\lim x_n\in[a,b]$, ce qui est une contradiction avec le fait que $\lim f(x_n) = +\infty$. Donc $f$ est majorée. Le même raisonnement permet de montrer que $f$ est minorée, donc \fbox{$f$ est bornée.}
+
+    Soit $M = \sup(f([a,b]))$. Par caractérisation séquentielle de la borne supérieure, on trouve une suite $(d_n)$ d'éléments de $[a,b]$ telle que $\lim f(d_n) = M$. Comme $(d_n)$ est bornée, on peut en extraire une sous-suite convergente $(d_{\varphi(n)})$, nommons $d = \lim d_{\varphi(n)}$. Par unicité de la limite, cela signifie que $M = f(d)$. Avec un même raisonnement, on trouve $c\in[a,b]$ tel que $f(c) = \inf([a,b])$. Ainsi \fbox{$f$ atteint ses bornes.}
+
+    De plus, par la formulation équivalente du TVI, on sait que $f([a,b])$ est un intervalle, et que sa borne supérieure (respectivement inférieure) est en fait un maximum (respectivement un minimum), donc cela signifie que cet ensemble est le segment entre le minimum et le maximum, i.e. que $f([a,b]) = [f(c),f(d)]$.
+\end{proof}
+
+\newpage

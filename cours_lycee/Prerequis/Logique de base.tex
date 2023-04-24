@@ -1,0 +1,402 @@
+\section{Logique de base}
+
+Nous allons ici voir quelques éléments de logique élémentaire pour permettre au lecteur de comprendre les exigences de rigueur des mathématiques. Cela permet aussi, bien sûr, de comprendre comment rédiger soi-même une preuve, par exemple. Nous commencerons par définir les termes que nous utilisons (proposition, implication...) puis nous détaillerons différents types de raisonnement.
+
+\subsection{La proposition, phrase mathématique}
+
+Pour commencer, tout langage se compose d'une grammaire, c'est-à-dire une façon de structurer ses phrases. Nous allons donc explorer la façon dont on construit une phrase mathématique.
+
+Avant d'aller plus loin, une précision s'impose : il faudra distinguer deux styles dans la rédaction mathématique que sont le style formel et le style informel. Les deux doivent traduire une rigueur, mais le style formel est composé de symboles purement mathématiques, tandis que le style informel est une phrase écrite en toutes lettres. Un exemple serait \begin{center}\og pour tout réel $x$, il existe un réel $y$ tel que $x+y=0$\fg{} \end{center} pour le style informel, dont l'équivalent formel est $$\forall x\in \reel,\exists y\in \reel, x+y=0$$ qui traduit le même sens mais n'est qu'une succession de symboles.
+
+Nous verrons en détail ce que signifie chaque symbole, mais un point important est que l'on considère en permanence que tout ce qui peut se dire en mathématique peut s'exprimer à travers ces symboles de façon plus ou moins alambiquée. Cela ne veut pas dire que l'on souhaite recourir en permanence au style formel, loin s'en faut. Simplement, pour une étude des raisonnements et de la logique en général, il est préférable de réfléchir en utilisant le style formel, puisqu'il est bien plus facile à décortiquer.
+
+Une phrase mathématique s'appelle une proposition et peut être soit vraie, soit fausse (c'est le principe qu'on appelle le tiers exclu). C'est, de plus, une phrase portant sur des objets mathématiques (des nombres, des fonctions, des ensembles...) Les mathématiciens s'intéressent principalement aux phrases vraies, et il convient donc d'avoir un moyen de vérifier qu'une phrase donnée est vraie : c'est ce que l'on appelle une preuve en mathématique. Nous allons donc découvrir quelles sont les briques de base pour écrire une proposition, et quel sens ont ces briques.
+
+\subsubsection{Les relations}
+
+Le premier élément constitutif d'une proposition est une relation. Une relation exprime une valeur de vérité sur le lien entre des objets mathématiques. La relation la plus utilisée et la plus évidente est l'égalité, notée $=$, qui exprime que deux objets sont en fait le même objet.
+
+\begin{expl}
+    La proposition $$ 1+1=2$$ exprime que l'objet $1+1$ est en fait l'objet $2$.
+\end{expl}
+
+Il existe bien d'autres relations, comme par exemple le parallélisme, portant sur les droites du plan, ou la similitude portant sur les triangles (deux triangles sont semblables lorsqu'on peut tourner et agrandir / rétrécir le premier triangle pour obtenir le deuxième). Enfin, précisons qu'une relation peut ne comporter qu'un objet, dont elle exprime une propriété : on appelle souvent ce genre de relation paramétrée par un seul objet des prédicats, comme le prédicat \og être égal à 3\fg{} qui peut porter sur $2$ (auquel cas la proposition correspondante est fausse) ou sur $1+2$ (auquel cas la proposition correspondante est vraie).
+
+Les relations sont les briques élémentaires des propositions, car les autres éléments constitutifs des propositions ne peuvent que relier d'autres briques plus élémentaires. Le point essentiel d'une proposition est donc toujours une relation entre objets mathématiques.
+
+\subsubsection{La conjonction}
+
+Si l'on possède deux propositions $P_1$ et $P_2$, alors on peut construire une nouvelle proposition appelée la conjonction de $P_1$ et $P_2$, notée $P_1\land P_2$. Cette proposition traduit que $P_1$ et $P_2$ sont toutes les deux vraies. On traduit en général la conjonction par \og et\fg{} comme dans \og il fait beau et je sors\fg{} pour dire à la fois que je sors, et qu'il fait beau.
+
+\begin{expl}
+    Si l'on veut exprimer que $1+1$ vaut $2$ et que $2+2$ vaut $4$, on peut écrire $$(1+1=2)\land (2+2=4)$$
+\end{expl}
+
+La conjonction est ce qu'on appelle un connecteur logique :  elle permet de combiner plusieurs propositions en une seule nouvelle proposition.
+
+Nous mettons des parenthèses pour rendre plus lisibles les séparations entre les relations et les connecteurs logiques.
+
+Nous allons présenter aussi ce qu'on appelle une table de vérité, qui est un tableau montrant quand une formule est vraie en fonction de la vérité de ses parties. On note $1$ pour dire \og Vrai\fg{} et $0$ pour dire \og Faux\fg{}.
+
+\begin{table}[h]
+            \centering
+            \begin{tabular}{| c | c | c |}
+                \hline
+                $A$ & $B$ & $A\land B$\\
+                \hline
+                $0$ & $0$ & $0$\\
+                $0$ & $1$ & $0$\\
+                $1$ & $0$ & $0$\\
+                $1$ & $1$ & $1$\\
+                \hline
+            \end{tabular}
+            \caption{Table de vérité de $\land$}
+    \end{table}
+
+\subsubsection{La disjonction}
+
+En reprenant nos propositions $P_1$ et $P_2$, on peut aussi construire la proposition $P_1\lor P_2$, appelée la disjonction de $P_1$ et de $P_2$, qui signifie qu'au moins l'une des deux proposition entre $P_1$ et $P_2$ est vraie. On traduit la disjonction par \og ou\fg{}, mais il convient de faire attention : le \og ou\fg{} en mathématiques est dit inclusif, par défaut, ce qui signifie que l'on peut avoir à la fois $P_1$ et $P_2$, là où le langage populaire utilise plutôt un \og ou\fg{} exclusif (par exemple dans \og tu veux un fromage ou un dessert ?\fg{}), la traduction n'est donc pas exactement identique entre les mathématiques et le langage populaire.
+
+\begin{expl}
+    Imaginons que $x$ est un nombre entier. On note $\mathrm{pair}(x)$ la relation \og $x$ est pair\fg{} et $\mathrm{impair}(x)$ la relation \og $x$ est impair\fg{}. Alors la proposition suivante est vraie :
+    $$(\mathrm{pair}(x))\lor (\mathrm{impair}(x))$$
+\end{expl}
+
+La disjonction est aussi un connecteur logique, très semblable à la conjonction. Nous allons définir, par convention (qui est donc une règle arbitraire mais utile pour mieux se comprendre), que la conjonction est prioritaire sur la disjonction, ce qui signifie que $$P\lor Q \land R$$ doit se lire $$P\lor (Q\land R)$$ ce qui nous permet d'écrire moins de parenthèses.
+
+\begin{table}[ht]
+            \centering
+            \begin{tabular}{| c | c | c |}
+                \hline
+                $A$ & $B$ & $A\lor B$\\
+                \hline
+                $0$ & $0$ & $0$\\
+                $0$ & $1$ & $1$\\
+                $1$ & $0$ & $1$\\
+                $1$ & $1$ & $1$\\
+                \hline
+            \end{tabular}
+            \caption{Table de vérité de $\lor$}
+    \end{table}
+
+\subsubsection{La négation}
+
+Nous ajoutons aussi un connecteur logique unaire, ce qui signifie qu'il permet de construire une nouvelle proposition à partir d'une seule proposition. La négation exprime à partir d'une proposition $P$ la proposition \og $P$ est fausse\fg{}, et se note $\lnot (P)$. Elle est vraie quand $P$ est fausse et inversement.
+
+\begin{expl}
+    Plutôt que d'écrire que $0=1$ est faux, un mathématicien préférera écrire la proposition vraie suivante :
+    $$\lnot (0=1)$$
+    
+    Dans le cas de l'égalité, $\lnot (a=b)$ a aussi une notation standard, qui est $a\neq b$ (plus simple et rapide à écrire). Il existe beaucoup de symboles dénotant des relations pour lesquels barrer le symbole traduit la négation de la relation, comme $\not\subseteq$ pour la relation $\subseteq$.
+\end{expl}
+
+\begin{table}[ht]
+            \centering
+            \begin{tabular}{| c | c |}
+                \hline
+                $A$ & $\lnot A$\\
+                \hline
+                $0$ & $1$\\
+                $1$ & $0$\\
+                \hline
+            \end{tabular}
+            \caption{Table de vérité de $\lnot$}
+    \end{table}
+    
+\subsubsection{L'implication}
+
+Il nous arrive souvent, quand on réfléchit, de déterminer des conséquences logiques entre les événements. En mathématiques aussi, nous pouvons écrire des formes de conséquences logiques à l'aide de l'implication. Si $P_1$ et $P_2$ sont des proposition, on écrit l'implication de $P_1$ sur $P_2$ par $P_1\implies P_2$, que l'on lit \og $P_1$ implique $P_2$ \fg{} ou encore \og si $P_1$ alors $P_2$\fg{}. Ce connecteur logique traduit le fait que lorsque la première partie (appelée prémisse) $P_1$ est vraie, la deuxième partie (appelée conclusion) $P_2$ est forcément vraie. Remarquons que par cette définition, lorsque $P_1$ est fausse, $P_1\implies P_2$ est vraie peu importe la vérité de $P_2$.
+
+\begin{expl}
+    Soit un triangle $(ABC)$, on note $\mathrm{rectangle}(ABC)$ la relation \og $(ABC)$ est rectangle en $B$ \fg{}. On peut alors écrire la proposition (qui est le théorème de Pythagore) : $$\mathrm{rectangle}(ABC) \implies AC^2=AB^2+BC^2$$
+\end{expl}
+
+\begin{table}[h]
+            \centering
+            \begin{tabular}{| c | c | c |}
+                \hline
+                $A$ & $B$ & $A\implies B$\\
+                \hline
+                $0$ & $0$ & $1$\\
+                $0$ & $1$ & $1$\\
+                $1$ & $0$ & $0$\\
+                $1$ & $1$ & $1$\\
+                \hline
+            \end{tabular}
+            \caption{Table de vérité de $\implies$}
+    \end{table}
+
+\subsubsection{L'équivalence}
+
+L'équivalence logique entre deux proposition peut s'écrire directement à partir de l'implication, mais elle traduit un lien plus fort. Si l'implication $P_1\implies P_2$ traduit que $P_2$ découle toujours de $P_1$, leur équivalence logique, notée $P_1\iff P_2$ et que l'on lit \og $P_1$ si et seulement si $P_2$ \fg{} traduit que les deux découlent l'un de l'autre, et dont que chaque fois qu'une des deux proposition est vraie, l'autre aussi (et chaque fois qu'une des deux propositions est fausse, l'autre aussi). Si l'on s'intéresse dans un premier temps à une proposition de la forme $A\implies B$, on appelle en générale la réciproque de cette proposition la proposition $B\implies A$.
+
+\begin{expl}
+    Il se trouve que le théorème de Pythagore est une équivalence : sa réciproque est vraie aussi, d'où : $$\mathrm{rectangle}(ABC) \iff AC^2=AB^2+BC^2$$
+\end{expl}
+
+\begin{table}[h]
+            \centering
+            \begin{tabular}{| c | c | c |}
+                \hline
+                $A$ & $B$ & $A\iff B$\\
+                \hline
+                $0$ & $0$ & $1$\\
+                $0$ & $1$ & $0$\\
+                $1$ & $0$ & $0$\\
+                $1$ & $1$ & $1$\\
+                \hline
+            \end{tabular}
+            \caption{Table de vérité de $\iff$}
+    \end{table}
+
+Nous allons maintenant voir des briques dont l'utilisation est plus complexe mais qui sont très importantes : ce sont les quantificateurs.
+
+Supposons qu'on ait une proposition $P$ dans laquelle est présente une variable $x$, par exemple la proposition $x=2$. Suivant la valeur de $x$, la proposition peut être vraie ou fausse, et on ne peut pas le déterminer \textit{a priori}, cela va à l'encontre de ce qu'on a dit d'une proposition. C'est le cas car la variable dans $P$ est dite libre : elle n'est pas fixé dans l'énoncé. Il existe alors deux choix relativement naturels pour attribuer un sens à $P$ : est-ce que l'on veut dire que $P$ est toujours vraie, peu importe la valeur de $x$ ? Ou bien est-ce que l'on veut dire qu'il y a au moins une valeur de $x$ telle que $P$ est vraie ? Les quantificateurs servent à ajouter une précision de cet ordre, et permettent de ne pas avoir une variable libre dans une proposition (on dit alors que la variable est liée).
+
+\subsubsection{La quantification universelle}
+
+Le première quantificateur se lit \og pour tout\fg{} ou encore \og quel que soit\fg{}. Soit $P(x)$ une proposition dépendant d'un paramètre $x$, la quantification universelle sur $x$ dans $P(x)$ est la proposition écrite $\forall x, P(x)$, se lit \og pour tout $x$, $P(x)$ est vraie\fg{} et traduit exactement ce sens : toute valeur de $x$ rend la proposition $P(x)$ vraie.
+
+\begin{expl}
+    Supposons que nos paramètres soient des entiers. Alors on sait que tout entier est soit pair soit impair, ce qu'on peut donc noter :
+    $$\forall x, (\mathrm{pair}(x)\lor \mathrm{impair}(x))$$
+    
+    Nous allons convenir d'un ordre de priorité pour les quantificateurs : ils sont moins prioritaires que les connecteurs logiques, donc $$\forall x, \mathrm{pair}(x)\lor \mathrm{impair}(x)$$ se lit de la même façon.
+\end{expl}
+
+\subsubsection{La quantification existentielle}
+
+Le deuxième quantificateur se lit \og il existe\fg{}. Soit $P(x)$ une proposition dépendant d'un paramètre $x$, on note cette quantification par $\exists x, P(x)$, qui se lit \og il existe $x$ tel que $P(x)$\fg{}, ce qui signifie que parmi tous les $x$ possibles, il y en a au moins un (il peut aussi y en avoir plusieurs) tel que $P(x)$ est vraie.
+
+\begin{expl}
+    Supposons encore que nos paramètres sont des entiers. La proposition suivante est vraie : $$\exists x, x=2$$ de façon évidente puisque $2=2$.
+\end{expl}
+
+\subsubsection{A propos de la quantification}
+
+En logique formelle, il n'est pas choquant d'écrire par exemple $\forall x, \exists y, x=y$ sans plus de précisions, mais ça n'est pas le cas dans l'ensemble des mathématiques (et nous voulons avant tout prendre des habitudes compatibles avec l'ensemble des mathématiques). En effet, l'usage lorsque l'on quantifie une variable est de dire dans quel univers elle se trouve, c'est-à-dire préciser si ce que l'on quantifie est un ensemble, un entier, un réel, un nombre complexe, un triangle... Nous verrons plus en détail l'appartenance ensembliste dans le prochain chapitre, mais nous préciserons dès maintenant quand on introduit une variable à l'aide d'un \og pour tout\fg{} ou d'un \og il existe\fg{} de quelle espèce est cette variable.
+
+Pour ce faire, plutôt que $\forall x$ nous écrirons par exemple $\forall x \in \nat$, signifiant \og pour tout $x$ appartenant à l'ensemble des entiers naturels\fg{} ce qui est évidemment équivalent à \og pour tout entier naturel $x$\fg{}. Les principaux ensembles sur lesquels nous quantifierons sont $\reel$ et $\nat$ (nous aurons l'occasion de voir d'autres ensembles mais cela suffira pour l'instant).
+
+Passons désormais à l'étape suivante pour construire des raisonnements mathématiques : une fois que l'on sait faire des phrases, il faut apprendre à enchaîner les phrases de manière à faire du sens.
+
+\subsection{Raisonnement et preuve}
+
+Les logiciens, depuis le siècle dernier, ont réussi définir formellement les preuves et les hypothèses mathématiques. Cependant, comprendre ces formalismes et ces idées demande un certain recul préalable sur les mathématiques : nous nous contenterons donc de comprendre informellement ce qui fait une bonne preuve et ce qui est autorisé (ou non) dans un raisonnement mathématique. Une preuve mathématique est une suite de raisonnements élémentaires qui sont irréfutables de par leur évidence et, en s'enchaînant, forment un raisonnement plus large qui est tout aussi irréfutable. Nous appellerons les raisonnements élémentaires des règles de déduction, et allons en voir plusieurs. Chaque fois, nous allons définir une règle de déduction par trois éléments : les hypothèses que l'on utilise, les prémisses de la règle et ses conclusions. Les règles de déduction sont intimement liées à la forme des propositions, puisque pour chaque connecteur il existe une règle qui permet de construire une proposition avec ce connecteur, et une règle qui permet d'utiliser une proposition avec ce connecteur. Appliquer une règle se fait sans préciser de quelle règle l'on parle, en général, tant le choix de la règle à appliquer est évident (on utilisera seulement le mot-clé \og donc\fg{}, signifiant que l'on applique une règle dont on a déjà prouvé les prémisses en amont). La plupart des mathématiciens, par effet de style et pour rendre la lecture un peu plus agréable, varient les mots de liaisons et les tournures, évitant ainsi d'utiliser \og donc\fg{} en permanence, mais il faut comprendre que les mots de liaisons servent à marquer l'utilisation d'une règle et que n'utiliser que \og donc\fg{} ne saurait être vu comme une erreur.
+
+Enfin, une dernière précision à propos des hypothèses : en mathématiques, toute preuve se fait sous des hypothèses, et il existe très peu (voire pas) de résultats réellement absolus, ce qui signifie qu'une preuve ne peut que montrer \og ce résultat est vrai en supposant les hypothèses suivantes\fg{}. Nous mettons donc un point d'honneur dans cette partie à expliciter les hypothèses sous lesquelles tient un résultat. Si certains résultats apparaissent comme universellement vrais (par exemple que $1+1=2$), la formalisation des objets manipulés demandent en réalité un ensemble de résultats, appelés axiomes, qui sont des hypothèses tellement générales qu'on les tient toujours pour vraies.
+
+\subsubsection{L'hypothèse}
+
+Tout d'abord, la règle la plus basique d'un raisonnement est la suivante : si l'on a supposé une proposition $P$, alors dans ce contexte $P$ est vraie. Cela est nécessaire pour pouvoir utiliser des hypothèses : celles-ci apparaissent au moment d'utiliser la règle d'hypothèse (comme son nom l'indique).
+
+\subsubsection{Introduction d'hypothèse}
+
+Si l'on veut ajouter une hypothèse $P$ au contexte d'hypothèses $\mathcal H$ dans lequel on écrit une preuve, il suffit d'écrire \og supposons $P$\fg{}.
+
+\subsubsection{L'introduction de la conjonction}
+
+Pour justifier qu'une proposition de la forme $P\land Q$ est vraie, on justifie que $P$ est vraie, dans un premier temps, puis que $Q$ est vraie, dans un deuxième temps, et sous les mêmes hypothèses. La proposition $P\land Q$ est alors justifiée sous les hypothèses ayant permis de justifier $P$ et $Q$.
+
+\begin{expl}
+    Supposons $P$, puis supposons aussi $Q$, nous allons prouver $P\land Q$ :
+    
+    Par hypothèse, $P$ est vraie, et par hypothèse $Q$ est vraie, donc $P\land Q$ est vraie.
+\end{expl}
+
+\subsubsection{L'élimination de la conjonction}
+
+Une proposition de la forme $P\land Q$ permet de justifier deux propositions : $P$ et $Q$. En effet, avoir prouvé $P\land Q$ signifie qu'à la fois $P$ et $Q$ sont vrais, donc si, sous des hypothèses $\mathcal H$ on a prouvé $P\land Q$, alors on peut au choix prouver $P$ comme prouver $Q$ sous les hypothèses $\mathcal H$. Cette règle affaiblit en quelque sorte la proposition que l'on a initialement, puisqu'elle permet de récupérer une partie seulement de la proposition initiale.
+
+\begin{expl}
+    Prenons un certain nombre $x$, et supposons la proposition $(x = 2) \land \mathrm{pair}(x)$, alors par hypothèse, cette proposition est vraie, donc on en déduit que $x=2$.
+\end{expl}
+
+\subsubsection{L'introduction de la disjonction}
+
+Pour prouver une proposition de la forme $P\lor Q$, il suffit au choix de prouver $P$ ou de prouver $Q$.
+
+\begin{expl}
+    Prouvons que $P$ définie comme $(0=0)\lor \mathrm{pair}(2)$ est vraie par deux preuves distinctes :
+    \begin{itemize}[label=$\bullet$]
+        \item $0=0$ est vrai par définition de l'égalité, donc $P$ est vraie.
+        \item $\mathrm{pair}(2)$ est vrai par définition de ce qu'est un entier pair, donc $P$ est vraie.
+    \end{itemize}
+    \vspace{0.5cm}
+    
+    Attention, deux preuves ont été données pour montrer qu'il y avait deux moyens de prouver $P\lor Q$ si l'on peut prouver $P$ comme $Q$, mais cela ne veut pas dire qu'une preuve de  $P\lor Q$ nécessite deux preuves, bien au contraire. Un autre exemple, prouvons $P$ valant $(0=1)\lor \mathrm{pair}(2)$ :
+    \vspace{0.5cm}
+    
+    $\mathrm{pair}(2)$ est vrai par définition de ce qu'est un entier pair, donc $P$ est vraie.
+\end{expl}
+
+\subsubsection{L'élimination de la disjonction, ou disjonction de cas}
+
+Cette règle étant un peu plus technique que les autres à utiliser, on précise en général lorsqu'on l'utilise. Supposons qu'on veuille prouver une proposition $A$ par ce processus, la disjonction de cas est un raisonnement en trois temps :
+
+\begin{enumerate}
+    \item Tout d'abord, on prouve une proposition de la forme $P\lor Q$.
+    \item Ensuite, on distingue les cas menant à $P\lor Q$, qui sont lorsque $P$ est vraie et lorsque $Q$ est vraie. On suppose donc $P$ en plus, et on prouve alors $A$.
+    \item On suppose maintenant $Q$ en plus, et on prouve $A$.
+\end{enumerate}
+
+Si l'on a respecté ces étapes, alors on a prouvé $A$.
+
+\begin{expl}
+    Montrons que pour tout $x\in \nat$, il existe $y\in \nat$ tel que $x=2\times y$ ou $x=2\times y + 1$. Pour cela, on considère d'abord que tout entier naturel est soit pair soit impair (on le montrera dans un exemple ultérieur). On fait alors une distinction de cas :
+    \begin{enumerate}
+        \item $x$ est pair ou impair.
+        \item Si $x$ est pair, alors on peut écrire $x=2\times y$ avec $y\in \nat$, donc on a bien prouvé qu'il existait le $y$ que l'on cherchait.
+        \item Si $x$ est impair, alors $x-1$ est pair, donc on trouve $y$ tel que $x-1=2\times y$, ce qui revient à dire que $x=2\times y + 1$ : on a donc trouvé un $y$ respectant ce que l'on voulait prouver.
+    \end{enumerate}
+    Donc pour tout entier, il existe un entier $y$ valant sa moitié ou sa moitié augmentée de $1$.
+\end{expl}
+
+\subsubsection{L'introduction de la négation}
+
+L'introduction de la négation est ce qu'on appelle le raisonnement par contradiction. Ce raisonnement cherche à prouver une proposition de la forme $\lnot A$ et se déroule en deux temps :
+
+\begin{enumerate}
+    \item D'abord, on suppose $A$.
+    \item Ensuite, on prouve une absurdité, c'est-à-dire une phrase manifestement fausse (par exemple $0=1$).
+\end{enumerate}
+
+Si l'on a fait ça, alors on a prouvé $\lnot A$.
+
+\begin{expl}
+    Montrons que la proposition $P$ donnée par \og tous les nombres premiers sont impairs\fg{} est fausse en prouvant $\lnot P$ :
+    
+    Supposons que tous les nombres premiers sont impairs, comme $2$ est un nombre premier, cela signifie que $2$ est impair, or il est pair : c'est une contradiction. Donc tous les nombres premiers ne sont pas impairs.
+\end{expl}
+
+\subsubsection{Le raisonnement par l'absurde}
+
+Le raisonnement par l'absurde est en quelque sorte la version inverse du raisonnement par contradiction. Si le raisonnement par contradiction suppose $A$ pour prouver $\lnot A$, le raisonnement par l'absurde suppose $\lnot A$ pour prouver $A$. En effet, le reste est identique : on prouve en supposant $\lnot A$ qu'on aboutit à une contradiction, et de cette contradiction on déduit directement $A$.
+
+Certains auteurs confondent le raisonnement par contradiction et le raisonnement par l'absurde.
+
+\begin{expl}
+    Soit une proposition $P$, supposons $\lnot \lnot P$ et prouvons alors $P$ :
+    
+    Procédons par l'absurde en supposant $\lnot P$, alors on a à la fois $\lnot P$ et son contraire $\lnot \lnot P$, qui sont deux propositions incompatibles : c'est absurde, donc $P$ est vraie.
+\end{expl}
+
+\subsubsection{L'introduction de l'implication}
+
+Si l'on veut prouver une proposition de la forme $A\implies B$, on procède en deux temps :
+
+\begin{enumerate}
+    \item On suppose $A$.
+    \item On prouve $B$ dans le contexte où l'on a supposé $A$.
+\end{enumerate}
+
+Dans ce cas, on a prouvé $A\implies B$.
+
+\begin{expl}
+    L'exemple précédent nous permet de déduire que $\lnot\lnot P \implies P$.
+\end{expl}
+
+\subsubsection{L'élimination de l'implication, le modus ponens}
+
+Cette règle permet d'utiliser une proposition de la forme $A\implies B$. Son utilisation est simple : si l'on sait vraies les proposition $A\implies B$ et $A$ alors on peut en déduire $B$. C'est l'un des principes logiques les plus basiques et son nom de \textit{modus ponens} date de l'Antiquité.
+
+\begin{expl}
+    Les exemples ne manquent pas, mais supposons par exemple que l'on sache les choses suivantes :
+    \begin{itemize}[label=$\bullet$]
+        \item Socrate est un homme.
+        \item Si Socrate est un homme, alors Socrate est mortel.
+    \end{itemize}
+    
+    On en déduit que Socrate est mortel.
+\end{expl}
+
+\subsubsection{Le raisonnement par contraposée}
+
+Cette règle permet, en un sens, d'inverser le sens d'une implication. Si une proposition de la forme $A\implies B$ est vraie, alors la proposition $\lnot B \implies \lnot A$ est vraie aussi (et ceci marche dans l'autre sens : prouver $\lnot B \implies \lnot A$ suffit à prouver $A\implies B$).
+
+\subsubsection{L'équivalence}
+
+L'équivalence $A\iff B$ est exactement $(A\implies B)\land (B\implies A)$, ce qui signifie que prouver que deux propositions sont équivalentes se fait en prouvant que la première implique la deuxième puis que la deuxième implique la première (on appelle ça procéder par double implication) et une proposition de la forme $A\iff B$ s'utilise en faisant un \textit{modus ponens} depuis le sens que l'on veut utiliser.
+
+\subsubsection{L'introduction du quantificateur universel}
+
+Si l'on veut prouver une proposition de la forme $\forall x\in X, P(x)$, on procède en deux temps :
+
+\begin{enumerate}
+    \item On définit une nouvelle variable, disons $\alpha$, dont on sait juste que $\alpha \in X$.
+    \item On prouve $P(\alpha)$
+\end{enumerate}
+
+Alors on a prouvé $\forall x\in X, P(x)$.
+
+\begin{expl}
+    Montrons que pour tout $x\in \reel$, $x+0=x$ :
+    
+    Soit $\alpha \in \reel$, par définition de l'addition $\alpha+0=\alpha$, donc $\forall x\in \reel, x+0=x$.
+\end{expl}
+
+\subsubsection{L'élimination du quantificateur universel}
+
+Si l'on a une proposition de la forme $\forall x\in X, P(x)$ on peut l'utiliser en remplaçant $x$ par une valeur précise. Supposons que $\alpha \in X$ est une valeur particulière, $\forall x \in X, P(x)$ nous permet de déduire $P(\alpha)$.
+
+\begin{expl}
+    Reprenons l'exemple donné pour le \textit{modus ponens}, mais en changeant légèrement l'énoncé :
+    \begin{itemize}[label=$\bullet$]
+        \item Tout homme est mortel.
+        \item Socrate est un homme.
+    \end{itemize}
+    
+    Alors, comme Socrate est un homme, ce que l'on va écrire $\mathrm{Socrate}\in\mathrm{Hommes}$, on peut appliquer $\forall x\in\mathrm{Hommes}, \,\mathrm{mortel}(x)$, ce qui nous fait déduire que Socrate est mortel.
+\end{expl}
+
+\subsubsection{L'introduction du quantificateur existentiel}
+
+Pour montrer $\exists x\in X, P(x)$, la règle que l'on utilise est simple : on trouve un certain $\alpha \in X$ tel que $P(\alpha)$ est vrai, ce qui nous permet de conclure qu'il existe bien $x\in X$ tel que $P(x)$.
+
+\begin{expl}
+    Montrons qu'il existe un nombre entier pair :
+    
+    $2$ est pair, donc il existe un nombre entier pair.
+\end{expl}
+
+\subsubsection{L'élimination du quantificateur existentiel}
+
+Si l'on tient vraie une proposition de la forme $\exists x\in X, P(x)$, alors on peut introduire une variable, disons $\alpha\in X$, telle que $P(\alpha)$ est vraie.
+
+\begin{expl}
+    Montrons que s'il existe un nombre pair, alors il existe un nombre impair :
+    
+    On suppose qu'il existe un nombre pair, soit $x$ un tel nombre. Alors $x+1$ est un nombre impair, donc il existe un nombre impair.
+\end{expl}
+
+\subsubsection{Le raisonnement par récurrence}
+
+Ce raisonnement est bien plus particulier. Il est introduit ici mais servira principalement dans des notions traitées dans des chapitres plus tardifs. Le principe du raisonnement par récurrence est, pour un prédicat $P$ dépendant d'une variable $n\in\mathbb N$, de prouver $\forall n \in\mathbb N, P(n)$.
+
+Pour ce faire, nous allons prouver deux choses :
+\begin{itemize}[label=$\bullet$]
+    \item Tout d'abord, on prouve $P(0)$.
+    \item Ensuite, on prouve $\forall n\in\mathbb N, P(n)\implies P(n+1)$.
+\end{itemize}
+
+En ayant prouvé ces deux éléments, on prouve alors que $P$ est vraie pour n'importe quel entier naturel $n$, car $n=0+1+1+1+\ldots+1$, où l'on additionne $n$ fois $1$ à $0$. Or $P(0)\implies P(1)\ldots \implies P(n)$ en utilisant ce que l'on a prouvé. Ainsi, pour tout entier naturel, on a prouvé $P(n)$.
+
+\begin{rmk}
+    Ajoutons un détail sur la façon dont il faut rédiger l'étape que l'on appelle l'hérédité, celle de prouver $\forall n \in \mathbb N, P(n)\implies P(n+1)$. Il faut tout d'abord fixer $n$ quelconque pour pouvoir prouver l'implication à l'intérieur, puis supposer $P(n)$ vraie et prouver alors $P(n+1)$.
+\end{rmk}
+
+\begin{expl}
+    Montrons que tout entier est soit pair soit impair, c'est-à-dire soit de la forme $2k$ soit de la forme $2k+1$.
+    \begin{itemize}[label=$\bullet$]
+        \item Tout d'abord, $0=2\times 0$ donc $0$ est pair.
+        \item Soit $n\in\mathbb N$. Alors deux cas sont possibles :
+        \begin{itemize}
+            \item Soit $n=2k$, $k\in \mathbb N$. Dans ce cas, $n+1=2k+1$ donc $n+1$ est impair.
+            \item Soit $n=2k+1$. Dans ce cas, $n+1=2k+2=2(k+1)$, donc $n+1$ est pair.
+        \end{itemize}
+        Dans tous les cas, $n+1$ est soit pair soit impair.
+    \end{itemize}
+    Par récurrence, on en déduit que pour tout entier naturel $n$, $n$ est ou pair ou impair, i.e. qu'il existe $k$ tel que $n=2k$ ou $n=2k+1$.
+\end{expl}
+
+\newpage

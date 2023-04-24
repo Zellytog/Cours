@@ -1,0 +1,192 @@
+\section{Intégration de fonctions continues par morceaux sur un segment}
+
+Dans ce chapitre, nous allons construire les intégrales de Riemann. Les intégrales sont souvent vues comme l'opération inversant (dans la mesure du possible) la dérivation. Nous allons construire les intégrales sur un segment, et nous allons considérer pour cela les fonctions continues par morceaux.
+
+L'intégrale s'interprète comme l'aire algébrique sous la courbe d'une fonction. Pour calculer cette aire, nous allons approcher la courbe par des fonctions dont l'aire sous la courbe est bien connue, puis calculer, en quelques sortes, la limite de ces aires de fonctions approchantes.
+
+\subsection{Fonctions en escalier et continues par morceaux}
+
+La première étape sera donc de définir les fonctions dont le calcul de l'intégral est simple, puis de montrer que les fonctions que nous voulons intégrer peuvent s'approcher par de telles fonctions. Commençons par définir ce que sont les fonctions dont nous voulons calculer l'intégrale.
+
+\begin{defi}[Fonction continue par morceaux]
+    Soit $f : [a,b] \to\reel$ une fonction, $a,b\in \reel$. On dit que $f$ est continue par morceaux s'il existe une famille finie strictement croissante $(x_i)_{1\leq i\leq n}$ telle que $x_1 = a$, $x_n = b$ et $f$ est continue sur chaque intervalle $]x_i,x_{i+1}[$.
+\end{defi}
+
+\begin{rmk}
+    Une fonction continue par morceaux est donc simplement une fonction comprenant un nombre fini de discontinuités. Nous donnons cette définition sur un segment car nous ne travaillerons que sur des segments dans ce chapitre.
+\end{rmk}
+
+Ensuite, définissons les fonctions en escalier, qui sont les fonctions qui nous serviront à approcher les fonctions continues par morceaux.
+
+\begin{defi}[Fonction en escalier]
+    Soit $f : [a,b]\to\reel$ une fonction, $a,b\in\reel$. On dit que $f$ est une fonction est escalier s'il existe une famille finie strictement croissante $(x_i)_{1\leq i\leq n}$ telle que $x_1=a,x_n=b$ et $f$ est constante sur chaque intervalle $]x_i,x_{i+1}[$. On note $\Psi{[a,b]}$ l'ensemble des fonction en escalier de domaine $[a,b]$.
+\end{defi}
+
+Notre premier résultat va être l'approximation de fonctions continues par morceaux par des fonctions en escalier :
+
+\begin{prop}
+    Soit $f : [a,b]\to\reel$ une fonction continue par morceaux, $a,b\in\reel$. Soit $\varepsilon > 0$, alors il existe une fonction en escalier $e_+$ supérieure à $f$ telle que $\forall x\in[a,b], |f(x)-e_+(x)| < \varepsilon$ et de même il existe une fonction en escalier $e_-$ inférieure à $f$ telle que $\forall x \in[a,b], |f(x)-e_-(x)| < \varepsilon$. 
+\end{prop}
+
+\begin{proof}
+    Nous allons d'abord prouver ce résultat dans le cas où $f$ est continue. Si $f$ est continue, alors d'après le théorème de Heine $f$ est uniformément continue (puisque continue sur un segment). \'Etant donné le $\varepsilon > 0$ de l'énoncé, nous trouvons par continuité uniforme de $f$ un $\delta > 0$ tel que $\forall x,y \in [a,b], |x-y| < \delta\implies |f(x)-f(y)| < \varepsilon$. On peut alors découper $[a,b]$ en morceaux, en se donnant la famille $$x_i = a+\delta i$$ pour $i < n$ et $x_n = b$, où $i$ varie entre $1$ et $ n = \left\lceil\dfrac{b-a}{\delta}\right\rceil$. Autrement dit, notre famille $(x_i)$ a la forme $a,a+\delta,a+2\delta,\ldots, a+n\delta,b$. Sur chaque $[x_i,x_{i+1}]$, comme $f$ est continue, $f$ a un minimum et un maximum. On définit $e_+ = \displaystyle\max_{x\in[x_i,x_{i+1}](f(x))}$ sur $]x_i,x_{i+1}[$ et $e_- = \displaystyle\min_{x\in[x_i,x_{i+1}]}(f(x))$ ainsi que $e_-(x_i)=x_+(x_i)=f(x_i)$.
+
+    Soit $x\in [a,b]$, soit $x = x_i$ pour un certain $i$ auquel cas l'inégalité est vérifiée pour $e_+$ et $e_-$, soit on trouve $i$ tel que $x\in]x_i,x_{i+1}[$. Par définition, le minimum et le maximum de $f$ sur ce segment sont atteints à des points à une distance à $x$ inférieure à $\delta$, donc $|f(x)-e_+(x)|  < \varepsilon$ et $|f(x)-e_-(x)| < \varepsilon$. De plus, par comme nous les avons construites pour être respectivement un maximum et un minimum, $e_+$ et $e_-$ sont bien respectivement supérieure et inférieure à $f$.
+
+    Nous pouvons maintenant démontrer le cas général par récurrence sur la taille de la famille $(x_i)$ découpant l'intervalle $[a,b]$ en des intervalles sur lesquels $f$ est continue.
+    \begin{itemize}[label=$\bullet$]
+        \item Pour le cas où $i=2$, cela signifie que $f$ est continue, et nous venons d'en faire la démonstration.
+        \item Si la propriété est vraie au rang $k$, alors pour une fonction découpée en fonctions continues par $k+1$ points, on peut considérer $f$ sur l'intervalle $[a,x_k]$ et sur l'intervalle $[x_k,x_{k+1}]$. Par hypothèse de récurrence, on peut donc construire $e_+$ et $e_-$ sur chacun des deux intervalles, mais la valeur en $x_k$ n'est pas forcément la même. Cependant, en changeant le point $e_+(x_k)=e_-(x_k)=f(x_k)$ on obtient bien une fonction qui vérifie ce que l'on veut montrer.
+    \end{itemize}
+
+    \fbox{Toute fonction continue par morceaux peut être approchée par des fonctions en escalier.}
+\end{proof}
+
+\subsection{Intégrale de Riemann}
+
+Nous pouvons désormais définir l'intégrale de Riemann en tant que telle. La première étape est de la définir sur les fonctions en escalier. Une fonction en escalier peut se voir comme une succession de rectangle, donc l'aire sous la courbe d'une fonction en escalier est simplement une somme d'aires de rectangles.
+
+\begin{defi}[Intégrale de Riemann d'une fonction en escalier]
+    Soit $f\in \Psi_{[a,b]}$ une fonction en escalier, avec un découpage $(x_i)_{1\leq i \leq n}$ de l'intervalle $[a,b]$ sur lequel $f$ est constante. On définit $$\int_{[a,b]}f = \sum_{i = 1}^{n-1}(x_{i+1}-x_i) f\left(\frac{x_{i+1}+x_i}{2}\right)$$ l'intégrale entre $a$ et $b$ de $f$.
+\end{defi}
+
+\begin{rmk}
+    Si $f \leq g$, au sens où $\forall x\in[a,b],f(x)\leq g(x)$, alors $\int_{[a,b]} f \leq \int_{[a,b]} g$.
+\end{rmk}
+
+\begin{exo}
+    Démontrer la remarque précédente.
+\end{exo}
+
+Remarquons alors que pour deux fonctions en escalier, l'une étant plus fine que l'autre (au sens où le découpage associé à la première contient tous les points du découpage associé à la deuxième), si les deux sont des approximations par valeurs inférieures d'une fonction $f$ alors l'intégrale de la fonction plus fine sera supérieure à l'intégrale de l'autre fonction. De même pour des approximations par valeurs supérieures, on peut remarquer que les intégrales vont en décroissant. Comme on voudrait moralement que l'intégrale de $f$ soit la limite des intégrales des approximations par fonctions en escalier, on va utiliser la notion de borne supérieure et de borne inférieure.
+
+\begin{defi}[Intégrale de Riemann]
+    Soit $f : [a,b]\to\reel$, on définit l'intégrale de Riemann de $f$ (ou juste \og intégrale de $f$\fg{}) par $$\int_{[a,b]} f = \sup_{\substack{g\in\Psi_{[a,b]}\\g \leq f}}\left(\int_{[a,b]} g\right) = \inf_{\substack{g\in\Psi_{[a,b]}\\g \geq f}}\left(\int_{[a,b]} g\right)$$
+\end{defi}
+
+\begin{proof}
+    Montrons que les deux bornes sont égales. D'abord, par transitivité de l'inégalité, une fonction inférieure à $f$ est inférieure à une fonction supérieure à $f$. Ainsi les intégrales de fonctions en escaliers inférieures à $f$ sont toutes des minorants de l'ensemble des intégrales de fonctions en escalier supérieures. De même les intégrales de fonctions en escalier supérieures sont des majorants de l'ensemble des intégrales de fonctions en escalier inférieures. Enfin, si l'on prend $\varepsilon > 0$, on montre qu'il existe $g\leq f$ et $h \geq f$ telles que $$\left(\int_{[a,b]} g\right)+\varepsilon \geq \int_{[a,b]} h$$ et de même dans l'autre sens (mais nous ne montrerons que le premier cas, l'autre étant identique). On sait qu'on peut approcher $f$ par valeurs inférieures à tout $\varepsilon > 0$ près, on l'approche alors par $g$ qui est à $\dfrac{\varepsilon}{b-a}$ près de $f$. En prenant $h$ approchant $f$ par valeurs supérieures à $\dfrac{\varepsilon}{2(b-a)}$ près, on en déduit que $$\left(\int_{[a,b]} g\right)+\varepsilon \geq \int_{[a,b]} h$$ d'où le fait que \fbox{l'intégrale de $f$ est la valeur commune des deux bornes.}
+\end{proof}
+
+\subsection{Propriétés des intégrales}
+
+Nous allons donner et démontrer les propriétés essentielles des intégrales. La première est la valeur d'une intégrale constante.
+
+\begin{prop}[Intégrale d'une constante]
+    Soit $k\in\reel$, l'intégrale de la fonction $f : x \mapsto k$ est $$\int_{[a,b]} f = k(b-a)$$
+\end{prop}
+
+\begin{proof}
+    La fonction étant une fonction en escalier, son intégrale se calcule directement par la formule de base, et on peut considérer le découpage $(a,b)$. Si une fonction en escalier est inférieure à $f$, alors son intégrale sera inférieure, et de même pour une fonction en escalier supérieure. On en déduit que $$\boxed{\int_{[a,b]} f = k(b-a)}$$
+\end{proof}
+
+La propriété suivante est la linéarité, qui permet de simplifier les intégrales de sommes de fonctions.
+
+\begin{prop}[Linéarité]
+    Soient $f,g : [a,b]\to\reel$ deux fonctions continues par morceaux, et $k,l\in\reel$. Alors $$\int_{[a,b]} (kf+lg) = k\int_{[a,b]}f + l\int_{[a,b]}g$$
+\end{prop}
+
+\begin{proof}
+    Montrons que l'on peut approcher l'intégrale de $kf+lg$ par des approximations de $f$ et $g$. Soit $\varepsilon > 0$, on trouve une approximation $h$ de $f$ par valeurs inférieures à $\dfrac{\varepsilon}{2k}$ près et une approximation $j$ de $g$ par valeurs inférieures à $\dfrac{\varepsilon}{2l}$ près. Alors $kh+lj$ est une approximation de $kf+lg$ à $\varepsilon$ près. On peut donc approcher à n'importe quelle précision l'intégrale de $kf+lg$ par l'intégrale d'une fonction de la forme $kh+lf$ avec $h$ et $j$ approximations inférieures respectivement de $f$ et de $g$. On en déduit que $$\int_{[a,b]} (kf+lg) \leq k\int_{[a,b]} f + l \int_{[a,b]} g$$
+
+    Réciproquement, si l'on a une approximation $h$ de $f$ à $\varepsilon$ près et une approximation $j$ de $g$ à $\varepsilon'$ près, alors une approximation de $kf+lg$ à $\min(\varepsilon,\varepsilon')$ fournit une meilleure approximation que $kh+lg$, d'où l'inégalité inverse. On en déduit que $$\boxed{\int_{[a,b]} (kf+lg) = k\int_{[a,b]}f + l\int_{[a,b]}g}$$
+\end{proof}
+
+La positivité de l'intégrale sera utile pour en déduire la croissance, entre autre.
+
+\begin{prop}[Positivité]
+    Soit $f : [a,b]\to\reel$ une fonction continue par morceaux. Si $\forall x\in[a,b],f(x)\geq 0$ alors $\displaystyle\int_{[a,b]} f \geq 0$
+\end{prop}
+
+\begin{proof}
+    Supposons que $\forall x\in[a,b], f(x)\geq 0$. Alors toute fonction en escalier supérieure à $f$ est positive, donc les intégrales de fonctions en escalier supérieures à $f$ sont toutes positives, ce qui signifie que leur borne inférieure est positive : $$\boxed{\int_{[a,b]} f \geq 0}$$
+\end{proof}
+
+\begin{cor}
+    Si pour deux fonctions $f,g$ continues par morceaux on a $\forall x\in[a,b], f(x)\leq g(x)$ alors $\displaystyle\int_{[a,b]} f \leq \int_{[a,b]} g$.
+\end{cor}
+
+\begin{proof}
+    Il suffit de considérer la positivité de $g-f$.
+\end{proof}
+
+Enfin, voyons la relation de Chasles.
+
+\begin{prop}[Relation de Chasles]
+    Soit $f : [a,c]\to\reel$ une fonction continue par morceaux, alors pour tout $b\in[a,b]$, $$\int_{[a,c]} f = \int_{[a,b]}f+\int_{[b,c]} f$$
+\end{prop}
+
+\begin{proof}
+    Pour une fonction en escalier, l'égalité est évidente en découpant la somme associée. Pour une fonction quelconque, on remarque que $f$ est une fonction en escalier inférieure à $f$ sur $[a,c]$ si et seulement si elle est une fonction en escalier inférieure à $f$ sur $[a,b]$ et sur $[a,c]$, le résultat en découle donc.
+\end{proof}
+
+\begin{rmk}
+    On définit une nouvelle notation pour les intégrales : $$\int_a^b f(t)\dd t := \int_{[a,b}] f$$ dans le cas où $a \leq b$, et si $a > b$ alors $$\int_a^b f(t)\dd t = \int_{[b,a]} f$$
+\end{rmk}
+
+Présentons les sommes de Riemann, permettant un calcul plus commode des intégrales.
+
+\begin{prop}[Somme de Riemann]
+    Soit $f : [a,b] \to\reel$ une fonction continue. Alors $$\int_{[a,b]} f = \lim_{n\to\infty} \frac{b-a}{n}\sum_{k=1}^n f\left(a+\frac{k(b-a)}{n}\right)$$
+\end{prop}
+
+\begin{proof}
+    Soit $n\in\nat$, notons $x_k = k\dfrac{b-a}{n}$.Tout d'abord, on remarque que, à $k\leq n$ fixés, l'égalité suivante est vraie : $$\dfrac{b-a}{n}f\left(a+k\dfrac{b-a}{n}\right)=\int_{[x_k,x_{k+1}]}f\left(a+k\dfrac{b-a}{n}\right)$$ donc $$\dfrac{b-a}{n}f\left(a+k\dfrac{b-a}{n}\right)-\int_{[x_k,x_{k+1}]}f = \int_{[x_k,x_{k+1}]} \left(f\left(a+k\dfrac{b-a}{n}\right)-f\right)$$ et, en sommant sur chaque $k$ cela nous donne $$\dfrac{b-a}{n}\sum_{k=1}^n f(x_k)-\int_{[a,b]}f =\sum_{k=1}^n \int_{[x_k,x_{k+1}]}(f(x_k)-f)$$ Nous voulons majorer la différence de droite, donc nous allons introduire la valeur $\omega_n = \sup\{|f(x)-f(y)|, x\in[a,b],y\in[a,b],|x-y|\leq \dfrac{b-a}{n}\}$. Comme $f$ est continue, d'après le théorème de Heine, elle est uniformément continue. Remarquons que cela signifie que $\lim \omega_n =0$. Or $$\left|\frac{b-a}{n}\sum_{k=1}^n f(x_k) - \int_{[a,b]} f\right|\leq \sum_{k=1}^n\int_{[x_k,x_{k+1}]} \omega_n = \sum_{k=1}^n \frac{b-a}{n}\omega_n$$ donc $$\boxed{\lim \left|\frac{b-a}{n}\sum_{k=1}^n f\left(a+\frac{k(b-a)}{n}\right) - \int_{[a,b]} f\right| = 0}$$ d'où le résultat. 
+\end{proof}
+
+Enfin, montrons le théorème fondamental de l'analyse :
+
+\begin{them}[Fondamental de l'analyse]
+    Soit $f : [a,b]\to\reel$ une fonction continue. Alors la fonction $$\fonction{F}{[a,b]}{\reel}{x}{\displaystyle\int_{[a,x]} f}$$ est dérivable et sa dérivée est $f$.
+\end{them}
+
+\begin{proof}
+    Soit $\varepsilon > 0$ et $x\in [a,b]$, par continuité de $f$, on trouve $\delta > 0$ tel que $\forall y\in[a,b],|x-y|<\delta \implies |f(x)-f(y)|<\varepsilon$. Alors pour $h \in B(x,\delta)$, on en déduit que 
+    \begin{align*}
+        \left|F(x)-F(x+h)-hf(x)\right| &= \left|\int_x^{x+h} f(t)\dd t - hf(x)\right|\\
+        &= \left|\int_x^{x+h} f(t)-f(x)\dd t\right|\\
+        &\leq h\varepsilon\\
+        \left|\dfrac{F(x)-F(x+h)}{h}-f(x)\right| &\leq \varepsilon
+    \end{align*}
+    On a donc montré que pour tout voisinage de $f(x)$, il existait un voisinage de $x$ tel que $\dfrac{F(x)-F(x+h)}{h}$ appartenait à ce voisinage. Autrement dit : $$\lim_{h\to 0} \dfrac{F(x)-F(x+h)}{h} = f(x)$$ et c'est la limite d'un taux d'accroissement, donc on en déduit que $F$ est dérivable et que \fbox{$F' = f$.}
+\end{proof}
+
+Une formulation équivalente est la suivante :
+
+\begin{cor}
+    La fonction $F$ définie précédemment est l'unique primitive de $f$ (i.e. fonction dont la dérivée est $f$) qui s'annule en $a$, et toute primitive de $f$ est égale à $F$ à une constante près.
+\end{cor}
+
+\begin{proof}
+    La fonction s'annule bien en $a$, et si $G$ est une primitive de $f$, alors $G-F$ est une primitive de $0$ puisque la dérivée est linéaire. On en déduit que $G-F$ est constante (puisque nous travaillons sur un intervalle) donc que $F = G + k$ avec $k\in \reel$. Si $k \neq 0$ alors $F\neq G$ donc $F$ est bien l'unique primitive de $f$ s'annulant en $a$.
+\end{proof}
+
+\begin{rmk}
+    Une autre définition équivalente est que si $f$ est une fonction continue de $[a,b]$ dans $\reel$ et que $F$ est une primitive de $f$, alors $\displaystyle\int_a^b f(t)\dd t = F(b)-F(a)$. On marque souvent $[F(x)]_a^b$ pour désigner $F(b)-F(a)$.
+\end{rmk}
+
+\begin{exo}
+    Montrer cette équivalence.
+\end{exo}
+
+\subsection{Calcul d'intégrale}
+
+Nous présenterons ici deux méthodes importantes de calcul d'intégrales : l'intégration par parties et le changement de variable.
+
+\begin{prop}[Intégration par parties]
+    Soient $u,v : [a,b]\to\reel$ deux fonctions dérivables. Alors $$\int_a^b u'(t)v(t)\dd t = [uv]_a^b - \int_a^b u(t)v'(t)\dd t$$
+\end{prop}
+
+\begin{proof}
+    On remarque d'abord que $(uv)' = u'v+uv'$ donc $u'v = (uv)'-uv'$. En passant aux intégrales, et comme l'intégrale d'une dérivée vaut la fonction elle-même, on en déduit $$\boxed{\int_a^b u'(t)v(t)\dd t = [uv]_a^b - \int_a^b u(t)v'(t)\dd t}$$
+\end{proof}
+
+\begin{prop}[Changement de variable]
+    Soit $f : [a,b]\to\reel$ une fonction continue, $a,b\in\reel$ et $\varphi : [\alpha,\beta]\to [a,b]$ dérivable et de dérivée continue, $\alpha,\beta\in\reel$. Alors $$\int_\alpha^\beta f(\varphi(t))\varphi'(t)\dd t = \int_{\varphi(\alpha)}^{\varphi(\beta)} f(t)\dd t$$
+\end{prop}
+
+\begin{proof}
+    Soit la fonction $g : x\longmapsto \displaystyle\int_{\varphi(\alpha)}^x f(t)\dd t$. On va calculer la dérivée de $g\circ\varphi$ : $$(g\circ\varphi)' = \varphi'\times g'\circ\varphi$$ mais la dérivée de $g$ est $f$, donc $$(g\circ \varphi)' = \varphi'\times f\circ\varphi$$ ce qui signifie que $h : x\longmapsto \displaystyle\int_{\alpha}^x (f\circ\varphi)(t)\varphi'(t)\dd t$ et $g$ ont la même dérivée. De plus, les deux fonctions sont égales en $\alpha$ et valent $0$, donc elles sont égales en tant que primitives d'une même fonction qui ont une valeur commune. Ainsi, en évaluant en $\beta$, on en déduit $$\boxed{\int_\alpha^\beta f(\varphi(t))\varphi'(t)\dd t = \int_{\varphi(\alpha)}^{\varphi(\beta)}f(t)\dd t}$$
+\end{proof}
+
+\newpage

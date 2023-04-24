@@ -1,0 +1,65 @@
+\part{Conclusion}
+
+Nous allons donc pouvoir construire une interprétation du langage OCaml dans la catégorie $\scott$ des domaines de Scott. Plus précisément, nous allons construire la sous-catégorie $\ocaml$ dont les objets sont :
+$$\sigma,\tau ::= \mathbb N_\bot \mid \mathbb B_\bot \mid \mathbb U_\bot \mid \sigma\to\tau\mid \sigma\times \tau$$ et dont les morphismes sont les interprétations dans la CCC ainsi construite des termes définis par la syntaxe de $\ocaml$. Nous devons donc définir une fonction d'interprétation $\llbracket - \rrbracket$ qui à un terme syntaxique associe le morphisme de $\ocaml$ qui lui correspond. On confondra ici un objet de la forme $1\to A$ et un élément du domaine de Scott $A$. Par la structure de CCC, nous avons déjà l'interprétation de $\fun\;x\to M$, de $x$ et de $M\; N$, de $\langle M,N\rangle$ et des projections. $\fun\;x\to M$ nous permet de définir $\letin{x}{e}{e'}$. Nous allons détailler l'interprétation des différentes autres constructions.
+
+L'interprétation des constantes booléennes est celle des élément de $\mathbb B$ dans $\mathbb B_\bot$. De même, $k\in\mathbb N$ est interprété par lui-même dans $\mathbb N_\bot$ et $\pare$ est interprété par le seul élément de $\mathbb U$ dans $\mathbb U_\bot$. On notera désormais $\mathbb B_\bot = \{\true,\false,\bot\}$ pour ne pas confondre $\false$ et $\bot$.
+
+\begin{prop}
+    On appelle fonction stricte une fonction $f : D\to D$ telle que $f(\bot)=\bot$.
+    Une fonction stricte sur un domaine plat est continue.
+\end{prop}
+\begin{proof}
+    La croissance est respectée puisque si $x\leq y$ alors soit $x=\bot$ auquel cas $f(x)\leq f(y)$ soit $x=y$ auquel cas $f(x)\leq f(y)$. Une partie filtrante $\Delta$ contiendra au plus un élément différent de $\bot$. Si elle ne contient que $\bot$, alors l'image sera $\bot$ et la continuité est bien respectée, et s'il existe $a\neq \bot$, alors $\bigvee\Delta = a$ donc $\bigvee f(\Delta)=f(a)$.
+\end{proof}
+
+On en déduit donc que l'interprétation de $\mathrm{not}$ par la négation booléenne stricte est continue, on peut donc définir $\llbracket\mathrm{not}\rrbracket : \mathbb B_\bot \to \mathbb B_\bot$.
+
+Nous allons maintenant définir les opérations binaires. Celles-ci seront définie uniquement lorsque leurs deux arguments sont définis. Par exemple, $+$ sera défini comme $\bot$ si l'un des arguments est $\bot$ et comme la somme de ses arguments sinon.
+
+Ainsi on définit $+,-,\times,\andt,\|,\leq$ comme des fonctions continues car elles sont continues en chaque argument (en fixant un argument, on a une fonction stricte sur un domaine plat).
+
+L'interprétation du $\letrec{x}{e}{e'}$ se fait à partir de celle de $Y$, qui est le combinateur de point fixe $Y(f) =\displaystyle{\bigvee_{n\in\mathbb N} f^n(\bot)}$.
+
+Il nous reste enfin à définir l'interprétation $\llbracket\ifthenelse{}{}{}\rrbracket$. Cette fonction est de la forme $\mathbb B_\bot \times D\times D \to D$ où $D$ est un domaine de Scott et renvoie $\bot$ si l'un des arguments est $\bot$ et fait sinon l'association suivante : $(\true,e,e')\mapsto e$ et $(\false,e,e')\mapsto e'$. Il suffit alors d'utiliser la continuité en chaque argument. En effet, pour $\mathbb B_\bot$ on a une fonction stricte sur un domaine plat et pour chaque $D$ la fonction est une projection, qui est donc continue.
+
+Nous pouvons donc donner une sémantique de nos lambda-termes, cf. figure \ref{semantique}. Nous écrirons $\gamma$ pour un élément d'un contexte donné, $\gamma\in\llbracket\Gamma\rrbracket$.
+
+\begin{expl}
+    Donnons la sémantique du terme $$\letrec{\fact}{\fun\;x\to\ifthenelse{x=0}{1}{x\times \fact\;(x-1)}}{\fact}$$
+    \begin{multline*}
+        \llbracket\letrec{\fact}{\fun\;x\to\ifthenelse{x=0}{1}{x\times \fact\;(x-1)}}{\fact}\rrbracket = \bigvee_{n\in\nat}\bigg[ g\mapsto\\ x\mapsto \llbracket\ifthenelse{\!\!\!}{\!\!\!\!}{\!\!\!}\rrbracket \circ \langle \llbracket=\rrbracket\circ \langle 0,x\rangle, 1, \llbracket\times\rrbracket \circ\langle x,\ev\circ\langle g,\llbracket -\rrbracket\circ\langle x,1\rangle\rangle\rangle\rangle\bigg]^n(\bot)
+    \end{multline*}
+\end{expl}
+
+\begin{figure}[p]
+    \centering
+    \rule{17cm}{0.5pt}\\
+    $$
+    \begin{array}{rl}
+        \llbracket\Gamma\vdash x : \tau\rrbracket &= \pi_i\\ \\
+        \llbracket\Gamma\vdash k : \intt\rrbracket &= \gamma \mapsto k\\ \\
+        \llbracket\Gamma\vdash \true : \boolt\rrbracket &= \gamma \mapsto \true\\ \\
+        \llbracket\Gamma\vdash \false : \boolt\rrbracket &= \gamma \mapsto \true\\ \\
+        \llbracket\Gamma\vdash \fun\; x \to M : \sigma\to\tau\rrbracket &= \Lambda\llbracket\Gamma, x : \sigma\vdash M : \tau\rrbracket\\ \\
+        \llbracket\Gamma\vdash M\; N : \tau\rrbracket &= \ev \circ \langle \llbracket\Gamma\vdash M : \sigma \to\tau\rrbracket,\llbracket\Gamma\vdash N : \sigma\rrbracket\rangle\\ \\
+        \llbracket\Gamma\vdash \ifthenelse{M}{N}{P} : \tau\rrbracket &= \llbracket\ifthenelse{\!\!\!\!}{\!\!\!\!}{\!\!\!}\rrbracket\circ \langle \llbracket\Gamma\vdash M : \boolt\rrbracket,\llbracket\Gamma\vdash N : \tau\rrbracket,\llbracket\Gamma\vdash P : \tau\rrbracket\rangle\\ \\
+        \llbracket\Gamma\vdash \letin{x}{M}{N} : \tau\rrbracket &= \ev\circ  \langle    \Lambda\llbracket\Gamma,x : \sigma\vdash N : \tau \rrbracket,\llbracket\Gamma\vdash M : \sigma\rrbracket\rangle \\ \\
+        \llbracket\Gamma\vdash \letrec{x}{M}{N} : \tau\rrbracket &= \ev\circ  \langle    \Lambda\llbracket\Gamma,x : \sigma\vdash N : \tau \rrbracket,\displaystyle{\bigvee_{n\in\nat}} \Lambda\llbracket\Gamma,x : \sigma\vdash M : \sigma\to\sigma\rrbracket^n(\bot_{\llbracket\sigma\rrbracket})\rangle \\ \\
+        \llbracket\Gamma\vdash M + N : \intt\rrbracket &= \llbracket+\rrbracket \circ \langle\llbracket\Gamma\vdash M : \intt\rrbracket,\llbracket\Gamma\vdash N : \intt\rrbracket\rangle\\ \\
+        \llbracket\Gamma\vdash M - N : \intt\rrbracket &= \llbracket-\rrbracket \circ \langle\llbracket\Gamma\vdash M : \intt\rrbracket,\llbracket\Gamma\vdash N : \intt\rrbracket\rangle\\ \\
+        \llbracket\Gamma\vdash M \times N : \intt\rrbracket &= \llbracket\times\rrbracket \circ \langle\llbracket\Gamma\vdash M : \intt\rrbracket,\llbracket\Gamma\vdash N : \intt\rrbracket\rangle\\ \\
+        \llbracket\Gamma\vdash M \| N : \boolt\rrbracket &= \llbracket\|\rrbracket \circ \langle\llbracket\Gamma\vdash M : \boolt\rrbracket,\llbracket\Gamma\vdash N : \boolt\rrbracket\rangle\\ \\
+        \llbracket\Gamma\vdash M \andt N : \boolt\rrbracket &= \llbracket\andt\rrbracket \circ \langle\llbracket\Gamma\vdash M : \boolt\rrbracket,\llbracket\Gamma\vdash N : \boolt\rrbracket\rangle\\ \\
+        \llbracket\Gamma\vdash \nott (M) : \boolt\rrbracket &= \llbracket\nott\rrbracket \circ \llbracket\Gamma\vdash M : \boolt\rrbracket \\ \\
+        \llbracket\Gamma\vdash M \leq N : \boolt\rrbracket &= \llbracket\leq\rrbracket \circ \langle\llbracket\Gamma\vdash M : \intt\rrbracket,\llbracket\Gamma\vdash N : \intt\rrbracket\rangle\\ \\
+        \llbracket\Gamma\vdash \langle M,N\rangle : \sigma\times \tau\rrbracket &= \langle \llbracket\Gamma\vdash M : \sigma\rrbracket,\llbracket\Gamma\vdash N : \tau\rrbracket\rangle\\ \\
+        \llbracket\Gamma\vdash \pi_1M : \tau\rrbracket &= \ev \circ \langle \pi_1,\llbracket\Gamma\vdash M :\tau\times\sigma\rrbracket\rangle\\ \\
+        \llbracket\Gamma\vdash \pi_2M : \tau\rrbracket &= \ev \circ \langle \pi_2,\llbracket\Gamma\vdash M :\tau\times\sigma\rrbracket\rangle\\ \\
+        
+    \end{array}
+    $$
+    \rule{17cm}{0.5pt}
+    \caption{Sémantique de OCaml}
+    \label{semantique}
+\end{figure}

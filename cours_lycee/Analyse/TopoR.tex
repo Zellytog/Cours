@@ -1,0 +1,591 @@
+\section{Topologie des réels}
+
+Pour pouvoir étudier efficacement l'analyse, nous allons commencer par introduire la topologie de $\mathbb R$. Nous ne détaillerons cependant pas ce qu'est la topologie : nous utilisons ce terme uniquement comme indicateur de ce dans quoi se place notre étude. Nous allons principalement décrire $\mathbb R$, puis donner les notions de voisinage, de limite et de continuité, avant de donner le résultat essentiel de cette considération topologique : le théorème de Bolzano-Weierstrass.
+
+\subsection{Axiomes des l'ensemble des réels}
+
+D'abord, nous allons introduire ce qu'est l'ensemble $\mathbb R$. Nous allons présenter un ensemble d'axiomes paraissant évidents à propos de $\mathbb R$, mais qu'il sera trop laborieux de démontrer (car cela signifierait donner une construction explicite de $\mathbb R$, ce qui est hors du cadre de ce document).
+
+\begin{ax}[Les réels forment un corps ordonné]
+    L'ensemble $(\mathbb R,+,\times,\leq)$ est un corps ordonné, ceci signifie que :
+    \begin{itemize}[label=$\bullet$]
+        \item L'opération $+ : \mathbb R \times \mathbb R \to \mathbb R$ est associative, càd $$\forall x\in \mathbb R, \forall y \in\mathbb R, \forall z\in\mathbb R, (x+y)+z = x+(y+z)$$ ce qui signifie qu'on notera indifféremment $x+y+z$.
+        \item L'opération $+$ est commutative, càd $$\forall x\in\mathbb R,\forall y\in \mathbb R, x+y=y+x$$
+        \item L'opération $+$ a l'élément neutre $0$, càd $$\forall x\in\mathbb R, x+0=x \land 0+x = x$$
+        \item Tout élément $x\in\mathbb R$ a un symétrique pour $+$, noté $-x$, tel que $x+(-x)=-x+x = 0$. On notera directement $a-b$ à la place de $a+(-b)$.
+        \item L'opération $\times$ est elle aussi associative, commutative et possède un élément neutre noté $1$.
+        \item Tout élément $x\in\mathbb R \setminus\{0\}$ possède un symétrique pour $\times$, noté $\frac{1}{x}$ ou $x^{-1}$, tel que $x\times x^{-1}=x^{-1}\times x = 1$.
+        \item La relation $\leq$ est une relation d'ordre totale sur $\mathbb R$.
+        \item Pour tous $a,b,c,d\in\mathbb R$, si $a\leq b$ et $c\leq d$ alors $a+c\leq b+d$.
+        \item Pour tous $a,b\in\mathbb R$, si $a\geq 0$ et $b\geq 0$ alors $a\times b\geq 0$.
+    \end{itemize}
+\end{ax}
+
+Nous utiliserons en général des conséquences de ces axiomes, mais nous ne montreront pas en quoi ils découlent de ces définitions. Cette décision est motivée par l'évidence des manipulations en question (par exemple la règle des signes qui dit que si $a\leq 0$ et $b\geq 0$ alors $ab\leq 0$). Nous encourageons cependant un lecteur motivé à redémontrer ce genre de petits résultats à mesure qu'ils sont utilisés. De plus nous identifions évidemment $\mathbb N$ comme une partie de $\mathbb R$, et de même pour $\mathbb Z$. Ainsi écrire $-7\in\mathbb R$ est considéré comme valide (ce qui peut sembler évident, mais qui n'est pas forcément rigoureusement valide).
+
+Enfin, remarquons un point important : ces axiomes sont aussi respectés par $\mathbb Q$, l'ensemble des nombres rationnels, qui n'est pourtant pas l'ensemble $\mathbb R$ (puisqu'il existe des nombres irrationnels). Que nous manque-t-il alors pour avoir un ensemble qui se comporte comme $\mathbb R$ ? Nous allons justement introduire une propriété qui distingue $\mathbb Q$ et $\mathbb R$, qui se trouve caractériser exactement $\mathbb R$.
+
+\begin{ax}[Propriété de la borne supérieure]
+    Soit $S\subseteq \mathbb R$ une partie majorée, c'est-à-dire telle qu'il existe $M\in\mathbb R$ tel que $\forall s\in S, s\leq M$. Alors il existe une borne supérieure à $S$, i.e. un élément $\sup_S$ majorant $S$, donc tel que $\forall s\in S, s\leq \sup_S$, et tel que pour tout majorant $M$ de $S$, on ait $\sup_S\leq M$.
+\end{ax}
+
+\begin{exo}[*]
+    Soit la partie $S = \{ x \mid x\in \mathbb Q, x^2\leq 2\}$. Montrer que $\sup_S = \sqrt{2}$ dans $\mathbb R$. En déduire que $S$ n'a pas de borne supérieure dans $\mathbb Q$.
+\end{exo}
+
+\begin{rmk}
+    Cet axiome signifie aussi que toute partie $S$ minorée possède une borne inférieure, car la borne supérieure de l'ensemble $S' = \{-s\mid s\in S\}$ respecte la relation $-\sup_{S'} = \inf_S$. De plus, les bornes supérieure et inférieure sont uniques en procédant par double inégalité.
+\end{rmk}
+
+Nous allons donner caractérisation importante de la borne supérieure d'une partie majorée.
+
+\begin{prop}\label{prop:borne_sup_carac}
+    Soit $S\subseteq \mathbb R$ une partie majorée et $s\in\mathbb R$. Alors $s$ est la borne supérieure de $S$ si et seulement si $s$ est un majorant de $S$ et pour tout $\varepsilon > 0$, il existe $x\in S$ tel que $s-\varepsilon < x$.
+\end{prop}
+
+\begin{proof}
+    Si $s$ est une borne supérieure de $S$, alors $s$ est majorant de $S$. Soit $\varepsilon > 0$, comme $s-\varepsilon < s$ on en déduit que $s-\varepsilon$ n'est pas un majorant de $S$, ce qui signifie qu'il est faux que pour tous les éléments $x\in S$, $x \leq s-\varepsilon$, i.e. qu'il existe $x\in S$ tel que $s-\varepsilon < x$.
+
+    Réciproquement, si l'autre proposition est vérifiée, alors $s$ est majorant de $S$ et, par l'absurde, si $M$ est un majorant de $S$ tel que $M < s$, alors $s - M > 0$ donc en considérant $\varepsilon = s - M$, on trouve $x\in S$ tel que $s-(s-M) = M < x$, donc $M$ n'est pas majorant de $S$. Donc $s\leq M$, donc $s$ est la borne supérieure de $S$.
+\end{proof}
+
+\subsection{Ensembles ouverts et voisinages}
+
+Nous pouvons alors construire la topologie de $\mathbb R$ : ceci signifie que l'on va donner une famille de parties de $\mathbb R$ qui permettront de définir si un élément est plus proche d'un autre. Par exemple, si l'on prends trois points $x = 0$, $y = 1$ et $z = 2$, alors on peut considérer que $y$ est plus proche de $x$ que $z$ parce que tout intervalle qui contient $x$ et $z$ contient aussi $y$. Plutôt que de considérer des intervalles, nous allons préciser notre description par la notion d'ouvert. Une façon classique d'introduire la topologie de $\mathbb R$ est de donner la notion de distance sur $\mathbb R$, mais nous voulons commencer par développer le raisonnement plus ensembliste qui lui est lié, car cela permettra de donner plus de sens à des notions telles que les voisinages.
+
+Pour que le lien avec la distance puisse s'établir facilement, et car la pure définition d'ouvert peut sembler absconse, nous allons d'abord définir les boules ouvertes.
+
+\begin{defi}[Boule ouverte]
+    Soit $x\in\mathbb R$ et $r > 0$, on appelle boule ouverte de centre $x$ et de rayon $r$, et l'on note $B(x,r)$, l'ensemble $$B(x,r) = ]x-r;x+r[ = \compre{a}{a\in \mathbb R, x-r < a < x+r}$$
+\end{defi}
+
+\begin{defi}[Ouvert]
+    On appelle ouvert de $\mathbb R$ (ou simplement ouvert) une partie $U\subseteq\mathbb R$ qui vérifie la propriété suivante : $$\forall x\in U, \exists \varepsilon > 0, B(x,\varepsilon) \subseteq U$$
+
+    Autrement dit, un ouvert $U$ est un ensemble pour lequel, pour tout point $x$ dans $U$, on peut trouver une boule ouverte assez petite centrée en $x$ qui est contenue dans $U$.
+\end{defi}
+
+\begin{prop}
+    Soit $x\in\mathbb R$ et $r> 0$. Alors $B(x,r)$ est un ouvert.
+\end{prop}
+
+\begin{proof}
+    Soit $y\in B(x,r)$. Par définition, $x-r < y < x+r$. Soit $m = \min(y-(x-r),x+r-y)$ la distance entre $y$ et le bord de $B(x,r)$, montrons que $B(y,m)\subseteq B(x,r)$. Soit $z\in B(y,m)$, on en déduit que $y-m < z < y+m$ mais comme $m \leq y-(x-r)$ (i.e. $-m \geq x-r-y$) et $m \leq x+r-y$, par transitivité des inégalités on obtient $y+x-r-y < z < y+x+r-y$ soit \underline{$x-r < z < x+r$} ce qui signifie que \fbox{$z\in B(x,r)$}, d'où le résultat.
+\end{proof}
+
+La notion d'ouvert étant assez peu intuitive pour la topologie de $\mathbb R$, nous allons directement définir les voisinages.
+
+\begin{defi}[Voisinage]
+    Soit $x\in \mathbb R$, on appelle voisinage de $x$ une partie $V\subseteq\mathbb R$ telle qu'il existe un ouvert $U\subseteq V$ contenant $x$.
+
+    On note $\mathcal V_x$ l'ensemble des voisinages de $x$ (c'est donc un ensemble d'ensembles de réels).
+\end{defi}
+
+\begin{prop}
+    Soit $x\in \mathbb R$, alors $V\in\mathcal V_x$ si et seulement s'il existe $\varepsilon > 0$ tel que $B(x,\varepsilon)\subseteq V$.
+\end{prop}
+
+\begin{proof}
+    Supposons que $V$ est un voisinage de $x$. Alors on trouve un ouvert $U$ inclus dans $V$ et contenant $x$. Par définition du fait que $U$ est un ouvert, on trouve $\varepsilon > 0$ tel que $B(x,\varepsilon)\subseteq U$, donc par transitivité de l'inclusion on en déduit que \fbox{$B(x,\varepsilon)\subseteq V$}.
+
+    Réciproquement, supposons qu'on trouve $\varepsilon > 0$ tel que $B(x,\varepsilon)\subseteq V$. Alors comme $B(x,\varepsilon)$ est un ouvert, on a trouvé un ouvert contenant $x$ inclus dans $V$ : \underline{$V$ est un voisinage de $x$.}
+\end{proof}
+
+Un voisinage est donc un ensemble \og autour du point $x$\fg{} en ce sens que pour un voisinage donné de $x$, il existe une distance en-dessous de laquelle tous les points assez près de $x$ sont dans ce voisinage. On peut donc par exemple avoir l'intuition de ce que signifie \og $x$ est plus près de $y$ que $z$\fg{} par le fait qu'il existe plus de voisinages de $y$ contenant $x$ que de voisinages de $y$ contenant $z$. Attention cependant, ce qui vient d'être écrit est seulement une intuition du résultat, car le terme de \og plus de voisinages\fg{} n'est pas rigoureux.
+
+Un ensemble de voisinages d'un point est ce que l'on appelle un filtre des parties de $\reel$, mais nous n'allons pas détailler la théorie des filtres. Simplement nous allons donner des propriétés basiques des ensembles $\mathcal V_a$.
+
+\begin{prop}[Les voisinages forment un filtre]
+    Soit $a\in\reel$, alors les propriétés suivantes sont vérifiées :
+    \begin{itemize}[label=$\bullet$]
+        \item Si $V\in\mathcal V_a$ et $V\subseteq W$ alors $W\in\mathcal V_a$ (en particulier l'union d'un voisinage de $a$ avec toute partie est un voisinage de $a$).
+        \item Si $V\in\mathcal V_a$ et $V'\in\mathcal V_a$ alors $V\cap V'\in\mathcal V_a$.
+        \item $\reel\in\mathcal V_a$.
+    \end{itemize}
+\end{prop}
+
+\begin{proof}
+    Prouvons chaque propriété :
+    \begin{itemize}[label=$\bullet$]
+        \item Soit $V\in\mathcal V_a$, alors on trouve $\varepsilon > 0$ tel que $B(a,\varepsilon)\subseteq V$, donc par transitivité de l'inclusion $B(a,\varepsilon)\subseteq W$, donc $W\in\mathcal V_a$.
+        \item Soit $V,V'\in\mathcal V_a$, alors on trouve $\varepsilon > 0$ et $\varepsilon' > 0$ tels que $B(a,\varepsilon) \subseteq V$ et $B(a,\varepsilon')\subseteq V'$. Alors en prenant $\varepsilon'' = \min(\varepsilon,\varepsilon')$ on déduit que $B(a,\varepsilon'')\subseteq V$ et $B(a,\varepsilon'')\subseteq V'$, d'où $B(a,\varepsilon'')\subseteq V\cap V'$, donc $V\cap V'\in\mathcal V_a$.
+        \item Comme $B(a,1)\subseteq \reel$, on en déduit que $\reel\in\mathcal V_a$.
+    \end{itemize}
+\end{proof}
+
+Introduisons la notion de base séquentielle de voisinage, qui sera utile plus tard.
+
+\begin{defi}[Base séquentielle de voisinages]
+    Soit $a\in\reel$. On dit que $(V_n){n\in\nat}$ est une base séquentielle de voisinages si pour tout voisinage $V\in\mathcal V_a$, il existe un $n\in\nat$ tel que $V_a\subseteq V$ et si $V_{n+1}\subseteq V_n$, i.e. (par récurrence) si $n > m \implies V_n\subseteq V_m$.
+\end{defi}
+
+\begin{rmk}
+    Le fait de considérer que la base est décroissante pour l'inclusion est une convention prise dans ce document pour faciliter les démonstrations.
+\end{rmk}
+
+La plupart des propositions \og vraies sur tous les voisinages\fg{} sont en fait équivalentes à être vraies sur une base séquentielle de voisinages, d'où l'intérêt de cette notion.
+
+\subsection{Valeur absolue et distance}
+
+Une autre façon de considérer si des points sont loin ou non les uns des autres est de définir une distance. Il existe dans $\mathbb R$ une distance canonique, mais commençons par définir ce qu'est une distance en toute généralité :
+
+\begin{defi}[Distance]
+    Soit $E$ un ensemble, on dit que $d : E \times E \to \mathbb R_+$ est une distance quand les conditions suivantes sont vérifiées :
+    \begin{itemize}[label=$\bullet$]
+        \item Symétrie : $\forall x\in E, \forall y \in E, d(x,y)=d(y,x)$
+        \item Séparation : $\forall x\in E, \forall y \in E, d(x,y) = 0 \iff x=y$
+        \item Inégalité triangulaire : $\forall x \in E, \forall y \in E, \forall z \in E, d(x,z) \leq d(x,y)+d(y,z)$
+    \end{itemize}
+\end{defi}
+
+Dans le cas qui nous intéresse (celui où $E=\mathbb R$), nous allons commencer par définir la valeur absolue.
+
+\begin{defi}[Valeur absolue]
+    On définit la valeur absolue de $x$, notée $|x|$, par $$|x| = \max(x,-x)$$
+\end{defi}
+
+La valeur absolue d'un réel est donc le réel auquel on a supprimé l'information du signe. Par exemple $|2|=2$, et $|-2| = 2$.
+
+\begin{exo}
+    Montrer que $|x|=|y|$ si et seulement si $x=y$ ou $x=-y$.
+\end{exo}
+
+\begin{exo}
+    Montrer que $|x| = \sqrt{x^2}$.
+\end{exo}
+
+\begin{exo}
+    Montrer que pour tous réels $x,y$ le produit des valeurs absolues est la valeur absolue du produit : $|x|\times|y|=|x\times y|$
+\end{exo}
+
+\begin{rmk}
+    On peut voir la valeur absolue comme le module complexe restreint à $\mathbb R$.
+\end{rmk}
+
+La valeur absolue peut se voir comme la distance à $0$, et plus généralement la valeur absolue de $x-y$ correspond à la distance usuelle entre $x$ et $y$ sur la droite réelle. Montrons donc que c'est une distance.
+
+\begin{prop}
+    La fonction $$(x,y)\mapsto |x-y|$$ est une distance sur  $\mathbb R$.
+\end{prop}
+
+\begin{proof}
+    Vérifions les axiomes d'une distance :
+    \begin{itemize}[label=$\bullet$]
+        \item Symétrie : soient $x$ et $y$ deux réels. Comme $x-y=-(y-x)$ on en déduit que \fbox{$|x-y| = |y-x|$}.
+        \item Séparation : $|0|=0$ donc $|x-x|=0$ pour tout $x\in\mathbb R$. Réciproquement, pour $x,y\in\mathbb R$, si $|x-y|=0$ alors $x-y = 0$ ou $x-y=0$, ce qui dans les deux cas est équivalent à $x=y$. Donc \fbox{$|x-y|=0 \iff x=y$}.
+        \item Inégalité triangulaire : on veut montrer que $|x-z| \leq |x-y|+|y-z|$, il nous suffit pour cela de montrer que pour tout $a,b\in\mathbb R, |a+b|\leq |a|+|b|$ (puisque $x-z=(x-y)+(y-z)$). D'abord $2\times|ab| \geq 2ab$, et $(|a|+|b|)^2 = a^2+b^2+2|ab|$ car $a^2=|a|^2$ et de même pour $b$. On en déduit que $(|a|+|b|)^2 \geq (a+b)^2$ donc, en en prenant la racine carrée, que $|a|+|b| \geq |a+b|$.
+    \end{itemize}
+    La valeur absolue de la différence est donc une distance sur $\mathbb R$.
+\end{proof}
+
+\begin{cor}[Inégalité triangulaire]
+    Nous avons montré un résultat intermédiaire qui est utile en tant que tel : $$\forall x\in\mathbb R,\forall y\in \mathbb R, |x+y|\leq |x|+|y|$$
+\end{cor}
+
+\begin{cor}[Deuxième inégalité triangulaire]
+    Un résultat plus fort mais qui découle de l'inégalité triangulaire est le suivant : $$\forall x\in\reel,\forall y\in\reel, ||x|-|y|| \leq |x+y| \leq |x|+|y|$$
+\end{cor}
+
+\begin{proof}
+    Comme $x = (x + y)-y$ on en déduit en passant à la valeur absolue et à l'inégalité triangulaire que $|x| \leq |x+y|+|y|$ et de même avec $y = (y + x) - y$ on déduit que $|y| \leq |x+y| + |x|$. Ces deux équations sont équivalentes respectivement à $|x|-|y|\leq |x+y|$ et $|y|-|x|\leq |x+y|$ mais cela signifie que $||x|-|y||\leq |x+y|$ (car $|x+y|$ majore une valeur et son opposé, donc sa valeur absolue).
+\end{proof}
+
+\begin{exo}\label{exo:boule}
+    Soient $a$ et $r$ deux réels. Montrer que l'ensemble des solutions de l'inéquation $$|x-a| < r$$ d'inconnue $x$ est exactement $B(a,r)$.
+\end{exo}
+
+Nous pouvons désormais donner de nouvelles caractérisations des boules ouvertes et des voisinages.
+
+\begin{prop}
+    La boule ouvert $B(x,r)$ est exactement l'ensemble $\compre{y}{y\in \mathbb R, |x-y| < r}$.
+\end{prop}
+
+\begin{proof}
+    Le résultat vient directement de l'exercice \ref{exo:boule}.
+\end{proof}
+
+\begin{prop}\label{prop:voisinage_eps}
+    Une partie $V\subseteq \mathbb R$ est un voisinage de $x$ si et seulement s'il existe $\varepsilon > 0$ tel que la propriété suivante est vérifiée : \begin{equation}\label{eq:voisinage}\forall y\in \mathbb R, |x-y| < \varepsilon \implies y\in V\end{equation}
+\end{prop}
+
+\begin{proof}
+    $V$ est un voisinage de $x$ si et seulement s'il existe une boule $B(x,\varepsilon)$ contenue dans $V$, avec $\varepsilon > 0$. En utilisant la nouvelle caractérisation de boule ouverte et la définition d'inclusion, on en déduit que $|x-y| < \varepsilon \implies y \in V$ est équivalent à $B(x,\varepsilon)\subseteq V$.
+    
+    Donc \fbox{$V$ est un voisinage de $x$ si et seulement s'il existe $\varepsilon > 0$ tel que (\ref{eq:voisinage}) est vérifiée.}
+\end{proof}
+
+\subsection{Limite et caractérisation séquentielle}
+
+Les notions de voisinage, d'ouvert et de distance servent avant tout à pouvoir définir la notion de limite. Nous allons définir la limite d'une suite en premier lieu, puis celle d'une fonction. L'idée derrière une limite est de définir ce que signifie \og s'approcher aussi près que possible d'un point\fg{} : la notion de voisinage permet justement de traduire ça. Pour pouvoir unifier un peu les définitions sur les limites de suites, nous allons introduire une nouvelle notion de voisinage, appelé voisinage de $\pm \infty$.
+
+\begin{defi}[Voisinage aux infinis]
+    On dit que $V$ est un voisinage de $+\infty$ (respectivement $-\infty$) si $V$ contient un intervalle de la forme $]a;+\infty[$ (respectivement $]-\infty;a[$). On note respectivement $\mathcal V_{+\infty}$ et $\mathcal V_{-\infty}$ les ensembles des voisinage de $+\infty$ et de $-\infty$.
+\end{defi}
+
+Le lecteur voulant s'exercer peut vérifier que le comportement de de $\mathcal V_{+\infty}$ et $\mathcal V_{-\infty}$ est celui attendu d'un ensemble de voisinages.
+
+\begin{defi}[Limite d'une suite réelle]
+    Soit $(u_n)_{n\in\nat}\in\mathbb R^\nat$ une suite réelle et $l\in\mathbb R$. On dit que $(u_n)$ converge vers $l$ si pour tout voisinage $V$ de $l$, il existe un indice $n\in\mathbb N$ tel que pour tout $p> n$, $u_p\in V$. Décrit plus formellement, la définition est donc $$\forall V\in\mathcal V_l, \exists n\in\mathbb N,\forall p > n, u_p\in V$$ on note alors $\displaystyle{\lim_{n\to\infty} u_n = l}$
+
+    On dit que $(u_n)$ diverge vers $+\infty$ (respectivement $-\infty$) si pour tout voisinage $V$ de $+\infty$ (respectivement $-\infty$) il existe un indice $n\in\mathbb N$ à partir duquel toutes les valeurs de $u_n$ sont dans $V$. Plus formellement la définition est $$\forall V\in\mathcal V_{\pm\infty},\exists n\in\nat, \forall p > n, u_p\in V$$ on note alors $\displaystyle{\lim_{n\to\infty} u_n = +\infty}$ (respectivement $\displaystyle{\lim_{n\to\infty} u_n = -\infty}$).
+\end{defi}
+
+\begin{rmk}
+    S'il existe un réel $l$ tel que $(u_n)$ converge vers $l$, on dit que $(u_n)$ converge. S'il n'existe pas de telle limite, on dit que $(u_n)$ diverge (remarquons que diverger vers un infini est une condition plus forte que diverger, par exemple $((-1)^n)$ diverge mais ne diverge vers aucun infini).
+\end{rmk}
+
+\begin{rmk}
+    On note souvent $\lim u_n$ directement, auquel cas il est sous-entendu $\lim_{n\to\infty} u_n$.
+\end{rmk}
+
+Donnons une caractérisation plus pratique des limites.
+
+\begin{prop}[Caractérisation des limites]
+    Soit $(u_n)$ une suite réelle et $l$ un réel. Alors $$\lim_{n\to\infty}u_n = l \iff \forall \varepsilon > 0,\exists n\in\mathbb N,\forall p > n, |u_p-l| < \varepsilon$$
+    De même dans le cas d'une divergence vers l'infini : $$\lim_{n\to\infty}u_n = +\infty \iff \forall M \in \mathbb R, \exists n\in\nat,\forall p > n, u_p > M$$
+    $$\lim_{n\to\infty}u_n = -\infty \iff \forall m \in\mathbb R, \exists n\in\nat,\forall p > n, u_p < m$$
+\end{prop}
+
+\begin{proof}
+    Supposons que $\lim  u_n = l$. Soit $\varepsilon > 0$, alors $B(l,\varepsilon)$ est un voisinage de $x$, donc on trouve $n\in \nat$ tel que $\forall p > n, u_p \in B(l,\varepsilon)$ ce qui est équivalent à $\forall p > n, |u_p-l| < \varepsilon$, donc \fbox{$\forall\varepsilon > 0,\exists n\in\nat,\forall p >n,|u_p-l| < \varepsilon$}. Réciproquement, soit $V\in\mathcal V_l$, par la proposition \ref{prop:voisinage_eps}, on trouve $\varepsilon > 0$ tel que $\forall y\in\reel,|l-y| < \varepsilon \implies y \in V$. En utilisant notre hypothèse avec le $\varepsilon$ ainsi introduit, on en déduit qu'il existe $n\in\nat$ tel que $\forall p > n, |u_p-l| < \varepsilon$, ce qui signifie que $u_p\in V$. On en déduit donc que \fbox{$\displaystyle{\lim_{n\to\infty} u_n = l}$}.
+
+    Supposons que $\lim u_n = +\infty$. Soit $M\in \reel$. Par définition, $]M;+\infty[\in\mathcal V_{+\infty}$ donc on trouve un rang à partir duquel les termes de $u_n$ sont dans $]M,+\infty[$, ce qui signifie par définition qu'on trouve un rang à partir duquel les termes de $u_n$ sont supérieurs strictement à $M$. D'où \fbox{$\forall M\in\reel,\exists\in\nat,\forall p>n,u_p > M$}. Réciproquement, soit un voisinage $V\in\mathcal V_{+\infty}$, on trouve une partie de la forme $]M;+\infty[\subseteq V$ et d'après notre hypothèse, on trouve un rang à partir duquel tous les termes sont supérieurs strictement à $M$, c'est-à-dire tous les termes appartiennent à $V$. Ce qui signifie que \fbox{$\lim u_n = +\infty$}.
+\end{proof}
+
+Cette caractérisation nous sera utile dans un premier temps pour démontrer l'unicité de la limite.
+
+\begin{exo}[Une autre caractérisation]
+    Soit $a\in\reel\cup\{-\infty,+\infty\}$, $(V_n)$ une base séquentielle de voisinages de $a$ et $(u_n)$ une suite réelle. Montrer que $\lim u_n = a$ si et seulement si pour tout $n\in\mathbb N$ il existe $n_0\in\nat$ tel que pour tout $p > n_0$, on a $u_p \in V_n$.
+\end{exo}
+
+On peut donc désormais noter $\lim u_n$ l'unique (nous le montrons juste après) $l\in\reel$ tel que $\lim u_n = l$, si $(u_n)$ est une suite convergente.
+
+\begin{exo}
+    Montrer que $\lim u_n = +\infty \iff \lim -u_n = -\infty$. En déduire la troisième équivalence de la proposition précédente.
+\end{exo}
+
+\begin{prop}
+    Soit $(u_n)$ une suite réelle. Si $(u_n)$ converge vers $l$ et vers $l'$ alors $l=l'$.
+\end{prop}
+
+\begin{proof}
+    Nous allons démontrer ce résultat par l'absurde. Supposons que $l\neq l'$. Soit alors $\delta = \displaystyle{\frac{|l-l'|}{3}} > 0$. Par définition de la limite en $l$, on trouve $n_1$ tel que $\forall p > n_1, |u_p-l| < \delta$ et de même en $l'$, on trouve $n_2$ tel que $\forall p > n_2, |u_p - l'| < \delta$. Considérons $n = \max(n_1,n_2)$ : pour tout $p > n$, on a à la fois $|u_p-l| < \delta$ et $|u_p - l'| < \delta$. En additionnant nos deux inéquations, on trouve $$|u_p - l| + |u_p-l'| < 2\delta < |l-l'|$$ ce qui contredit l'inégalité triangulaire, puisque $|l-l'|\leq |l-u_p| + |u_p - l'|$. Le résultat est donc absurde : on en déduit que \fbox{$l=l'$}.
+\end{proof}
+
+\begin{exo}
+    Montrer que si $(u_n)$ diverge vers un infini, alors $(u_n)$ ne converge pas vers un réel, et ne peut converger que vers un seul infini.
+\end{exo}
+
+\begin{exo}
+    Soit $a\in\reel$, montrer que $(]a-\frac{1}{n};a+\frac{1}{n}[)_{n\in\nat}$ est une base séquentielle de voisinages de $a$. Montrer que $(]n;+\infty[)_{n\in\nat}$ est une base séquentielle de voisinages de $+\infty$. Montrer que $(]-\infty,-n[)_{n\in\nat}$ est une base séquentielle de voisinages de $-\infty$.
+\end{exo}
+
+\begin{exo}
+    Soit $(u_n)$ une suite convergente et $k\in\reel$, montrer que $\lim k u_n = k \lim u_n$.
+\end{exo}
+
+Pour clore cette sous-partie, nous allons revenir sur la définition de borne supérieure : nous allons maintenant en donner une caractérisation séquentielle, c'est-à-dire une caractérisation utilisant des suites.
+
+\begin{prop}
+    Soit $S$ une partie majorée de $\reel$. Alors $s$ est la borne supérieure de $S$ si et seulement si $s$ est un majorant de $S$ et il existe une suite $(x_n)_{n\in\nat}\in S^\nat$ d'éléments de $S$ telle que $\displaystyle{\lim_{n\to\infty} x_n = s}$
+\end{prop}
+
+\begin{proof}
+    Supposons que $s$ est la borne supérieure de $S$. $s$ est donc un majorant de $S$. D'après la proposition \ref{prop:borne_sup_carac}, pour tout $n\in\mathbb N$, on peut trouver $x_n\in S$ tel que $s-\frac{1}{n} < x_n$. Montrons que $\lim x_n = s$. Soit $\varepsilon > 0$, comme $\lim \frac{1}{n}$ on trouve un rang $n_0$ pour lequel pour tout $p > n_0$, $\frac{1}{p} < \varepsilon$ (il n'y a pas de valeur absolue car toutes les grandeurs sont positives, et on regarde la différence à $0$). Alors, pour $p > n_0$, on a d'un côté $s-\frac{1}{p} < x_p$ et de l'autre $\frac{1}{p} < \varepsilon$, d'où $s-x_p < \varepsilon$. Donc \fbox{$\lim x_n = s$}.
+
+    Réciproquement, supposons que $s$ est un majorant de $S$ et qu'il existe $x_n$ une suite d'éléments de $S$ telle que $\lim x_n = s$. Soit $\varepsilon > 0$, on trouve $n\in\nat$ tel que $\forall p > n, |x_p-s| < \varepsilon$, mais comme $s$ est un majorant, l'inégalité est exactement $s - x_p < \varepsilon$ soit $s-\varepsilon < x_p$, donc il existe bien $x\in S$ tel que $s-\varepsilon < x$, donc \fbox{$s$ est la borne supérieure de $S$}.
+\end{proof}
+
+\begin{rmk}
+    Par dualité, on remarque que la borne inférieure d'un ensemble minoré est exactement un minorant tel qu'il existe une suite d'éléments de la partie qui converge vers cette valeur.
+\end{rmk}
+
+\subsubsection{Calcul de limite de suites}
+
+Nous allons nous intéresser à plusieurs théorèmes essentiels pour calculer des limites de suites : le théorème d'encadrement, le théorème de la limite monotone et le théorème des suites adjacentes. Avant cela, nous allons donner plusieurs exercices permettant d'avoir des propriétés basiques pour calculer des limites.
+
+\begin{exo}
+    Montrer que $\lim \frac{1}{n} = 0$. Montrer que $\lim n = +\infty$. Montrer que $\lim x = x$ pour tout $x\in \reel$. Montrer que $\lim \frac{1}{2^n} = 0$.
+\end{exo}
+
+\begin{exo}
+    Montrer que pour deux suites $(u_n)$ et $(v_n)$ convergentes, on a $\lim (u_n+v_n) = (\lim u_n) + (\lim v_n)$, $\lim(u_n-v_n) = (\lim u_n)-(\lim v_n)$ ainsi que $\lim (u_n\times v_n) = (\lim u_n)\times (\lim v_n)$.
+\end{exo}
+
+\begin{exo}
+    Montrer que si $\lim u_n = +\infty$ alors il existe un rang $n_0$ tel que pour tout $n > n_0$ on ait $u_n > 0$, montrer de plus que $\displaystyle{\lim \frac{1}{u_n}} = 0$.
+\end{exo}
+
+\begin{rmk}
+    La suite $\displaystyle{\left(\frac{1}{u_n}\right)}_{n\in\nat}$ n'est pas forcément définie pour tout $n$, mais comme on s'est assurés qu'elle l'était à partir d'un certain rang, et que la limite reste la même en supprimant les premiers termes, il n'y a pas de problème. Cependant cela signifie que l'on fait un abus de notation en confondant la suite avec la suite définie à partir d'un certain rang, il est bon de garder cela à l'esprit.
+\end{rmk}
+
+On peut trouver d'autres propriétés pour calculer les limites de suites, mais nous allons écrire les principales règles de calcul de limites dans le tableau Figure \ref{fig:tablelimite}, pour commencer. Il faut lire ce tableau comme on lit une table de vérité : chaque ligne correspond à une certaine limite attribuée à $(u_n)$ et $(v_n)$ et donne alors les valeurs des autres expression en fonctions de ces valeurs. Les cases où il est indiqué FI (pour \textit{Forme Indéterminée}) sont celle où l'on ne peut pas calculer la limite directement à partir de ses composantes. Par exemple on peut montrer que $\lim n^2 = +\infty$, donc le quotient $\frac{n^2}{n} = n$ tend vers $+\infty$ là où $\frac{n}{n^2}$ tend vers $0$.
+
+\begin{figure}
+    \centering
+    \begin{tabular}{| c | c | c | c | c | c |}
+        \hline
+        $\lim u_n$ & $\lim v_n$ & $\lim (u_n + v_n)$ & $\lim (u_n - v_n)$ & $\lim (u_n\times v_n)$ & $\lim (u_n / v_n)$\\
+        \hline
+        $-\infty$ & $-\infty$ & $-\infty$ & FI & $+\infty$ & FI\\
+        $0$ & $-\infty$ & $-\infty$ & $+\infty$ & FI & $0$\\
+        $+\infty$ & $-\infty$ & FI & $+\infty$ & $+\infty$ & FI\\
+        $-\infty$ & $0$ & $-\infty$ & $-\infty$ & FI & $-\infty$\\
+        $0$ & $0$ & $0$ & $0$ & $0$ & FI \\
+        $+\infty$ & $0$ & $+\infty$ & $+\infty$ & FI & $+\infty$\\
+        $-\infty$ & $+\infty$ & FI & $-\infty$ & $-\infty$ & FI\\
+        $0$ & $+\infty$ & $+\infty$ & $-\infty$ & FI & $0$\\
+        $+\infty$ & $+\infty$ & $+\infty$ & FI & $+\infty$ & FI\\
+        \hline
+    \end{tabular}
+    \caption{Tableau des limites usuelles}
+    \label{fig:tablelimite}
+\end{figure}
+
+\begin{exo}
+    Compléter le tableau avec les cas où $u_n$ et $v_n$ ont des limites finies non nulles, suivant le signe de leurs limites.
+\end{exo}
+
+\begin{prop}
+    Soient $P = (p_i)_{i\in\nat}$ et $Q=(q_i)_{i\in\nat}$ deux polynômes réels, de degrés respectifs $m$ et $r$. Alors : 
+    \begin{itemize}[label=$\bullet$]
+        \item si $m > r$, $$\lim \frac{P(n)}{Q(n)} = +\infty$$
+        \item si $m = r$, $$\lim \frac{P(n)}{Q(n)} = \frac{p_m}{q_r}$$
+        \item si $m > r$, $$\lim \frac{P(n)}{Q(n)} = 0$$
+    \end{itemize}
+\end{prop}
+
+\begin{proof}
+    Tout d'abord, on montre par récurrence que $\forall k\in\nat^*, \displaystyle{\lim \frac{1}{n^k}} = 0$ :
+    \begin{itemize}[label=$\bullet$]
+        \item On a montré dans un exercice précédent que $\displaystyle{\lim\frac{1}{n} = 0}$.
+        \item Soit $k\in\nat$, supposons que $\displaystyle{\lim \frac{1}{n^k} = 0}$, alors par produit avec la suite des inverse de limite nulle, on en déduit que $\displaystyle{\lim \frac{1}{n^{k+1}} = 0}$
+    \end{itemize}
+    D'où le résultat.
+
+    Maintenant, on réécrit $P(n)$ et $Q(n)$ de la façon suivante :
+    \begin{align*}
+        P(n) &= \sum_{i=0}^m p_i n^i\\
+        &= n^m \left(\sum_{i=0}^m p_i n^{i-m}\right)\\
+        &= n^m \left(\sum_{i=0}^m p_{m-i} n^{-i}\right)\\
+        Q(n) &= n^r \left(\sum_{i=0}^r q_{r-i} n^{-i}\right)\\
+    \end{align*}
+    Mais pour $i > 0$, $n^{-i} = \frac{1}{n^i}$ donc chaque terme tend vers $0$. On en déduit donc que $$\lim \sum_{i=0}^m p_{m-i} n^{-i} = p_m \qquad \textrm{et} \qquad \lim \sum_{i=0}^r q_{r-i} n^{-i} = q_r$$ d'où, en écrivant le quotient, l'égalité suivante : $$\frac{P(n)}{Q(n)} = \frac{n^m \left(\sum_{i=0}^m p_{m-i} n^{-i}\right)}{n^r (\sum_{i=0}^r q_{r-i} n^{-i}} = n^{m-r} R(n)$$ où $R$ est une suite telle que $\lim R(n) = \frac{p_m}{q_r}$.
+
+    Le résultat découle alors immédiatement :
+    \begin{itemize}[label=$\bullet$]
+        \item si $m > r$, alors $m-r > 0$ donc par produit de limite, sachant que $\lim n^{m-r} =+\infty$ et $\lim R(n)$ est finie, $$\boxed{\lim \frac{P(n)}{Q(n)} = +\infty}$$
+        \item si $m = r$ alors $m-r = 0$ donc $\frac{P(n)}{Q(n)} = R(n)$, d'où directement $$\boxed{\lim \frac{P(n)}{Q(n)} = \frac{p_m}{q_m}}$$
+        \item si $m < r$ alors $m-r < 0$ donc par produit d'une limite finie par une limite nulle, $$\boxed{\lim \frac{P(n)}{Q(n)} = 0}$$
+    \end{itemize}
+\end{proof}
+
+\begin{them}[Encadrement]
+    Soient $(u_n),(v_n)$ et $(w_n)$ des suites réelles, telles que $\forall n\in\nat, u_n \leq v_n \leq w_n$ et $\lim u_n = \lim w_n$ (sous-entendu que $u_n$ et $w_n$ convergent). Alors $\lim v_n = \lim u_n = \lim w_n$.
+\end{them}
+
+\begin{proof}
+    Soit $l = \lim u_n = \lim w_n$. Soit $\varepsilon > 0$, montrons qu'à partir d'un certain rang, $|v_p - l| < \varepsilon$. Pour cela, on nomme $n_0$ et $n_1$ les indices respectifs à partir desquels $\forall p > n_0, |u_n - l| < \varepsilon$ et $\forall p > n_1, |w_n - l| < \varepsilon$. Soit $n_2 = \max(n_0,n_1)$, on a alors pour $p > n_0$ les deux équation suivante : $\left\{\begin{array}{rcl}
+        l-\varepsilon <& u_p &< l+\varepsilon\\
+        l-\varepsilon <& w_p &< l+\varepsilon 
+    \end{array}\right.$ ce qui signifie, par l'encadrement de $v_p$ par $u_p$ et $w_p$, que $$l-\varepsilon < v_p < l+\varepsilon$$ soit \fbox{$|v_p-l| < \varepsilon$}, d'où le résultat.
+\end{proof}
+
+\begin{exo}
+    En utilisant le théorème d'encadrement, déterminer la nature de la suite $\displaystyle{\left(\frac{(-1)^n}{n}\right)}$, ce qui signifie qu'il faut déterminer si la suite converge, et donner sa limite si elle converge.
+\end{exo}
+
+\begin{them}[Majoration, minoration]
+    Soient $(u_n)_{n\in\nat},(v_n)_{n\in\nat}\in\reel^\nat$ deux suites réelles telles que $\forall n\in\nat,u_n \leq v_n$. Alors
+    \begin{itemize}[label=$\bullet$]
+        \item si $\lim u_n = +\infty$ alors $\lim v_n = +\infty$.
+        \item si $\lim v_n = -\infty$ alors $\lim u_n = -\infty$.
+    \end{itemize}
+\end{them}
+
+\begin{proof}
+    Nous n'allons prouver que le premier point, le deuxième sera un exercice. Supposons que $\lim u_n = +\infty$. Soit $V\in\mathcal V_{+\infty}$, par définition on trouve $M\in\reel$ tel que $]M;+\infty[\subseteq V$. Par définition de $\lim u_n = +\infty$ et car $]M;+\infty[\in\mathcal V_{+\infty}$, on trouve $n_0$ tel que $\forall p > n_0, u_p > M$, mais comme pour tout $n\in\nat$, $v_n\geq u_n$, on en déduit que $\forall p > n_0, v_p > M$, donc $\forall p > n_0, v_p\in V$. D'où \fbox{$\lim v_n = +\infty$.}
+\end{proof}
+
+\begin{exo}
+    Montrer le deuxième point du théorème précédent.
+\end{exo}
+
+Le second théorème est celui de la limite monotone, qui permet d'obtenir un résultat de convergence avec des hypothèses relativement faibles.
+
+\begin{them}[Limite monotone]
+    Soit $(u_n)$ une suite croissante (i.e. telle que pour tout $n\in\nat,m\in\nat, n\leq m \implies u_n\leq u_m$). Soit $(u_n)$ est majorée, auquel cas elle converge vers la borne supérieure de ses valeurs atteinte, soit elle n'est pas majorée, auquel cas elle diverge vers $+\infty$.
+\end{them}
+
+\begin{proof}
+    Soit $(u_n)$ une suite croissante. Supposons qu'il existe $M$ majorant $\compre{u_n}{n\in\nat}$. Soit $s$ la borne supérieure de cet ensemble. Par définition, il existe une suite $(v_n)$ qui converge vers $s$. Soit $\varepsilon > 0$, on trouve par définition de la convergence de $(v_n)$ vers $s$ un élément $v_p$ tel que $|v_p - s| < \varepsilon$. Comme $s$ est majorant, on sait que cette inégalité est exactement $s-v_p < \varepsilon$, et puisque $v_p$ appartient aux valeurs prises par $(u_n)$, on trouve $k$ tel que $v_p = u_k$. Pour $p > k$, on a $0 \leq s-u_p \leq s - u_k < \varepsilon$ par croissance de $(u_n)$ et par le fait que $s$ majore les valeurs prises par $(u_n)$. On en déduit que $|s-u_p| < \varepsilon$, donc \fbox{$\lim u_n = s$.}
+
+    Supposons que $(u_n)$ ne soit pas majorée. Cela signifie que pour tout $M\in\mathbb R$, on peut trouver $n\in\nat$ tel que $u_n > M$, mais par croissance de $(u_n)$ cela signifie que pour tout $p > n, u_p > M$. Donc \fbox{$\lim u_n = +\infty$.}
+\end{proof}
+
+\begin{exo}
+    Montrer, de façon duale, que si $(u_n)$ est décroissante alors au choix :
+    \begin{itemize}[label=$\bullet$]
+        \item $(u_n)$ est minorée et converge vers la borne inférieure de ses valeurs.
+        \item $(u_n)$ est non minorée et diverge vers $-\infty$.
+    \end{itemize}
+\end{exo}
+
+Le dernier théorème peut être vu comme un cas particulier du théorème de la limite monotone.
+
+\begin{them}[Suites adjacentes]
+    Soient $(u_n)$ et $(v_n)$ deux suites réelles telles que :
+    \begin{itemize}[label=$\bullet$]
+        \item $(u_n)$ est croissante
+        \item $(v_n)$ est décroissante
+        \item $\lim (u_n-v_n) = 0$
+    \end{itemize}
+    Alors $(u_n)$ est $(v_n)$ sont convergentes et de même limite, et en notant $l$ cette limite on a $\forall n\in\nat, u_n \leq l \leq v_n$.
+\end{them}
+
+\begin{proof}
+    Nous allons d'abord prouver que $\forall n\in\nat,u_n \leq v_n$. Par l'absurde, supposons qu'il existe $n_0$ tel que $u_{n_0} > v_{n_0}$. Alors par croissance de $(u_n)$ et décroissance de $(v_n)$, on en déduit que pour tout $p > n_0$, $u_p-v_p > u_{n_0}-v_{n_0}$ et $u_{n_0}-v_{n_0} > 0$, ce qui contredit $\lim (u_n-v_n) = 0$. Ainsi $\forall n\in\nat,u_n \leq v_n$. Par limite monotone, puisque $(u_n)$ est croissante et majorée par $v_0$ (car $u_n \leq v_n \leq v_0$) et puisque $(v_n)$ est décroissante et minorée par $u_0$, on en déduit que \underline{$(u_n)$ et $(v_n)$ sont convergentes}. Si l'on nomme $l$ et $l'$ les limites respectivement de $(u_n)$ et $(v_n)$ alors on sait que $l-l'=0$ soit $l=l'$. Donc \fbox{$(u_n)$ et $(v_n)$ sont convergentes de même limite.}
+
+    L'inégalité sur la limite découle directement du fait que $l$ est la borne supérieure des valeurs de $(u_n)$ et la borne inférieure des valeurs de $(v_n)$.
+\end{proof}
+
+\subsection{Fermés et segments}
+
+Dans cette sous-partie, nous étudierons la notion de fermé, ainsi que celle de segments. Pour que la notion de fermé fasse sens, voyons déjà ce qu'est un point adhérent à une partie.
+
+\begin{defi}[Adhérence]
+    Soit $F\subseteq \reel$. On dit que $x$ est adhérent à $F$ si pour tout voisinage $V\in\mathcal V_x$, $V\cap F \neq \varnothing$. Autrement dit, un point $x$ est adhérent à une partie $F$ s'il est infiniment proche de $F$. On appelle adhérence de $F$, et l'on note $\overline F$, l'ensemble de ses points adhérents : $$\overline F = \compre{x}{x\in\reel, \forall V\in\mathcal V_x, V\cap F \neq \varnothing}$$
+\end{defi}
+
+Donnons une caractérisation séquentielle d'un point adhérent :
+
+\begin{prop}[Caractérisation séquentielle de l'adhérence]
+    Soit $F\subseteq \reel$ et $x\in\reel$. $x$ est adhérent à $F$ si et seulement s'il existe une suite $(x_n)$ d'éléments de $F$ telle que $\lim x_n = x$.
+\end{prop}
+
+\begin{proof}
+    Supposons que $x$ est adhérent à $F$. On définit le voisinage $V_n = \displaystyle{B\left(x,\frac{1}{n}\right)}\in\mathcal V_x$ et puisque $x$ est adhérent à $F$, on trouve $x_n \in V_n\cap F$. Montrons que $\lim x_n = x$. Soit $\varepsilon > 0$, comme $\lim \frac{1}{n} = 0$ on trouve $n_0$ tel que pour tout $p > n$, $\frac{1}{n} < \varepsilon$. Alors comme $x_n \in V_n$, par définition, $|x_n-x| < \frac{1}{n}$ donc pour $p > n_0$, on en déduit que $|x_p - x| < \varepsilon$, donc \fbox{$\lim x_n = x$ et chaque $x_n$ est un élément de $F$.}
+
+    Réciproquement, s'il existe une suite $(x_n)$ d'éléments de $F$ telle que $\lim x_n = x$, alors soit un voisinage $V\in\mathcal V_x$. Par caractérisation des voisinages, on peut trouver un réel $\varepsilon > 0$ tel que pour tout $y\in\reel$, $|y-x| < \varepsilon \implies y \in V$. Or puisque $\lim x_n = x$, on peut trouver un certain rang $n_0$ à partir duquel $|x_p - x| < \varepsilon$, donc en prenant ce rang $n_0$, on en déduit que $x_{n_0}\in V$, or $x_{n_0}\in F$ donc $F\cap V \neq \varnothing$. On en déduit que\fbox{$x$ est adhérent à $F$.}
+\end{proof}
+
+\begin{rmk}
+    Comme $\lim x = x$, on en déduit que $F\subseteq \overline F$.
+\end{rmk}
+
+Définissons alors les fermés de $\reel$ :
+
+\begin{defi}[Fermé]
+    On dit qu'une partie $F\subseteq \reel$ est fermée si $\overline F = F$, c'est-à-dire si tous les points de $F$ lui sont adhérents.
+\end{defi}
+
+\begin{rmk}
+    La définition se réduit donc simplement à $\overline F \subseteq F$.
+\end{rmk}
+
+Une autre façon de voir un fermé est un ensemble stable par limite.
+
+\begin{prop}
+    Une partie $F\subseteq\reel$ est fermée si et seulement si pour toute suite $(x_n)\in F^\nat$ convergente, $\lim x_n \in F$.
+\end{prop}
+
+\begin{proof}
+    Supposons que $F$ est fermée. Soit $(x_n)$ une suite à valeurs dans $F$, convergente. Par définition, il existe une suite à valeurs dans $F$ dont $\lim x_n$ est la limite, donc $x\in \overline F = F$, donc \fbox{$\lim x_n\in F$.}
+
+    Réciproquement, si toute suite à valeurs dans $F$ et convergente converge dans $F$, alors soit $x\in\overline F$. Par caractérisation séquentielle, on trouve $x_n$ à valeurs dans $F$ telle que $\lim x_n = x$, et par hypothèse $\lim x_n \in F$, donc $x\in F$. Donc $\overline F \subseteq F$, donc \fbox{$F$ est fermée.}
+\end{proof}
+
+Enfin, nous allons donner une dernière caractérisation, reliant les fermés et les ouverts.
+
+\begin{prop}
+    Soit $U\subseteq\reel$. Alors $U$ est ouvert si et seulement si $\reel\setminus U$ est fermé.
+\end{prop}
+
+\begin{proof}
+    Supposons que $U$ est ouvert et que $\reel\setminus U$ n'est pas fermé. Ceci signifie qu'il existe une suite $(x_n)$ donc aucun $x_n$ n'est dans $U$ telle que $\lim x_n \in U$. Cependant, comme $U$ est ouvert, on trouve $\varepsilon > 0$ tel que $B(\lim x_n,\varepsilon)\subseteq U$, qui est donc un voisinage de $\lim x_n$, et de plus une partie de $U$ donc il n'existe aucune $x_n \in B(\lim x_n,\varepsilon)$, ce qui est contradictoire : on a trouve un voisinage de la limite dans lequel aucun terme n'est, donc ça n'est pas la limite de la suite. Par l'absurde, on en déduit donc que \fbox{$\reel\setminus U$ est fermé.}
+
+    Réciproquement, si $F := \reel\setminus U$ est fermé, supposons par l'absurde que $U$ n'est pas ouvert. Cela signifie qu'il existe un élément $x\in U$ tel que pour tout $\varepsilon > 0$, il existe un élément $x_\varepsilon\notin U$ tel que $x_\varepsilon \in B(x,\varepsilon)$. Mais si $x_\varepsilon\notin U$, cela signifie que $x_\varepsilon\in F$, donc pour tout voisinage $V$ de $x$, $V\cap F \neq \varnothing$, donc $x\in \overline F = F$, donc $x\in F \cap U = \varnothing$, ce qui est une contradiction. Par l'absurde, on en déduit que \fbox{$U$ est ouvert.} 
+\end{proof}
+
+Une famille de fermés est particulièrement intéressante pour son bon comportement : ce sont les segments.
+
+\begin{defi}[Segment]
+    Un segment $I\subseteq\reel$ est une partie de la forme $[a,b]$ avec $a,b\in\reel$.
+\end{defi}
+
+\begin{exo}
+    Montrer qu'un segment est fermé.
+\end{exo}
+
+Les segments sont un cas particulier de la notion de compact, très importante en topologie mais que nous n'aborderons pas dans ce document. Cependant, une propriété essentielle des compacts fonctionne très bien dans le cas des segments, et constitue le théorème dit des segments emboîtés.
+
+\begin{them}
+    Soit $([a_n,b_n])_{n\in\nat}$ une suite de segments emboîtés non vides, c'est-à-dire telle que $[a_{n+1},b_{n+1}]\subseteq [a_n,b_n]$, et telle que la suite des longueurs des segments tend vers $0$. Alors $$\bigcap_{n\in\nat} [a_n,b_n] = \{x\}$$ pour un certain $x\in [a_0,b_0]$.
+\end{them}
+
+\begin{proof}
+    Le fait que les segments sont emboîtés signifie que $(a_n)$ est une suite croissante et $(b_n)$ une suite décroissante, et que les segments soient non vides signifie que $\forall n\in\nat,a_n < b_n$. De plus, comme la longueur des segments tend vers $0$, on a $\lim a_n-b_n = 0$. Ainsi $(a_n)$ et $(b_n)$ forment des suites adjacente : notons $x$ leur limite commune. Comme pour tout $n$, $a_n\leq x \leq b_n$, on en déduit que $x\in \bigcap_{n\in\nat} [a_n,b_n]$. S'il existe $y$ dans cette intersection, alors $y$ est la limite de $(a_n)$ et $(b_n)$, et par unicité de la limite on en déduit que $x=y$. Donc \fbox{$\displaystyle{\bigcap_{n\in\nat} [a_n,b_n] = \{x\}}$.}
+\end{proof}
+
+Pour clore cette partie, donnons un dernier résultat, essentiel pour comprendre la topologie de $\reel$, appelé théorème de Bolzano-Weierstrass.
+
+\begin{them}[Bolzano-Weierstrass]
+    Soit $(u_n)$ une suite de réels bornées, c'est-à-dire qu'il existe un segment $[a,b]$ tel que $\compre{u_n}{n\in\nat}\subseteq[a,b]$. Alors il existe une sous-suite convergente, i.e. il existe une fonction $\varphi : \nat \to\nat$ strictement croissante telle que $(u_{\varphi(n)})_{n\in\nat}$ converge.
+\end{them}
+
+\begin{proof}
+    Nous allons construire une suite de segment emboîtés et $\varphi$ par récurrence, de telle sorte que pour chaque segment de la suite, il existe une infinité de valeurs de $(u_n)$ comprises dans ce segment :
+    \begin{itemize}[label=$\bullet$]
+        \item Posons $[a_0,b_0]=[a,b]$ et $\varphi(0) = 0$
+        \item Si l'on a défini $[a_i,b_i]$ et $(\varphi(n))_{n\leq i}$ pour un rang $i$ donné, alors on considère $c = \displaystyle{\frac{a_i+b_i}{2}}$. D'après le principe des tiroirs infini, il existe une infinité de valeurs de $(u_n)$ dans $[a_i,c]$ ou dans $[c,b_i]$. Dans le premier cas, on définit $[a_{i+1},b_{i+1}]=[a_i,c]$ et dans le deuxième cas on définit $[a_{i+1},b_{i+1}]=[c,b_i]$. De plus, on définit $\varphi(i+1)$ comme le plus petit indice supérieur à $\varphi(i)$ qui appartient à $[a_{i+1},b_{i+1}]$.
+    \end{itemize}
+    Avec notre construction, on sait que $u_{\varphi(n)}\in [a_n,b_n]$, mais avec le théorème des segments emboîtés, on déduit que $a_n$ et $b_n$ convergent vers l'unique point d'intersection de la suite de segments emboîtés (la longueur des segments diminue de moitié à chaque fois, donc tend vers $0$), et par encadrement on en déduit que $(u_{\varphi(n)})$ converge vers la même limite. 
+    
+    Donc \fbox{on a extrait de $(u_n)$ une suite $(u_{\varphi(n)})$ convergente.}
+\end{proof}
+
+\subsubsection{Sur les suites extraites}
+
+Nous allons ici détailler deux propriétés importantes des suites extraites. Tout d'abord, donnons-en une définition.
+
+\begin{defi}[Suite extraite]
+    Soit $(u_n)$ une suite extraite. On appelle suite extraite de $(u_n)$ une suite de la forme $(u_{\varphi(n)})$ où $\varphi : \nat\to\nat$ est une fonction strictement croissante.
+\end{defi}
+
+\begin{prop}
+    Une fonction $\varphi:\nat\to\nat$ strictement croissante est telle que $\forall n\in\nat, \varphi(n)\geq n$.
+\end{prop}
+
+\begin{proof}
+    Prouvons ce résultat par récurrence :
+    \begin{itemize}[label=$\bullet$]
+        \item Par définition, $\varphi(0) \geq 0$.
+        \item Si $\varphi(n) \geq n$, alors par croissance stricte de $\varphi$, on a $\varphi(n+1) > \varphi(n)$, ce qui signifie $\varphi(n+1) \geq \varphi(n) + 1$ par définition de $>$ sur $\nat$. En utilisant l'hypothèse de récurrence et par transitivité de $\geq$, on en déduit que $\varphi(n+1) \geq n+1$.
+    \end{itemize}
+    D'où par récurrence que \fbox{$\forall n\in\nat, \varphi(n)\geq n$.}
+\end{proof}
+
+De plus, le point essentiel dans l'utilité des suites extraites sera le suivant :
+
+\begin{prop}[Stabilité de la limite]
+    Soit $(u_n)$ une suite convergente et $(u_{\varphi(n)})$ une suite extraite de $(u_n)$. Alors $\lim u_n = \lim u_{\varphi(n)}$.
+\end{prop}
+
+\begin{proof}
+    Notons $b = \lim u_n$. Soit $V\in\mathcal V_b$. Par définissions de la limite de $(u_n)$ on trouve $n_0$ tel que $\forall p > n_0, u_p\in V$. Alors pour $p > \varphi(n_0)$, comme $\varphi(p) \geq p$ et $\varphi(n_0) \geq n_0$, on en déduit que $u_{\varphi(p)} \in V$. Donc on a trouvé $n_1 = \varphi(n_0)$ tel que pour tout $p > n_1, u_{\varphi(p)} \in V$. D'où \fbox{$\lim u_{\varphi(n)} = \lim u_n$.}
+\end{proof}
+
+Un point de vue topologique des suites extraites est de considérer l'ensemble $\compre{u_n}{n\in > p}$ : il existe une suite extraite $\varphi$ de $(u_n)$ qui converge vers $l\in\reel$ si et seulement si $l$ est dans l'adhérence de chaque ensemble précédemment décrit, pour $p\in\nat$. Nous n'allons pas montrer ce résultat mais nous intéresser seulement à un cas plus restreint :
+
+\begin{prop}
+    Soit $(u_n)$ une suite bornée. Alors $(u_n)$ converge si et seulement s'il existe $l\in\reel$ tel que toute suite extraite convergente de $(u_n)$ converge vers $l$.
+\end{prop}
+
+\begin{proof}
+    Si $(u_n)$ converge, alors sa limite est la limite de ses suites extraites par le résultat précédent.
+
+    Si $(u_n)$ diverge, alors par définition : $$\forall l\in\reel, \exists \varepsilon_l > 0, \forall n \in\nat,\exists p > n, |u_p - l| \geq \varepsilon_l$$ Supposons que toute suite extraite converge vers une même limite $l$. Grâce au théorème de Bolzano-Weierstrass, il existe au moins une suite extraite convergente, que nous nommerons $(u_{\varphi(n)})$. Par définition de la divergence de $(u_n)$, en prenant $l$, on trouve $\varepsilon_l > 0$ et une fonction $\psi : \nat\to\nat$ définie par récurrence par $\psi (0)$ le plus petit $p > 0$ tel que $|u_p - l | \geq \varepsilon_l$ et par $\psi(n+1)$ le plus petit $p > \psi(n)$ tel que $|u_p - l| \geq \varepsilon_l$. Cette fonction est strictement croissante par construction, donc $\psi\circ\varphi : \nat\to\nat$ est une fonction strictement croissante : on en déduit que la suite $(u_{\psi\circ\varphi(n)})$ est une suite extraite de $(u_n)$, donc elle converge vers $l$. On trouve donc $n_0$ tel que $\forall p > n_0, |u_{\psi\circ\varphi(p)} - l| < \varepsilon_l$ or par définition de $\psi$, on sait que $|u_{\psi\circ\varphi(p)} - l| \geq \varepsilon_l$ pour tout $p$ : c'est donc une contradiction. Ainsi toute suite extraite convergente ne peut avoir la même limite. Donc par contraposée, \fbox{si toute suite extraite convergente a la même limite, $(u_n)$ converge.}
+\end{proof}
+
+\newpage

@@ -1,0 +1,230 @@
+\section{Combinatoire et dénombrement}
+
+Cette section est centrée sur l'étude du dénombrement, que l'on pourrait résumer en \og l'art de compter efficacement\fg{}. Nous verrons donc dans un premier temps la notion de cardinal, puis quelques cardinaux classiques, puis nous étudierons les coefficients binomiaux, pierre angulaire du dénombrement.
+
+\subsection{Cardinal}
+
+Le cardinal d'un ensemble est le nombre d'éléments qui sont dans cet ensemble. Par exemple, le cardinal de $\{0\}$ est $1$, puisqu'il y a $1$ élément.
+
+\begin{defi}[Cardinal]
+    Soit $E$ un ensemble. S'il existe un élément $n\in\mathbb N$ tel que $E$ est en bijection avec $\{1,\ldots,n\}$, alors on dit que $E$ est fini de cardinal $n$, ce que l'on écrit $$\card E = n$$
+\end{defi}
+
+Le cardinal est donc une information préservée par des bijections. Ce qui s'exprime par le théorème qui suit.
+
+\begin{them}[Conservation du cardinal]
+    Soient $E$ et $F$ deux ensembles et $E$ de cardinal $n$, s'il existe une bijection $f : E \to F$ alors $F$ est de cardinal $n$.
+\end{them}
+
+\begin{proof}
+    En effet, soit $g : \{1,\ldots,n\}\to E$ bijective (qui existe par définition du fait que $E$ est de cardinal $n$). Puisque $f$ est aussi bijective, $f\circ g : \{1,\ldots,n\}\to F$ est bijective, donc par définition \fbox{$F$ est de cardinal $n$}.
+\end{proof}
+
+Les injections aussi permettent de conserver une partie de l'information.
+
+\begin{them}[Injection et cardinal]
+    Soit $E$ et $F$ deux ensembles, $F$ de cardinal $n$ et $f : E \to F$ une fonction injective. Alors $\card E \leq n$.
+\end{them}
+
+\begin{proof}
+    Soit $A = f(E)\subseteq F$. On considère la fonction $g = f^{|f(E)}$. Par construction, $g$ est surjective, puisque tout élément de $f(E)$ a un antécédent par $f$, donc par $g$. De plus commme $f$ est injective, $g$ l'est aussi. Ainsi $\card E = \card A$. En considérant la bijection entre $F$ et $\{1,\ldots,n\}$, et quitte à effectuer une permutation, on déduit que $\card A \leq \card F$, d'où \fbox{$\card E \leq n$.}
+\end{proof}
+
+Dénombrons maintenant des ensembles d'objets classiques.
+
+\subsubsection{Cardinal d'une union disjointe}
+
+\begin{prop}
+    Soient $E$ et $F$ deux ensembles finis tels que $E\cap F = \varnothing$, on a l'égalité $$\card{E\cup F}=\card E + \card F$$ Ce résultat peut s'illustrer par le schéma ci-dessous.
+\end{prop}
+
+\includefig{Prerequis/Figures/union_disjointe.tex}{Illustration d'une union disjointe}
+
+\begin{proof}
+    On va prouver cette propriété par récurrence sur le cardinal de $F$ :
+    \begin{itemize}[label=$\bullet$]
+        \item Si $F=\varnothing$, alors $E\cup F = E$ et $\card E + \card F = \card E + 0 = \card E$, donc \underline{l'égalité est} \underline{vérifiée pour $\card F = 0$.}
+        \item Si $F=F' \cup \{x\}$, donc si $\card F = \card{F'} + 1$, où par hypothèse de récurrence $\card{E\cup F'}=\card E + \card F'$, alors soit $f : \{1,\ldots,m\} \to E\cup F'$ la bijection correspondant au cardinal de $E\cup F'$, nous allons construire une bijection dans $E\cup F$ :
+        
+        On construit $f' : \{1,\ldots,m+1\}\to E\cup F$ en ajoutant que $f'(m+1)=x$. Par définition, comme $f$ est surjective et que $E\cup F=(E\cup F')\cup \{x\}$, \underline{$f'$ est surjective.} Si $f'(a)=f'(b)$, alors soit $f'(a)\in E\cup F'$, auquel cas l'injectivité de $f$ nous fait déduire que $a=b$, soit $f'(a)=x$, auquel cas seul $m+1$ est un antécédent de $x$. On en déduit que \underline{$f'$ est injective.} Donc $f$ est bijective.
+        
+        Il en découle que \underline{$\card{E\cup F}=m+1=\card E + \card F$.}
+    \end{itemize}
+    
+    Donc, par récurrence, \fbox{$\card{E\cup F}=\card E + \card F$.}
+\end{proof}
+
+L'hypothèse $E\cap F = \varnothing$ est importante pour définir $f'$ ici : l'injectivité provient directement de cette hypothèse (sinon, $x$ aurait pu appartenir à $E$ et l'on n'aurait pas un unique antécédent). L'exercice qui suit est la généralisation au cas où $E\cap F$ est quelconque.
+
+\begin{exo}[Cardinal d'une union quelconque]
+    Soient $E$ et $F$ deux ensembles. Montrer que : $$\card{E\cup F}=\card E + \card F - \card{E\cap F}$$
+\end{exo}
+
+\subsubsection{Cardinal d'un produit cartésien}
+
+\begin{prop}
+    Soient $E$ et $F$ deux ensembles finis de cardinal respectif $n$ et $m$. Alors $$\card{E\times F}=n\times m=\card E \times \card F$$
+\end{prop}
+
+\begin{proof}
+    Prouvons ce résultat par récurrence sur $E$ :
+    \begin{itemize}[label=$\bullet$]
+        \item Tout d'abord, si $E=\varnothing$ alors $E\times F=\varnothing$ donc \underline{l'égalité est vérifiée.}
+        \item Supposons que $E=E'\cup \{a\}$. Par définition, $$E\times F=(E'\times F) \cup \compre{(a,x)}{x\in F}$$ or $\compre{(a,x)}{x\in F}$ est de cardinal $F$ (la bijection est évidente), donc $$\underline{\card{E\times F}} = \card{E'}\times\card F + \card F = (\card{E'} +1)\times\card F = \underline{\card E \times \card F}$$ (le passage de $\cup$ à $+$ se fait car aucun élément de $E'\times F$ ne contient $a$ en première coordonnée)
+    \end{itemize}
+    Donc \fbox{l'égalité est démontrée par récurrence.}
+\end{proof}
+
+\begin{rmk}
+    On comprend alors la notation $\times$ pour désigner le produit cartésien.
+\end{rmk}
+
+\begin{exo}[Le lemme des bergers]
+    Montrer que si $f : E \to F$ est tel qu'il existe $k$ tel que pour tout $y\in F$, $f^{-1}(y)=k$, alors on a la relation $$E=F\times k$$
+\end{exo}
+
+\subsubsection{Ensemble de fonctions}
+
+Nous allons ici travailler avec des ensembles de fonctions. Pour cela, nous allons commencer par définir des notations : $$F^E=\{f : E\to F\}\qquad \mathcal{F}(E,F)=F^E$$ Ces notations permettent de se demander combien il existe de fonctions $f : E \to F$.
+
+\begin{prop}
+    Soient $E$ et $F$ deux ensembles de cardinal respectif $n$ et $m$. Alors 
+    $$ \card{F^E}=\card F ^{\card E}$$
+\end{prop}
+
+\begin{proof}
+    Nous allons dénombrer les triplets $(E,F,\Gamma)$ où $\Gamma$ est un graphe fonctionnel. Par définition, $E$ et $F$ étant fixé, il y a autant de tels triplets que de graphes fonctionnels $\Gamma$. Nous allons alors raisonner par récurrence sur le cardinal de $E$ :
+    \begin{itemize}[label=$\bullet$]
+        \item Si $E=\varnothing$, alors le seul graphe possible est le graphe vide, auquel cas \underline{$F^E=\{(\varnothing,F,\varnothing)\}$}, ce qui vérifie l'égalité.
+        \item Si $E=E'\cup \{a\}$ et $\card{F^{E'}}=\card F^{\card{E'}}$, alors on peut définir $$\fonction{\pi}{\mathcal F(E,F)}{\mathcal F(E',F)}{f}{f_{|E'}}$$ 
+        
+        Dans ce cas, $\pi(f)=\pi(f')$ si et seulement si $f$ et $f'$ ne diffèrent que sur leur image par $a$. Or il y a $\card{F}$ images possibles pour $a$, donc par le lemme des bergers : $$\underline{\card{F^E}}=\card{F}^{\card{E'}} \times \card{F} = \card{F}^{\card{E'}+1}=\underline{\card F ^{\card E}}$$
+    \end{itemize}
+\end{proof}
+
+\begin{rmk}
+    Là encore, la notation $F^E$ prend son sens en regardant le cardinal.
+\end{rmk}
+
+\begin{exo}[Dénombrer les parties d'un ensemble]
+    Soit $E$ un ensemble. 
+    \begin{itemize}[label=$\bullet$]
+        \item Montrer qu'il y a une bijection entre $\Pset E$ et $\mathcal F(E,\{0,1\})$. \textit{Indication :} Pour un sous-ensemble $E'\subseteq E$, la fonction associée, notée $\chi_{E'}$, envoie les éléments de $E'$ sur $1$ et les autres sur $0$.
+        \item En déduire que $\card{\Pset E}=2^{\card E}$.
+    \end{itemize}
+    \begin{rmk}
+        On note parfois aussi l'ensemble $\Pset E$ par $2^E$.
+    \end{rmk}
+\end{exo}
+
+\begin{exo}[Sur les fonctions caractéristiques $\boldsymbol *$]
+    Soit $E$ un ensemble. On définit $$\fonction{\chi}{\Pset E}{\mathcal F(E,\{0,1\})}{E'}{\chi_{E'}}$$ Où $\chi_{E'}$ est telle qu'indiquée dans l'exercice précédent.
+    \begin{itemize}[label=$\bullet$]
+        \item Montrer que $\forall x\in E, \chi_{E'\cap E''}(x)=\chi_{E'}(x)\times \chi_{E''}(x)$.
+        \item Montrer que $\forall x\in E,\chi_{E'\cup E''}(x)=\chi_{E'}(x)+\chi_{E''}(x)-\chi_{E'\cap E''}(x)$.
+        \item Montrer que $\forall x\in E, \chi_{E\setminus E'}(x)=1-\chi_{E'}(x)$.
+    \end{itemize}
+\end{exo}
+
+\subsubsection{Permutations et arrangements}
+
+Nous aurons besoin pour les prochains calculs de dénombrement d'une nouvelle notation : celle des factorielles.
+
+\begin{defi}[Factorielle]
+    Soit $n$ un entier. On appelle factorielle de $n$, que l'on note $n!$, l'entier $$n!=\prod_{i=1}^n i=1\times 2\times \ldots \times n$$ avec la convention que $0!=1$.
+\end{defi}
+
+\begin{defi}[Arrangement]
+    Soit $E$ et $F$ des ensembles finis. On note $A^E_F$ le nombre d'injections (ou fonctions injectives) de $E$ vers $F$. Ce nombre vaut $$A^E_F=\frac{(\card F)!}{(\card F - \card E)!}$$ si $\card E \leq \card F$ et $0$ sinon.
+    
+    On note $A^n_k$, appelé l'arrangement de $k$ parmi $n$, le nombre d'injections d'un ensemble à $k$ éléments dans un ensemble à $n$ éléments.
+\end{defi}
+\begin{proof}
+    Nous ne donnerons qu'une idée de la preuve, le lecteur assidu rédigera les morceaux manquants. L'ensemble des injections peut se définir par récurrence : on a $1$ fonction depuis l'ensemble vide, puis $\card F$ choix pour l'image du premier élément, puis $\card F-1$ choix pour l'image du deuxième éléments, etc. jusqu'à avoir $\card E$ images choisies dans $F$.
+\end{proof}
+
+Nous allons définir maintenant le nombre de permutations.
+
+\begin{defi}[Permutation]
+    Soit $E$ un ensemble fini. On appelle l'ensemble des permutations de $E$ l'ensemble $\mathcal{B}ij(E,E)$ des bijections de $E$ dans $E$, et l'on le note $\mathfrak S(E)$, ou encore $\mathfrak S_n$ lorsque $E=\{1,\ldots,n\}$ (une permutation de $\mathfrak S_n$ peut s'interpréter comme un mélange des entiers de $1$ à $n$). De plus, $$\card {\mathfrak S_n} = n!$$
+\end{defi}
+\begin{proof}
+    L'idée de la preuve est d'utiliser le fait qu'une bijection est injective pour obtenir $n!$ permutations.
+\end{proof}
+
+\subsection{Sur les coefficients binomiaux}
+
+Cette partie se concentrera sur les coefficients binomiaux, qui sont une part importante du dénombrement. Nous allons d'abord définir les coefficients binomiaux puis nous en donnerons des propriétés importantes, avant de donner des exemples d'utilisations classiques de ces nombres (principalement le binôme de Newton).
+
+\begin{defi}
+    Soient $k$ et $n$ deux entiers naturels tels que $k\leq n$. On note $\binom{n}{k}$, que l'on lit $k$ parmi $n$, le nombre $$\binom{n}{k} = \compre{E}{E\subseteq \{1,\ldots,n\}, \card E = k}$$ C'est donc l'ensemble des parties à $k$ éléments d'un ensemble à $n$ éléments.
+\end{defi}
+
+\subsubsection{Propriétés}
+
+Nous allons maintenant donner différentes propriétés des coefficients binômiaux.
+
+\begin{prop}
+    Soient $k\leq n$ deux entiers naturels. On a $$\binom{n}{n-k}=\binom{n}{k}$$
+\end{prop}
+\begin{proof}
+    La bijection entre les parties à $k$ éléments et les parties à $n-k$ éléments est la fonction définie par $E \mapsto \{1,\ldots,n\}\setminus E$.
+\end{proof}
+
+Cette propriété revient à dire que choisir $n-k$ éléments revient à choisir les $k$ éléments à ne pas inclure dans la partie que l'on construit.
+
+\begin{prop}
+    Soient $k< n$. Alors $$\binom{n+1}{k+1}=\binom{n}{k}+\binom{n}{k+1}$$ et $$\binom{n}{0}=1$$
+\end{prop}
+\begin{proof}
+    Il n'y a, d'abord, qu'une partie à $0$ éléments : c'est $\varnothing$. On en déduit que \underline{$\displaystyle{\binom{n}{0}=1}$}.
+    
+    Soit une partie $E$ à $k+1$ éléments. Alors soit $n+1\in E$, soit $n+1\notin E$, et ces deux cas sont disjoint. Traitons alors chaque cas :
+    \begin{itemize}[label=$\bullet$]
+        \item Si $n+1\in E$, alors on a une bijection entre les telles parties $E$ et les parties à $k$ éléments : à $E$ on associe $E\setminus \{n+1\}$ et la bijection réciproque est donnée par l'application qui à $E$ associe $E\cup\{n+1\}$. Donc \underline{il y a $\displaystyle{\binom{n}{k}}$ telles parties.}
+        \item Si $n\notin E$, alors on a une bijection entre les telles parties $E$ et les parties à $k+1$ éléments, puisque ces parties sont aussi, alors, des parties de $\{1,\ldots,n\}$ à $k+1$ éléments. Réciproquement, toute partie de $k+1$ éléments de $\{1,\ldots,n\}$ est une partie à $k+1$ éléments de $\{1,\ldots,n+1\}$. Donc \underline{il y a $\displaystyle{\binom{n}{k+1}}$ telles parties.}
+    \end{itemize}
+    
+    Puisque l'union est disjointe, on en déduit que \fbox{$\displaystyle{\binom{n+1}{k+1}=\binom{n}{k}+\binom{n}{k+1}}$ et $\displaystyle{\binom{n}{0}=1}$.}
+\end{proof}
+
+\begin{rmk}
+    A partir des deux propriétés précédentes, on peut en déduire que $\displaystyle{\binom{n}{n}=1}$. On peut ainsi pour chaque entier trouver directement la valeur de $\displaystyle{\binom{n}{n}}$ et de $\displaystyle{\binom{n}{0}}$, et calculer récursivement la valeur d'un $\displaystyle{\binom{n}{k}}$ quelconque à partir de là. C'est ce qu'on appelle le triangle de Pascal, du nom de son inventeur et à cause de la forme qu'a l'ensemble des coefficients binomiaux lorsque l'on les donne par liste (c.f. le dessin ci-dessous).
+\end{rmk}
+
+\includefig{Prerequis/Figures/triangle_pascal.tex}{Triangle de Pascal pour $n\leq 4$.}
+
+Nous allons maintenant voir une formule explicite pour le calcul d'un coefficient binomial.
+
+\begin{prop}[Formule explicite]
+    Soient $k\leq n$ deux entiers. Alors $$\binom{n}{k}=\frac{n!}{k!(n-k)!}$$
+\end{prop}
+\begin{proof}
+    Soit une partie $E\subseteq\{1,\ldots,n\}$ de cardinal $k$. On considère l'ensemble des injections de $E$ dans $\{1,\ldots,n\}$ : il y en a $\dfrac{n!}{(n-k)!}$. Or une injection est exactement une liste d'éléments de $\{1,\ldots,n\}$ (en comptant l'ordre), et deux listes donnent le même ensemble d'arrivée si et seulement s'il existe une permutation faisant passer de la première liste à la deuxième. Il y a $k!$ permutations au sein d'une liste, et on a donc $k!$ listes possibles de taille $k$ pour un ensemble fixé. On a donc $\displaystyle{k\times \binom{n}{k}=\frac{n!}{(n-k)!}}$, ce qui revient à dire \fbox{$\displaystyle{\binom{n}{k}=\frac{n!}{k!(n-k)!}}$.}
+\end{proof}
+
+Les exercices qui suivent sont importants pour comprendre l'intérêt d'avoir défini les coefficients binômiaux.
+
+\begin{exo}
+    Soient $a,b$ deux nombres réels et $n$ un entier naturel. Montrer que $$(a+b)^n=\sum_{k=0}^n\binom{n}{k}a^kb^{n-k}=b^n+nab^{n-1}+\ldots+na^{n-1}b+a^n$$ \textit{Indication :} Raisonner par récurrence sur $n$.
+\end{exo}
+
+Enfin, donnons un résultat important, appelé lemme des tiroirs, dans sa version finie et sa version infinie.
+
+\begin{lem}[Tiroirs finis]
+    Soient $E$ et $F$ deux ensembles finis tels que $\card E > \card F$, et $f : E \to F$. Alors il existe deux éléments $x,y\in E$ tels que $f(x)=f(y)$.
+\end{lem}
+
+\begin{proof}
+    Ce résultat est la contraposée du fait que s'il existe une fonction injective $f : E \to F$ alors $\card E \leq \card F$. Puisque $\card E > \card F$, toute fonction $f : E \to F$ est non injective, d'où le résultat.
+\end{proof}
+
+\begin{lem}[Tiroirs infinis]
+    Soient $E$ et $F$ respectivement un ensemble infini et un ensemble fini, et $f : E \to F$. Il existe un élément $y\in F$ tel que $f^{-1}(\{y\})$ est infini.
+\end{lem}
+
+\begin{proof}
+    Supposons que pour tout élément $y\in F$, on ait $f^{-1}(\{y\})$ fini. Alors comme $F$ est fini, on peut considérer $k = \max(f^{-1}(\{y\})$, et en appliquant le lemme des bergers, on en déduit que le cardinal de $E$ est fini, et inférieur à $k\times \card F$, ce qui est une contradiction.
+\end{proof}
+
+\newpage

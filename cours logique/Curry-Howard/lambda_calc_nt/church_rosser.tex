@@ -1,0 +1,354 @@
+\section{Propriétés du lambda-calcul}
+
+Dans cette section, nous allons nous concentrer sur les propriétés du lambda-calcul en tant que système de réécriture. Nous chercherons à décrire les classes d'égalité $\Lambda_\beta := \quot{\Lambda}{\beteq}$ dans un premier temps, en parlant du théorème de Church-Rosser, puis nous parlerons de la règle $\eta$ et de l'extensionalité.
+
+\subsection{Propriété de Chuch-Rosser}
+
+Le résultat essentiel pour décrire $\Lambda_\beta$ est le théorème de Church-Rosser, mais nous allons commencer par donner le formalisme nécessaire à bien appréhender cette notion.
+
+\begin{defi}[Système de réécriture]
+    On appelle ici système de réécriture un couple $(E,\to)$ où $\to\subseteq E\times E$.
+\end{defi}
+
+Le but ici sera évidemment de considérer le système de réécriture $(\Lambda,\reduc)$. Plus précisément, on veut montrer la propriété de confluence de ce système de réécriture :
+
+\begin{defi}[Confluence, confluence locale]
+    On dit qu'un système de réécriture $(E,\to)$ est confluent si pour tous $x,y,z\in E$, tels que $y\;^*\!\!\leftarrow x \rightarrow^* z$ il existe $a\in E$ tel que $y\to^* a$ et $z\to^* a$.
+
+    On dit qu'il est localement si pour tous $x,y,z\in E$ tels que $y\leftarrow x \rightarrow z$, il existe $a\in E$ tel que $y\to^* a$ et $z\to^* a$.
+
+    On dit qu'il a la propriété du diamant si pour tous $x,y,z\in E$ tels que $y\leftarrow x \rightarrow z$ il existe $a\in E$ tel que $y\rightarrow a \leftarrow z$.
+\end{defi}
+
+\includefig{Curry-Howard/lambda_calc_nt/confluence.tex}{Illustration des différentes propriétés}
+
+Une propriété équivalente à la confluence, dont la formulation nous intéresse plus, est celle de Church-Rosser :
+
+\begin{defi}[Church-Rosser]
+    On dit qu'un système de réécriture $(E,\to)$ a la propriété de Church-Rosser si pour tous $x,y\in E$ tels que $x\leftrightarrow^* y$ il existe $z\in E$ tel que $x\to^* z$ et $y\to^* z$ où $\leftrightarrow^*$ est la plus petite relation d'équivalence contenant $\to$.
+\end{defi}
+
+\begin{prop}
+    $(E,\to)$ a la propriété de Church-Rosser si et seulement si c'est un système confluent.
+\end{prop}
+
+\begin{proof}
+    Si $(E,\to)$ a la propriété de Church-Rosser, alors pour $y\;^*\!\!\leftarrow x \rightarrow^* z$ on peut directement déduire que $y\leftrightarrow^* z$ donc on trouve $a\in E$ tel que $y\to^* a$ et $z\to^* a$.
+
+    Réciproquement, si $(E,\to)$ est confluent, soient $x,y\in E$ tels que $x\leftrightarrow^* y$. Par définition de $\leftrightarrow^*$, on trouve une suite $(x_i)_{i=1,\ldots,n}$ finie telle que $x_0 = x, x_n = y$ et pour tout $i = 1,\ldots, n-1$, $x_i\to^*x_{i+1}$ ou $x_{i+1}\to^* x_i$. On va montrer par récurrence sur ce $n$ (car toute telle suite est finie) qu'il existe $a\in E$ tel que $x\to^* a$ et $y\to^* a$ :
+    \begin{itemize}[label=$\bullet$]
+        \item si la suite est $(x)$, alors on a $x\;^*\!\!\leftarrow x \rightarrow^* x$ d'où l'existence de $a$ par confluence.
+        \item supposons que pour toute suite de taille $n$ telle que décrite plus haut, il existe un élément $a$ tel que $x\to^* a$ et $y\to^* a$ pour $x$ et $y$ les deux extrémités de la suite. Soit $z$ tel que $y\to^* z$, alors cela signifie que $a\;^*\!\!\leftarrow y \rightarrow^* z$ donc on trouve par confluence $b\in E$ tel que $a\to^* b$ et $z\to^* b$, et comme $x\to^* a$ la transitivité nous donne $x\to^*b$. Soit $z$ tel que $z\to^* y$, on peut donc écrire $a\;^*\!\!\leftarrow z \rightarrow^* z$ par transitivite de $z\to^* y$ et $y\to^* a$, donc on trouve par confluence $b$ tel que $z\to^* b$ et $a\to^* b$, ce qui comme précédemment permet de conclure. Donc pour toute suite $(x_i)_{i=1,\ldots,n+1}$ il existe un terme $a\in E$ tel que $x_1\to^* a$ et $x_{n+1}\to^* a$.
+    \end{itemize}
+    On a donc trouvé pour $x\leftrightarrow^* y$ un $a\in E$ tel que $x\to^* a$ et $y\to^* a$.
+\end{proof}
+
+Enfin, la propriété du diamant est plus forte que la confluence :
+
+\begin{prop}
+    Si $(E,\to)$ a la propriété du diamant, alors $(E,\to)$ est confluente.
+\end{prop}
+
+\begin{proof}
+    \'Etant donnés $x,y,z\in E$ tels que $x\to^* y$ et $x\to^* z$, on peut trouver deux chemins $(y_i)_{i=0,\ldots,n}$ et $(z_i)_{i=0,\ldots,m}$ respectivement de $x$ à $y$ et de $x$ à $z$ avec $y_i\to y_{i+1}$ et $z_i\to z_{i+1}$. On montre par récurrence sur $\max(n,m)$ qu'il existe $a\in E$ tel que $y\to^m a$ et $z\to^n a$ :
+    \begin{itemize}[label=$\bullet$]
+        \item Si $\max(n,m) = 0$ alors $y=x=z$. En prenant $a = x$ on a le résultat.
+        \item Si $n = m = 1$ alors la propriété du diamant nous donne le résultat.
+        \item Si $n = 0$ ou $m = 0$, en prenant respectivement $a = z$ et $a = y$ la propriété est vérifiée.
+        \item Supposons que pour tous $x,y,z$ tels que $x\to^n y$ et $x\to^m z$, si $\max(n,m) \leq k$ alors il existe $a\in E$ tel que $y\to^m a$ et $z\to^n a$. Soient $x,y,z$ tels que $x\to^n y$ et $x\to^m z$ avec $\max(n,m) = k+1$ et $\min(n,m) \geq 1$. Soient $y' = y_1$ et $z'=z_1$, par propriété du diamant on trouve $b\in E$ tel que $y'\to b$ et $z'\to b$. On sait donc que $y'\to^{m-1} b$ et $z'\to^{n-1} b$, donc on peut appliquer l'hypothèse d'induction à $(y',b,y)$ et $(z',b,z)$ pour trouver respectivement $c\in E$ et $d\in E$ tels que $b\to^{n-1} c,y\to c$ et $b\to^{m-1} d, z\to d$. On applique encore une fois l'hypothèse d'induction mais à $(b,c,d)$ pour trouver $a\in E$ tel que $c\to^{m-1} a, d\to^{n-1} a$. On a alors 
+        $$y\to c\to^{m-1} a\qquad z\to d\to^{n-1} a$$ d'où $y\to^m a$ et $z\to^n a$
+    \end{itemize}
+    Ainsi par récurrence on a trouvé un résultat qui donne l'existence de $a\in E$ tel que $y\to^* a,z\to^*a$.
+\end{proof}
+
+\begin{prop}
+    $(E,\to)$ est confluent si et seulement si $(E,\to^*)$ a la propriété du diamant.
+\end{prop}
+
+\begin{proof}
+    Dire que $(E,\to^*)$ a la propriété du diamant revient à dire que pour $x\to^* y$ et $x\to^* z$, il existe $c$ tel que $y\to^* c$ et $z\to^* c$, ce qui est l'énoncé de la confluence de $\to$.
+\end{proof}
+
+\begin{prop}
+    Si $(E,\to^*)$ est confluent, alors $(E,\to)$ est confluent aussi.
+\end{prop}
+
+\begin{proof}
+    Comme $\to^*$ est la plus petite relation réflexive et transitive contenant $\to$, la plus petite relation réflexive et transitive la contenant est elle-même, donc $\to^*$. Comme $\to^*=(\to^*)^*$ est confluent, on en déduit que $\to^*$ a la propriété du diamant, donc que $\to$ est confluent.
+\end{proof}
+
+Pour montrer que $(\Lambda,\reduc)$ est confluent, on va d'abord définir une relation intermédiaire entre $\reduc$ et $\reduc^*$ qui va, pour plusieurs réductions parallèles possibles, effectuer un nombre arbitraire de ces réductions.
+
+\begin{defi}[Réduction parallèle]
+    On définit la relation $\reduc_\|$ par les règles suivantes :
+    \begin{center}
+        \begin{prooftree}
+            \infer0[$x\in\VV$]{x\reduc_\| x}
+        \end{prooftree}
+        \qquad
+        \begin{prooftree}
+            \hypo{M\reduc_\| M'}
+            \hypo{N\reduc_\| N'}
+            \infer2{M\;N\reduc_\| M'\;N'}
+        \end{prooftree}
+        \qquad
+        \begin{prooftree}
+            \hypo{M\reduc_\| M'}
+            \infer1{\lambda x.M\reduc_\| \lambda x.M'}
+        \end{prooftree}
+
+        \vspace{0.5cm}
+
+        \begin{prooftree}
+            \hypo{M\reduc_\| M'}
+            \hypo{N\reduc_\| N'}
+            \infer2{(\lambda x.M)\;N\reduc_\| M'[N'/x]}
+        \end{prooftree}
+    \end{center}
+\end{defi}
+
+Donnons les propriétés essentielles de $\reduc_\|$ :
+
+\begin{prop}
+    La relation $\reduc_\|$ vérifie les propriétés suivantes :
+    \begin{itemize}[label=$\bullet$]
+        \item $\reduc_\|$ est réflexive.
+        \item Si $M\reduc N$ alors $M\reduc_\| N$.
+        \item Si $M\reduc_\| N$ alors $M\reduc^* N$.
+        \item $\reduc_\|^* = \reduc^*$.
+        \item Si $M\reduc_\| M'$ et $N\reduc_\| N'$ alors $M[N/x]\reduc_\| M'[N'/x]$.
+    \end{itemize}
+\end{prop}
+
+\begin{proof}
+    On montre ces propriétés :
+    \begin{itemize}[label=$\bullet$]
+        \item La relation est réflexive par induction sur un terme $M$ :
+        \begin{itemize}[label=$\bullet$]
+            \item $x\reduc_\| x$
+            \item si $M\reduc_\| M$ et $M\reduc_\|N$ alors $M\;N\reduc_\|M\;N$
+            \item si $M\reduc_\| M$ alors $\lambda x.M\reduc_\| \lambda x.M$
+        \end{itemize}
+        Donc par induction $M\reduc_\| M$ pour tout $M\in\Lambda$.
+        \item Si $M\reduc N$ alors $M\reduc_\| N$. En effet, comme $M\reduc_\| M$ et $N\reduc_\| N$ on en déduit que $(\lambda x.M)\;N\reduc_\| M[N/x]$, et les autres règles définissant $\reduc$ sont aussi respectées.
+        \item Si $M\reduc_\| N$ alors $M\reduc^* N$. On procède par induction sur $\reduc_\|$ :
+        \begin{itemize}[label=$\bullet$]
+            \item comme $\reduc^*$ est transitive, la première règle fonctionne.
+            \item si $M\reduc^* M'$ et $N\reduc^* N'$, alors dans un premier temps $M\;N\reduc^*M\; N'$ puis $M\;N'\reduc^* M'\;N'$ donc $M\;N\reduc^* M'\;N'$.
+            \item si $M\reduc^* M'$ alors $\lambda x.M\reduc^* \lambda x.M'$
+            \item si $M\reduc^* M'$ et $N\reduc^* N'$ alors $(\lambda x.M)\;N\reduc^* (\lambda x.M')N$ puis $(\lambda x.M')\;N\reduc^* (\lambda x.M')\;N'$ et enfin $(\lambda x.M')\;N'\reduc M'[N'/x]$, d'où $(\lambda x.M)\;N\reduc^* M'[N'/x]$
+        \end{itemize}
+        Donc par induction si $M\reduc_\| N$ alors $M\reduc^* N$.
+        \item $\reduc_\|^* = \reduc^*$ puisque $\reduc\subseteq \reduc_\|\subseteq \reduc^*$.
+        \item Si $M\reduc_\| M'$ et $N\reduc_\| N'$ alors $M[N/x]\reduc_\| M'[N'/x]$. On raisonne par induction sur $M\reduc_\| M'$ :
+        \begin{itemize}[label=$\bullet$]
+            \item si $M=M'=x$ alors $M[N/x] = N\reduc_\| N' = M'[N'/x]$. Si $M=M'=y$ où $y\neq x$ alors $M[N/x] = y \reduc_\| y = M'[N/x]$.
+            \item si $M = P\;Q$ et $M = P'\;Q'$ avec $P[N/x]\reduc_\| P'[N'/x],Q[N/x]\reduc_\| Q'[N'/x]$ alors $M[N/x] = P[N/x]\;Q[N/x] \reduc_\| P'[N'/x]\;Q'[N'/x] = M'[N'/x]$.
+            \item si $M = \lambda y.P$ et $M' = \lambda y.P'$ avec $P[N/x]\reduc_\| P'[N'/x]$, alors $M[N/x] = \lambda y.P[N/x] \reduc_\| \lambda y.P'[N'/x] = M'[N'/x]$.
+            \item si $M = (\lambda y.P)\;Q$ et $M' = P'[Q'/x]$ où $P[N/x]\reduc_\| P'[N'/x]$ et $Q[N/x]\reduc_\| Q'[N'/x]$, alors $M[N/x] = (\lambda y.P[N/x])\;Q[N/x]\reduc_\| P'[N'/x][Q'[N'/x]/y] = P'[Q'/y][N'/x] = M'[N'/x]$.
+        \end{itemize}
+        Donc par induction, $M[N/x]\reduc_\|M'[N'/x]$.
+    \end{itemize}
+\end{proof}
+
+Définissons enfin la réduction maximale en un pas, pour un terme donné, qui nous donnera un terme vers lequel réduire deux termes issus d'un même terme.
+
+\begin{defi}[Réduction maximal en un pas]
+    On définit $M^\bullet$ par induction :
+    \begin{itemize}[label=$\bullet$]
+        \item si $M = x$ alors $M^\bullet = x$
+        \item si $M = \lambda x.M'$ alors $M^\bullet = \lambda x.M'^\bullet$
+        \item si $M = (\lambda x.M')\;N'$ alors $M^\bullet = M'^\bullet[N'^\bullet/x]$
+        \item si $M = M'\;N'$ où $M'$ n'est pas une $\lambda$-abstraction, alors $M^\bullet = M'^\bullet\;N'^\bullet$.
+    \end{itemize}
+\end{defi}
+
+On peut voir $M^\bullet$ comme le terme $M$ auquel on a appliqué le plus de réductions parallèles possibles. Il est donc naturel de s'attendre à ce que si $M\reduc_\| N$, donc en n'effectuant qu'une partie de ces réductions, on puisse poursuivre la réduction parallèle et avoir donc $N\reduc_\|M^\bullet$.
+
+\begin{prop}
+    Si $M\reduc_\| M'$ alors $M'\reduc_\| M^\bullet$.
+\end{prop}
+
+\begin{proof}
+    On va prouver ce résultat par induction sur $M\reduc_\| M'$ :
+    \begin{itemize}[label=$\bullet$]
+        \item Si $M = M' = x$ alors $M^\bullet = x$ et $M'\reduc_\| M^\bullet$.
+        \item Si $M = N\;P$ et $M' = N'\;P'$ où $N'\reduc_\| N^\bullet$ et $P'\reduc_\| P^\bullet$, alors dans le cas où $N$ n'est pas une $\lambda$-abstraction, cela nous donne directement $N'\;P'\reduc_\| (N\;P)^\bullet$. Dans le cas où $N$ est une $\lambda$-abstraction, on pose $N = \lambda x.Q$, et $(N\;P)^\bullet = Q^\bullet[P^\bullet/x]$, et comme $N = \lambda x.Q$, par inversion (en considérant toutes les règles d'induction on ne trouve qu'une règle permettant $N\reduc_\| N'$ dans ces conditions) on déduit que $Q'\reduc_\| Q^\bullet$ pour $N' = \lambda x.Q'$. Cela signifie donc $Q'\reduc_\| Q^\bullet$ et $P'\reduc_\| P^\bullet$, donc on en déduit que $(\lambda x.Q')\;P'\reduc_\| Q^\bullet[P^\bullet/x]$, c'est-à-dire $N'\;P'\reduc_\| (N\;P)^\bullet$.
+        \item si $M = \lambda x.N$ et $M' = \lambda x.N'$ avec $N'\reduc_\| N^\bullet$, alors $M^\bullet = \lambda x.N^\bullet$ donc $M'\reduc_\| M^\bullet$.
+        \item si $M = (\lambda x.N)\;P$ et $M' = N'[P'/x]$ avec $N'\reduc_\| N^\bullet$ et $P'\reduc_\| P^\bullet$, alors $M^\bullet = N^\bullet[P^\bullet/x]$ et grâce à une propriété précédemment montrée, on en déduit que $N'[P'/x]\reduc_\| N^\bullet[P^\bullet/x]$ donc que $M'\reduc_\| M$.
+    \end{itemize}
+    Le résultat découle donc par induction.
+\end{proof}
+
+On peut alors prouver que $\reduc_\|$ a la propriété du diamant :
+
+\begin{prop}
+    $\reduc_\|$ a la propriété du diamant.
+\end{prop}
+
+\begin{proof}
+    Si l'on considère $M\reduc_\| N$ et $M\reduc_\| P$ alors par la proposition précédente, $N\reduc_\| M^\bullet$ et $P\reduc_\| M^\bullet$.
+\end{proof}
+
+On peut enfin montrer le résultat essentiel :
+
+\begin{them}[Church-Rosser]
+    Si $M\beteq N$ alors il existe $P$ tel que $M\reduc^* P$ et $N\reduc^* P$.
+\end{them}
+
+\begin{proof}
+    Il nous suffit de montrer que $\reduc$ est confluent. Pour cela, on sait que $\reduc_\|$ a la propriété du diamant, donc $\reduc_\|^* = \reduc^*$ est confluent : on en déduit donc que $\reduc$ est confluent.
+\end{proof}
+
+Les conséquences principales de ce résultat sont les suivantes :
+
+\begin{prop}
+    Soit $M\in\Lambda$. Si $M$ est faiblement normalisable, alors il ne possède qu'une forme normale.
+\end{prop}
+
+\begin{proof}
+    Soient $M',M''$ deux formes normales de $M$. Par définition, $M\reduc^* M'$ et $M\reduc^*M''$ donc par confluence $M'\reduc^* N$ et $M''\reduc^* N$ pour un certain $N$. De plus comme $M'$ et $M''$ sont des formes normales, $M'$ et $M''$ ne peuvent se réduire que vers elles-mêmes, donc $M'=N=M''$.
+\end{proof}
+
+\begin{prop}
+    Soient $M,N$ deux lambda-termes (faiblement) normalisables. Alors $M\beteq N$ si et seulement si $M$ et $N$ ont la même forme normale.
+\end{prop}
+
+\begin{proof}
+    Soit $M'$ la forme normale de $M$ et $N'$ celle de $N$. Par la propriété de Church-Rosser, on trouve $P$ tel que $M\reduc^* P$ et $N\reduc^* P$, par confluence on trouve $Q_1,Q_2$ tels que $P\reduc^* Q_1,P\reduc^* Q_2,M'\reduc^*Q_1,N'\reduc^* Q_2$ et par une dernière confluence, on trouve $Q$ tel que $Q_1\reduc^* Q$ et $Q_2\reduc^* Q$, donc $M'$ et $N'$ se réduisent vers le même terme, mais cela signifie que $Q=M'=N'$, donc $M$ et $N$ ont la même forme normale.
+
+    Réciproquement, si $M\reduc^* P$ et $N\reduc^* P$ alors par définition $M \beteq N$.
+\end{proof}
+
+\begin{prop}
+    Si $M \beteq N$ alors $M$ est faiblement normalisable si et seulement si $N$ l'est.
+\end{prop}
+
+\begin{proof}
+    Si $M$ est normalisable alors on pose $M'$ sa forme normale. Comme $M\beteq M'$ et $M\beteq N$ on peut appliquer la propriété de Church-Rosser à $M'$ et $N$ : on trouve $P$ tel que $M'\reduc^* P$ et $N\reduc^* P$, mais comme $M'$ et une forme normale, $P = M'$ donc $N\reduc^* M'$ : $N$ est faiblement normalisable. La réciproque se traite de la même manière.
+\end{proof}
+
+On peut donc décrire $\Lambda_\beta$ pour les termes faiblement normalisables : les formes normales forment un système de représentants de $\mathcal N_\beta = \quot{\mathcal N}{=\beta}$ où $\mathcal N$ est l'ensemble des lambda-termes faiblement normalisables.
+
+\subsection{Eta-réduction}
+
+Enfin, nous allons considérer l'ajout d'une réduction appelée l'eta-réduction, et sa conséquence principale : l'exentionsalité. L'idée de l'extensionalité est que si nous interprétons un lambda-terme comme une fonction, alors deux lambda-termes qui associent des valeurs identiques devraient pouvoir être identifiés. L'eta-réduction est la version syntaxique de cette définition plus sémantique.
+
+\begin{expl}
+    Soit $M := \lambda x.y\;x$, on remarque que si l'on prend $N$ quelconque, $M\;N \beteq y\;N$. Ainsi $M$ et $y$ représentent la même fonction, mais pourtant $M$ est une forme normale, et $y$ aussi, donc $M$ et $y$ sont des éléments différents de $\Lambda_\beta$. La règle $\eta$ va permettre de définir une relation rendant égaux les termes $M$ et $y$.
+\end{expl}
+
+\begin{defi}[Eta-réduction]
+    On définit l'eta-réduction par la règle suivante :
+    \begin{center}
+        \begin{prooftree}
+            \infer0[$x\notin \varlib M$]{\lambda x.M\;x\reduc_\eta M}
+        \end{prooftree}
+    \end{center}
+\end{defi}
+
+Nous allons introduire un peu de vocabulaire pour décrire les relations sur les lamda-termes.
+
+\begin{defi}[Relation compatible, congruence]
+    On dit qu'une relation $\RR\subseteq \Lambda\times \Lambda$ est compatible si elle vérifie les règles suivantes :
+    \begin{center}
+        \begin{prooftree}
+            \hypo{M\RR\;M'}
+            \infer1{M\;N\RR\;M'\;N}
+        \end{prooftree}
+        \qquad
+        \begin{prooftree}
+            \hypo{N\RR\;N'}
+            \infer1{M\;N\RR\;M\;N'}
+        \end{prooftree}
+        \qquad
+        \begin{prooftree}
+            \hypo{M\RR\;M'}
+            \infer1{\lambda x.M\RR\;\lambda x.M'}
+        \end{prooftree}
+    \end{center}
+
+    On dit que $\RR$ est une congruence si c'est une relation d'équivalence compatible.
+\end{defi}
+
+\begin{expl}
+    Les relations $=$, $\beteq$, $\reduc$, $\reduc_\|$ et $\reduc^*$ sont compatibles. La relation $\beteq $ et la relation $=$ sont des congruences.
+\end{expl}
+
+On définit alors la $\beta-\eta$-réduction de la façon suivante :
+
+\begin{defi}[$\beta\eta$-réduction]
+    La relation $\reduc_{\beta\eta}$ est la plus petite relation compatible qui contient $\reduc$ et $\reduc_\eta$.
+\end{defi}
+
+\begin{defi}[$\beta\eta$-équivalence]
+    La relation $=_{\beta\eta}$ est la plus petite congruence contenant $\reduc_{\beta\eta}$.
+\end{defi}
+
+En parallèle, donnons la notion d'avoir le même comportement :
+
+\begin{defi}
+    On définit la relation $\cong$, qu'on appellera isomorphisme, comme la plus petite relation d'équivalence vérifiant les règles suivantes :
+    \begin{center}
+        \begin{prooftree}
+            \hypo{M\beteq N}
+            \infer1{M\cong N}
+        \end{prooftree}
+        \qquad
+        \begin{prooftree}
+            \hypo{M\;x\cong N\;x}
+            \infer1[$x\notin\varlib{M,N}$]{M\cong N}
+        \end{prooftree}
+        \qquad
+        \begin{prooftree}
+            \hypo{M\cong M'}
+            \hypo{N\cong N'}
+            \infer2{M\;N\cong M'\;N'}
+        \end{prooftree}
+    \end{center}
+\end{defi}
+
+\begin{exo}
+    Montrer que si $M\cong N$ alors $\lambda x.M\cong \lambda x.N$. Montrer que $\cong$ est une congruence.
+\end{exo}
+
+Donnons un résultat important pour comprendre la motivation de la règle avec $M\;x\cong N\;x$.
+
+\begin{prop}
+    $\forall P\in\Lambda, M\;P\beteq N\;P$ si et seulement si $M\;x \beteq N\;x$ pour $x\notin \varlib{M,N}$, si et seulement si $\forall x \notin \varlib{M,N}, M\;x\beteq N\;x$.
+\end{prop}
+
+\begin{proof}
+    Si $\forall P\in\Lambda,M\beteq N$ alors en considérant simplement $P = x$ on en déduit le résultat pour tout $x\notin\varlib M$ et donc en particulier pour un $x\notin\varlib M$.
+
+    Supposons que $\exists x\notin\varlib{M,N},M\;x\beteq N\;x$. Soit $P\in\Lambda$ et $x\notin\varlib{M,N}$ comme défini plus tôt. Par hypothèse $M\;x\beteq N\;x$ donc par compatibilité de $\beteq$, $(\lambda x.M\;x)\;P\beteq (\lambda x.N\;x)\;P$ et comme $(\lambda x.M\;x)\;P\reduc M\;P$ et $(\lambda x.N\;x)\;P\reduc N\;P$ on en déduit que $M\;P\beteq N\;P$.
+\end{proof}
+
+Enfin, le résultat essentiel donnant l'intuition de l'extensionalité est le suivant :
+
+\begin{them}
+    Les relations $\cong$ et $=_{\beta\eta}$ sont égales.
+\end{them}
+
+\begin{proof}
+    Montrons par induction sur $\cong$ que $\cong\subseteq =_{\beta\eta}$ :
+    \begin{itemize}[label=$\bullet$]
+        \item Si $M\beteq N$ alors $M=_{\beta\eta} N$.
+        \item Si $M\;x=_{\beta\eta} N\;x$ pour $x\notin\varlib{M,N}$, alors par compatibilité $\lambda x.M\;x=_{\beta\eta}\lambda x.N\;x$, or $\lambda x.M\;x\reduc_\eta M$ et $\lambda x.N\;x\reduc_\eta N$, donc $M=_{\beta\eta} N$.
+        \item Si $M=_{\beta\eta} M'$ et $N=_{\beta\eta} N'$ alors par compatibilité $M\;N=_{\beta\eta} M\;N'$ puis $M\;N'=_{\beta\eta} M'\;N'$ donc $M\;N=_{\beta\eta} M'\;N'$
+    \end{itemize}
+    Donc $\cong\subseteq =_{\beta\eta}$.
+
+    Réciproquement, en faisant une induction sur $M=_{\beta\eta} N$ :
+    \begin{itemize}[label=$\bullet$]
+        \item Si $M\reduc N$ alors $M\cong N$.
+        \item Si $M\reduc_\eta N$ alors on a $M = \lambda x.N\;x$ pour $x\notin\varlib{M,N}$ et on remarque que pour $y\notin\varlib{M,N}$ on a bien $(\lambda x.N\;x)\;y\beteq N\;y$ donc $(\lambda x.N\;x)\;y\cong N\;y$.
+        \item Par définition $\cong$ est une relation d'équivalence.
+        \item On a montré dans un exercice précédent que $\cong$ est une relation d'équivalence.
+    \end{itemize}
+    Donc $=_{\beta\eta}\subseteq \cong$.
+\end{proof}
+
+\begin{exo}
+    Adapter la preuve du théorème de Church-Rosser au cas de $=_{\beta\eta}$, en adaptant $\reduc_\|$ et en montrant que cette relation vérifie les mêmes propriétés mais vis à vis de la $\beta-\eta$ réduction plutôt que la $\beta$-réduction.
+\end{exo}

@@ -1,0 +1,46 @@
+\documentclass[11pt,french]{book}
+
+\usepackage{prelude}
+
+\title{Cours de logique}
+\author{Cassis}
+\date{Janvier 2023}
+
+\begin{document}
+
+\maketitle
+
+\thispagestyle{empty}
+
+\addtocontents{toc}{\protect\thispagestyle{empty}}
+
+\tableofcontents
+\thispagestyle{empty}
+\vspace{5cm}
+
+\thispagestyle{empty}
+\newpage \setcounter{page}{1}
+
+\chapter*{Introduction}
+
+Ce document est un projet que j'écris lors de ma première année de master d'informatique. Son objectif est d'être un cours de logique relativement abordable pour un lecteur avec un bagage moyen de licence de mathématiques, et s'attache à une certaine rigueur pour la majeure partie de ce qui est décrit. 
+
+La structure suit trois grandes parties : une partie de logique générale, qui commence par décrire les structures inductives et finit par décrire la théorie des ensembles, en passant par les théorèmes de complétude et d'incomplétude de Gödel. Les derniers chapitres de la première partie sont assez indépendants du reste, mais sont un prolongement naturel de ce qui est donné dans les premiers chapitres (ils sont la mise en \oe uvre directe des constructions logique du calcul des prédicats, en permettant alors d'avoir des théories logiques concrètes permettant d'étudier réellement les maths et de retomber sur nos pieds avec la pratique habituelle). 
+
+La deuxième partie s'attache à décrire l'isomorphisme de Curry-Howard et le lien entre le lambda-calcul et la logique (intuitionniste principalement). Les premiers chapitres s'attachent à une étude relativement générale du lambda-calcul quand les dernier chapitres se concentrent sur l'aspect calculatoire de la logique à travers cet isomorphisme.
+
+La dernière partie est l'introduction du langage catégorique dans l'étude de la logique. Les premiers chapitres constituent une courte introduction aux catégories, pour permettre dans les chapitres suivants de donner des aspects logiques que la théorie des catégorie permet de décrire.
+
+Ce document est avant tout un recueil de cours que j'ai lus (parfois intégrés suffisamment pour ne pas les lire en écrivant, parfois qui sont presque du mot à mot). Pour la partie $1$, mes cours de L3 de \textit{Logique}, donnés par Natacha Portier à l'ENS de Lyon, ont constitué l'apport principal. Le chapitre sur les machines de Turing a été, lui, surtout extrait de mes cours de \textit{Fondement de l'Informatique} de L3, donnés par Pascal Koiran. La partie $2$ vient, elle, de cours de M$1$ donnés par Colin Riba, principalement le cours nommé \textit{Proofs and Programs}. La dernière partie vient de lectures diverses, et beaucoup de ce qui y est dit peut se retrouver dans le livre \textit{Category Theory} de Steve Awodey, une bonne partie étant également extraite du cours \textit{Proofs and Programs}.
+
+
+\thispagestyle{empty}
+
+\newpage
+\thispagestyle{empty}
+
+\input{Logique/partie_1.tex}
+
+\input{Curry-Howard/partie_2.tex}
+
+\end{document}

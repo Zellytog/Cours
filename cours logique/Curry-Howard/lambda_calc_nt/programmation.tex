@@ -1,0 +1,395 @@
+\section{Le lambda-calcul est Turing-complet}
+
+Le but de cette section est de montrer que l'on peut simuler les fonctions récursives avec des lambda-termes. Nous commencerons par montrer comment coder différentes structures de données élémentaires, puis nous donnerons le théorème de Turing-complétude du $\lambda$-calcul.
+
+\subsection{Entiers de Church}
+
+La première étape est de définir un codage pour les entiers, c'est-à-dire que l'on va associer à chaque entier $n\in\nat$ un lambda-terme $\underline n$ correspondant. Ces lambda-termes s'appellent les entiers de Church.
+
+\begin{defi}[Entiers de Church]
+    Soit $n\in\nat$, on définit le codage $\underline n$ de $n$ par $$\underline n := \lambda f.\lambda x. f^n\;x$$ où $f^0\; x = x$ et $f^{n+1}\;x = f\;(f^n\;x)$.
+\end{defi}
+
+On sait que les données importantes sont en fait les constructeurs $0$ et $S$, pour définir $\nat$, et nous allons donc donner une présentation des entiers de Church n'utilisant que ces deux constructeurs.
+
+\begin{prop}
+    Soient $\underline 0 := \lambda f.\lambda x.x$ et $\underline S := \lambda n.\lambda f.\lambda x.f\;(n\;f\;x)$ alors $\forall n\in\nat, \underline n \beteq \underline S^n(\underline 0)$
+\end{prop}
+
+\begin{proof}
+    On raisonne par récurrence :
+    \begin{itemize}[label=$\bullet$]
+        \item $\underline 0 = \underline S^0 (\underline 0)$ par définition de $\underline S^0$.
+        \item On suppose que $\underline n =_\beta \underline S^n(\underline 0)$, alors :
+        \begin{align*}
+            \underline{n+1} &\beteq \lambda f.\lambda x.f^{n+1}\;x\\
+            &\beteq \lambda f.\lambda x.f\;(f^n\;x)\\
+            \underline S^{n+1}(\underline 0) &= \underline S(\underline S^{n}(\underline 0))\\
+            &\beteq (\lambda n.\lambda f.\lambda x.f\;(n\;f\;x))(\underline n)\\
+            &\reduc \lambda f.\lambda x.f\;(\underline n\;f\;x)\\
+            &\reduc \lambda f.\lambda x.f\;(f^n\;x)
+        \end{align*}
+    \end{itemize}
+
+    D'où le résultat par récurrence.
+\end{proof}
+
+On en déduit le résultat suivant :
+
+\begin{cor}
+    Soit $P$ un prédicat sur $\Lambda$ stable par $\beteq$, c'est-à-dire tel que $\forall M\in\Lambda, (P(M)\land (M\beteq N))\implies P(N)$. Si $P(\underline 0)$ et $\forall n\in\nat, P(\underline n)\implies P(\underline S\;\underline n)$ alors $\forall n\in\nat, P(\underline n)$.
+\end{cor}
+
+\begin{proof}
+    On montre que l'ensemble $\{M\mid P(M)\}$ contient $\underline\nat = \{\underline n\mid n\in\nat\}$. Supposons qu'il existe un $n\in\nat$ tel que $\lnot P(\underline n)$, alors on peut considérer un $n$ minimal respectant cette condition : comme $n\neq 0$ on en déduit que $P(\underline{n-1})$ donc $P(\underline S\;\underline{n-1})$ mais $\underline S\;\underline{n-1} \beteq \underline S^{1+(n-1)}\;\underline 0 \beteq \underline n$ donc $P(\underline n)$, ce qui est absurde.
+\end{proof}
+
+\begin{rmk}
+    On ne vérifiera pas, en général, que $P$ est stable par $\beteq$ car ce sera évident (les propositions dans cette partie utiliseront comme relation atomique $\beteq$). Dans ce document, on fera référence à ce raisonnement comme la $\lambda$-récurrence.
+\end{rmk}
+
+L'intuition derrière le codage de $n$ est de considérer la fonction d'ordre supérieure qui, étant donnée une fonction $f$, retourne la fonction qui itère $n$ fois $f$. Cette intuition va nous guider pour définir facilement les opérations $+$ et $\times$.
+
+\begin{defi}[Addition]
+    On définit le terme $\mathrm{add}$ par $$\mathrm{add} := \lambda n.\lambda m. n\;\underline S\;m$$ et ce terme vérifie $$\forall n\in\nat,\forall m\in\nat, \mathrm{add}\;\underline n\;\underline m \beteq \underline{n+m}$$
+\end{defi}
+
+\begin{proof}
+    Il nous suffit de prouver cette propriété par $\lambda$-récurrence sur $n$ avec $m$ quelconque fixé avant :
+    \begin{itemize}[label=$\bullet$]
+        \item Tout d'abord : 
+        \begin{align*}
+            \mathrm{add}\;\underline 0\;\underline n &\beteq \underline 0\;\underline S\;\underline n\\
+            &\beteq \underline S^0\;\underline n\\
+            &\beteq \underline n = \underline{0+n}
+        \end{align*}
+        \item Si l'on suppose que $\mathrm{add}\;\underline n\;\underline m \beteq \underline{n+m}$ alors :
+        \begin{align*}
+            \mathrm{add}\;\underline {n+1}\;\underline m &\beteq \underline{n+1} \;\underline S\;\underline m\\
+            &\beteq \underline S\;(\underline S^n\;(\underline m)\\
+            &\beteq \underline S\;(\underline n\;\underline S\;\underline m)\\
+            &\beteq \underline S\;(\mathrm{add}\;\underline n\;\underline m)\\
+            &\beteq \underline S(\underline{n+m})\\
+            &\beteq \underline{n+m+1}\\
+            &\beteq \underline{(n+1)+m}
+        \end{align*}
+    \end{itemize}
+
+    D'où le résultat par récurrence.
+\end{proof}
+
+\begin{exo}
+    Montrer que le terme $\mathrm{add} := \lambda n.\lambda m. \lambda f.\lambda x. n\;f\;(m\;f\;x)$ vérifie la même propriété et qu'il est donc un choix possible pour l'addition.
+\end{exo}
+
+Pour alléger les notations, on notera maintenant $n+m$ pour $\mathrm{add}\;n\;m$. De façon similaire on peut définir la multiplication.
+
+\begin{defi}[Multiplication]
+    On définit le terme $\mathrm{mult}$ par $$\mathrm{mult} := \lambda n.\lambda m. n\;(\mathrm{add}\;m)\;\underline 0$$ et ce terme vérifie $$\forall n\in\nat,\forall m\in\nat, \mathrm{mult}\;\underline n\;\underline m \beteq \underline{n\times m}$$
+\end{defi}
+
+\begin{proof}
+    Par $\lambda$-récurrence sur $n$ :
+    \begin{itemize}[label=$\bullet$]
+        \item Si $n = 0$ :
+        \begin{align*}
+            \mathrm{mult} \;\underline 0\;\underline m &\beteq \underline 0 \;(\mathrm{add}\;\underline m)\;\underline 0\\
+            &\beteq \underline 0 = \underline{0\times m}
+        \end{align*}
+        \item Si l'on suppose que $\mathrm{mult}\;\underline n\;\underline m \beteq \underline{n\times m}$ alors :
+        \begin{align*}
+            \mathrm{mult}\;\underline{n+1}\;\underline m &\beteq \underline{n+1} \;(\mathrm{add}\;\underline m)\;\underline 0\\
+            &\beteq \mathrm{add}\;\underline m\;(\underline n\;(\mathrm{add}\;\underline m)\;\underline 0\\
+            &\beteq \mathrm{add}\;\underline m\;(\mathrm{mult}\;\underline n\;\underline m)\\
+            &\beteq \mathrm{add}\;\underline m\;\underline{n\times m}\\
+            &\beteq \underline{n\times m+m}\\
+            &\beteq \underline{(n+1)\times m}
+        \end{align*}
+    \end{itemize}
+
+    D'où le résultat par récurrence.
+\end{proof}
+
+On notera $n\times m$ pour $\mathrm{mult}\;n\;m$.
+
+\begin{exo}
+    Montrer que $$\forall n\in\nat,\forall m\in\nat,\underline n\;\underline m \beteq \underline{m^n}$$ et en déduire une traduction de la fonction $\fonction{\mathrm{exp}}{\nat\times\nat}{\nat}{(n,m)}{n^m}$ en lambda-terme.
+\end{exo}
+
+\subsection{Structure de données}
+
+Nous allons nous intéresser maintenant au codage des tuples. Remarquons d'abord qu'il est suffisant de coder des paires : si l'on sait coder $\langle x,y\rangle$ alors on peut coder $\langle x_1,\ldots,x_n\rangle$ par $\langle\cdots\langle x_1,x_2\rangle,x_3\rangle,\ldots,x_n\rangle$ voire par $\langle\cdot\langle \bullet,x_1\rangle,x_2\rangle,\ldots,x_n\rangle$, où $\bullet$ est un lambda-terme quelconque, qui donne une présentation plus systématique des projections. Commençons donc par définir le codage des paires et des projections.
+
+\begin{defi}[Paires]
+    Soient $M,N\in\Lambda$, on définit le lambda-terme $$\langle M,N\rangle := \lambda p.p\;M\;N$$ et les lambda-termes $$\pi_1 := \lambda p.(p\;(\lambda x.\lambda y.x))\qquad\pi_2 := \lambda p.(p\;(\lambda x.\lambda y.y))$$
+\end{defi}
+
+\begin{prop}
+    Pour tous termes $M,N\in\Lambda$, on a $\pi_1\;\langle M,N\rangle\beteq M$ et $\pi_2\;\langle M,N\rangle \beteq N$
+\end{prop}
+
+\begin{proof}
+    Prouvons l'identité pour $\pi_1$, l'autre cas étant identique :
+    \begin{align*}
+        \pi_1\;\langle M,N\rangle &\beteq (\lambda p.p\;(\lambda x.\lambda y.x))(\lambda p.p\;M\;N)\\
+        &\beteq (\lambda p.p\;M\;N)(\lambda x.\lambda y.x)\\
+        &\beteq (\lambda x.\lambda y.x)\;M\;N\\
+        &\beteq M
+    \end{align*}
+\end{proof}
+
+On peut alors définir des tuples, et leurs projections associées.
+
+\begin{defi}[Tuple]
+    Soient $M_1,\ldots,M_n$ des lambda-termes, on définit $(M_1,\ldots,M_n)$ par induction sur $n\in\nat^*$ :
+    \begin{itemize}[label=$\bullet$]
+        \item $(M_1) := \langle \lambda x.x,M_1\rangle$
+        \item $(M_1,\ldots,M_{n+1}) := \langle (M_1,\ldots,M_n),M_{n+1}\rangle$
+    \end{itemize}
+
+    On définit de plus les projections $\pi_{n,i}, i\leq n$ par induction sur $n-i$ :
+    \begin{itemize}[label=$\bullet$]
+        \item $\pi_{n,n} := \pi_2$
+        \item $\pi_{n,i} := \pi_{n-1,i}\circ \pi_1$
+    \end{itemize}
+\end{defi}
+
+\begin{prop}
+    Soient $M_1,\ldots,M_n$ des lambda-termes, alors $$\forall i\in \{1,\ldots,n\}, \pi_{n,i}\;(M_1,\ldots,M_n) \beteq M_i$$
+\end{prop}
+
+\begin{proof}
+    On prouve ce résultat pour tout $i\leq n$ et $M_1,\ldots,M_n\in\Lambda$ par récurrence sur $n\in\nat^*$ :
+    \begin{itemize}[label=$\bullet$]
+        \item Si $n = 1$ alors $(M_1) = \langle I,M_1\rangle$ et $\pi_{1,1} = \pi_2$, ce qui avec la proposition précédente nous donne bien le résultat.
+        \item Si pour tout $i\leq n$, l'équation est vraie, alors soit $M_1,\ldots,M_{n+1}\in\Lambda$. Soit $i\leq n+1$. Si $i = n+1$ alors $$\pi_{n+1,i}\;(M_1,\ldots,M_{n+1}) = \pi_2\;\langle (M_1,\ldots,M_n),M_{n+1}\rangle \beteq M_{n+1}$$ Si $i \leq n$ alors 
+        \begin{align*}
+            \pi_{n+1,i}\;(M_1,\ldots,M_{n+1}) &= (\pi_{n,i}\circ \pi_1)\;(M_1,\ldots,M_{n+1})\\
+            &\beteq \pi_{n,i}\;(\pi_1\;\langle (M_1,\ldots,M_n),M_{n+1}\rangle)\\
+            &\beteq \pi_{n,i}\;(M_1,\ldots,M_n)\\
+            &\beteq M_i
+        \end{align*}
+    \end{itemize}
+
+    D'où le résultat.
+\end{proof}
+
+La structure de tuple sera utile pour le résultat théorique d'équivalence du lambda-calcul avec les fonctions récursives, mais elle donne aussi une idée simple pour définir les booléens et les conditions : dire \og si $b$ alors $M$ sinon $N$\fg{} revient à considérer $\langle M,N\rangle$ et identifier les projections avec les valeurs de vérité.
+
+\begin{defi}[Booléen]
+    On définit deux lambda-termes $$\top := \lambda x.\lambda y.x\qquad \bot := \lambda x.\lambda y.y$$
+\end{defi}
+
+\begin{exo}
+    Montrer que la lambda-terme $\lnot := \lambda b. b\;\bot\;\top$ vérifie $\lnot\;\top \beteq \bot$ et $\lnot\;\bot \beteq \top$.
+\end{exo}
+
+\begin{exo}
+    Construire deux lambda-termes, respectivement $\lor$ et $\land$ représentant les opérations booléennes de disjonction et de conjonction. Montrer qu'elles respectent les tables de vérité attendues.
+\end{exo}
+
+\begin{defi}[Condition]
+    Soient $M,N,b\in\Lambda$, on définit $$\ifthenelsee{b}{M}{N} := b\;M\;N$$
+\end{defi}
+
+On peut vérifier de façon évidente que les conditions se comportent comme attendu : on a bien $\ifthenelsee{\top}{M}{N} \beteq M$ et $\ifthenelsee{\bot}{M}{N} \beteq N$. Enfin, pour que les booléens puissent exprimer une condition pertinente, il faut pouvoir trouver au moins une fonction qui associe un booléen à un entier.
+
+\begin{defi}[\'Egalité à $0$]
+    On définit le lambda-terme suivant : $$\eqz := \lambda n. n\;(\lambda x.\bot)\;\top$$ Ce terme vérifie $\eqz\;\underline 0 \beteq \top$ et $\eqz\;(\underline S\;\underline n) \beteq \bot$.
+\end{defi}
+
+\begin{proof}
+    Il suffit de faire le calcul :
+    \begin{align*}
+        \eqz\;\underline 0 &\beteq \underline 0 \;(\lambda x.\bot)\;\top\\
+        &\beteq \top\\
+        \eqz\;(\underline S\;\underline n) &\beteq (\underline S\;\underline n)\;(\lambda x.\bot)\;\top\\
+        &\beteq (\lambda x.\bot)(\underline n\;(\lambda x.\bot)\;\top)\\
+        &\beteq \bot
+    \end{align*}
+\end{proof}
+
+\begin{exo}[L'opération prédécesseur]
+    L'objectif de cet exercice est de trouver un terme $\mathrm{pred}$ tel que $\pred(\underline 0)\beteq \underline 0$ et $\pred(\underline S\;\underline n) \beteq \underline n$.
+    \begin{enumerate}
+        \item Construire un lambda-terme $f$ tel que $f\;\langle M,\underline n\rangle \beteq \langle \underline n,\underline{n+1}\rangle$
+        \item Montrer que $\underline n \;f\;\langle \underline 0,\underline 0\rangle \beteq \langle \underline{n-1},\underline{n}\rangle$
+        \item En déduire un lambda-terme $\pred$ qui vérifie les conditions de l'énoncé et montrer que ces conditions sont bien vérifies.
+    \end{enumerate}
+\end{exo}
+
+\begin{defi}[Soustraction]
+    On définit le lambda-terme $$\min := \lambda n.\lambda m. m\;\pred\;n$$ et ce lambda-terme vérifie, pour tous $n,m\in\nat$, si $n\leq m$ alors $\min\;\underline n\;\underline m \beteq \underline 0$ et sinon $\min\;\underline n\;\underline m = \underline{n-m}$.
+\end{defi}
+
+\begin{proof}
+    Montrons d'abord, par $\lambda$-récurrence, que $\forall n,m\in\nat,\min\;\underline {m+n}\;\underline n \beteq \underline m$ :
+    \begin{itemize}[label=$\bullet$]
+        \item Par définition, $\underline 0 \;\pred \beteq I$ donc $\min\; \underline {m+0}\;\underline 0 \beteq \underline m$.
+        \item Si $\min\;\underline {m+n}\;\underline n \beteq \underline m$ alors
+        \begin{align*}
+            \min\;\underline{m+n+1}\;\underline{n+1} &\beteq \min\;(\underline S\;\underline n)\;(\underline S^{m+n+1}\;\underline 0)\\
+            &\beteq (\underline S^{m+n+1}\;\pred)\;(\underline S\;\underline n)\\
+            &\beteq (\underline S^{m+n}\;\pred)\;(\pred\;(\underline S\;\underline n))\\
+            &\beteq \underline n\;\pred\;\underline {m+n}\\
+            &\beteq \min\;\underline {m+n}\;\underline n\\
+            &\beteq \underline m
+        \end{align*}
+    \end{itemize}
+
+    De plus, montrons que $\min\;\underline n\;\underline{m+p} \beteq \min (\min\;\underline n\;\underline m)\; \underline p$ par récurrence sur $p$ :
+    \begin{itemize}[label=$\bullet$]
+        \item D'abord $\underline{m+0}=\underline m$ et pour tout $M\in\Lambda, \min\;M\;\underline 0 \beteq M$ donc le résultat est vrai pour $p = 0$.
+        \item Si pour tout $n,m\in\nat, \min\;\underline n\;\underline{m+p} \beteq \min (\min\;\underline n\;\underline m)\; \underline p$ alors pour $p+1$ on a :
+        \begin{align*}
+            \min\;\underline n\;\underline{m+p+1} &\beteq \pred^{m+p+1}\;\underline n\\
+            &\beteq \pred\;(\min\;(\min\;\underline n\;\underline m)\;\underline p)\\
+            &\beteq \min\;(\min\;\underline n\;\underline m)\;\underline{p+1}
+        \end{align*}
+    \end{itemize}
+
+    En combinant les deux résultats, si $n \leq m$, en écrivant $m = n+(m-n)$, on en déduit que $$\min\;\underline n\;\underline m \beteq \min\;(\min\;\underline n\;\underline n)\;\underline{m-n} \beteq \min \;\underline 0\; \underline{m-n}$$ et $\min \;\underline 0\;\underline n \beteq \underline 0$ pour tout $n\in\nat$ puisque c'est un point fixe de la fonction $\pred$.
+
+    Enfin, si $m\leq n$ alors on peut écrire $n = m+(n-m)$ donc $$\min\;\underline n\;\underline m = \min \underline{(n-m)+m}\;\underline m \beteq \underline{n-m}$$
+\end{proof}
+
+On notera par souci de lisibilité $n-m$ pour le terme $\min\;n\;m$ mais il faudra faire attention à bien considérer que cette soustraction est dans $\nat$. De plus on notera $n-\underline 1$ plutôt que $\pred\;n$ en général.
+
+\begin{exo}[Inégalité]
+    Construire un lambda-terme $\mathrm{ineq}$ tel que pour tous $n,m\in\nat,\mathrm{ineq}\;\underline n\;\underline m \beteq \top$ si $n\leq m$ et $\mathrm{ineq}\;\underline n\;\underline m \beteq \bot$ sinon.
+\end{exo}
+
+\begin{exo}[\'Egalité]
+    Constuire un lambda-terme $\mathrm{eq}$ tel que $\mathrm{eq}\;\underline n\;\underline n \beteq \top$ et $\mathrm{eq}\;\underline n\;\underline m\beteq \bot$ pour $n\neq m$ deux entiers quelconques, et montrer que ce lambda-terme convient bien.
+\end{exo}
+
+On notera $n==m$ pour $\mathrm{eq}\;n\;m$.
+
+\subsection{Point fixe et récursion}
+
+L'élément qui nous manque maintenant est de pouvoir faire des appels récursifs. Nous avons vu pour les fonctions récursives la récursion bornée, qui s'obtient en appliquant une fonction un certain nombre de fois sur un argument donné, moralement en construisant une fonction de la forme $n\mapsto f^n(x)$ pour une certaine fonction $f$ et un certain $x$. En lambda-calcul, la récursion sera non bornée : on définit simplement une fonction $f$ dans laquelle on peut appliquer $f$ directement. Utilisons un exemple classique de fonction récursive avec la fonction factorielle : $$\mathrm{fact} := \lambda n.\ifthenelsee{n == \underline 0}{\underline 1}{n\times \mathrm{fact}\;(n-\underline 1)}$$
+
+Cette définition n'est valide qu'en considérant que fact est une variable libre dans ce terme, ce qui n'est pas notre objectif. Pour régler le souci et permettre de faire une définition inductive, il va nous falloir monter d'un cran en abstraction, en considérant au lieu de la fonction factorielle, une fonction qui va \og factorialiser\fg{} une fonction quelconque : prenant une fonction $f$, elle définira une fonction qui fera une étape de calcul de fact avant d'appliquer potentiellement $f$. On va la définir par $$g := \lambda f.\lambda n.\ifthenelsee{n == \underline 0}{\underline 1}{n\times f\;(n-\underline 1)}$$
+
+Le point essentiel est alors le suivant : la fonction fact que l'on veut est exactement un point fixe de $g$. En effet, c'est une fonction telle que la factorialiser ne changera pas son comportement, car elle est déjà la factorielle. Imaginons qu'on trouve $f$ telle que $g\;f \beteq f$, alors $f$ se comportera bien comme la factorielle :
+\begin{align*}
+    f\;\underline n&\beteq g\;f\;\underline n\\
+    &\beteq \ifthenelsee{\underline n == \underline 0}{\underline 1}{\underline n \times f\;(\underline n - \underline 1)}
+\end{align*}
+
+Ce qui nous donne bien le comportement attendu. Justement, il se trouve que tout lambda-terme possède un point fixe, et c'est ce que nous allons prouver.
+
+\begin{defi}[Combinateur de point fixe]
+    On définit le lambda-terme $$Y := \lambda f.(\lambda x.f\;(x\;x))(\lambda x.f\;(x\;x))$$ et le lambda-terme $$\Theta := (\lambda y.\lambda x.y\;(x\;x\;y))(\lambda y.\lambda x.y\;(x\;x\;y))$$
+
+    Ces termes sont des combinateurs de points fixes, ce qui signifie que pour tout lambda-terme $M$, on a $Y\;M\beteq M\;(Y\;M)$ et $\Theta\;M \beteq M\;(\Theta\;M)$
+\end{defi}
+
+\begin{proof}
+    Il nous suffit de faire le calcul :
+    \begin{align*}
+        Y\;M &\reduc (\lambda x.M\;(x\;x))(\lambda x.M\;(x\;x))\\
+        &\reduc M\;((\lambda x.M\;(x\;x))(\lambda x.M\;(x\;x)))\\
+        &\beteq M\;(Y\;M)\\
+        \Theta\;M &\reduc (\lambda x.M\;(x\;x\;M))(\lambda y.\lambda x.y\;(x\;x\;y))\\
+        &\reduc M\;((\lambda y.\lambda x.y\;(x\;x\;y))\;(\lambda y.\lambda x.y\;(x\;x\;y))\;M)\\
+        &= M\;(\Theta\;M)
+    \end{align*}
+\end{proof}
+
+\begin{rmk}
+    Le combinateur $\Theta$ donne un résultat plus fort : le point fixe $\Theta\;M$ l'est pour la réduction elle-même et non simplement la $\beta$-équivalence.
+\end{rmk}
+
+On peut donc définir notre fonction fact : $$\mathrm{fact} := Y(\lambda f.\lambda n.\ifthenelsee{n==\underline 0}{\underline 1}{n\times f\;(n-\underline 1)})$$
+
+\begin{exo}
+    Montrer que $$\forall n\in\nat, \mathrm{fact}\;\underline n \beteq \underline{n!}$$
+\end{exo}
+
+\subsection{Fonction récursive en lambda-terme}
+
+Nous pouvons maintenant nous atteler à montrer que toute fonction récursive peut être simulée par un lambda-terme.
+
+\begin{defi}[Simulation]
+    Soit $f : \nat^k\to\nat$, on dit que $f$ est simulée par le lambda-terme $\underline f$ si la propriété suivante est vérifiée : $$\forall n_1,\ldots,n_k\in\nat, \underline f\;(\underline{n_1},\ldots,\underline{n_k}) \beteq \underline{f(n_1,\ldots,n_k)}$$
+\end{defi}
+
+Pour montrer que les fonctions récursives sont simulables, il suffit de montrer les résultats de stabilité qu'on a déjà pu voir par exemple dans le chapitre sur l'arithmétique de Peano.
+
+\begin{prop}
+    Les fonctions constantes, les projections et la fonction successeur sont simulables, respectivement par $\lambda x.\underline n$ pour la fonction constante $n$, $\pi_{k,i}$ pour la $i$ème projection de $\nat^k\to\nat$, et par $\underline S$ pour la fonction successeur.
+\end{prop}
+
+\begin{proof}
+    On a déjà prouvé ces propriétés en amont.
+\end{proof}
+
+\begin{prop}
+    Si $f_1,\ldots,f_k : \nat^m\to\nat$ sont des fonctions simulées respectivement par $\underline{f_1},\ldots,\underline{f_k}$ et $h : \nat^k\to\nat$ est simulée par $\underline h$, alors la fonction $\underline k := \lambda x.\underline h\;(\underline{f_1}\;x,\ldots,\underline{f_k}\;x)$ simule la fonction $$\fonction{k}{\nat^m}{\nat}{n_1,\ldots,n_m}{ h(f_1(n_1,\ldots,n_m),\ldots,f_k(n_1,\ldots,n_m))}$$
+\end{prop}
+
+\begin{proof}
+    Faisons le calcul :
+    \begin{align*}
+        \underline k\;(\underline{n_1},\ldots,\underline{n_m}) &\beteq \underline h\;(\underline{f_1}\;(\underline{n_1},\ldots,\underline{n_m}),\ldots,\underline{f_k}\;(\underline{n_1},\ldots,\underline{n_m}))\\
+        &\beteq \underline h\;(\underline{f_1(n_1,\ldots,n_m)},\ldots,\underline{f_k(n_1,\ldots,n_m)})\\
+        &\beteq \underline{h(f_1(n_1,\ldots,n_m),\ldots,f_k(n_1,\ldots,n_m))}\\
+        &\beteq \underline{k(n_1,\ldots,n_m)}
+    \end{align*}
+
+    Respectivement car $\underline{f_i}$ simule $f_i$ et car $\underline h$ simule $h$.
+\end{proof}
+
+\begin{prop}[Récursion primitive]
+    Si $f : \nat^k\to\nat$ est simulée par $\underline f$, $g : \nat^{k+2}\to\nat$ est simulée par $\underline g$ alors la fonction $\rec(f,g) : \nat^{k+1}\to\nat$ telle que définie dans le chapitre des fonctions récursives est simulée par la fonction $$\underline{\rec(f,g)} := \Theta(\lambda h.\lambda x.\ifthenelsee{\!\pi_{k+1,k+1} == \underline 0}{\!\underline f\;x}{\!\underline g\;\langle \langle\pi_1\;x,\pred\;(\pi_2\;x)\rangle,h\;\langle \pi_1\;x,\pred\;(\pi_2\;x)\rangle\rangle}) $$
+\end{prop}
+
+\begin{proof}
+    On vérifie que la fonction ainsi définie représente bien $\rec(f,g)$ par $\lambda$-récurrence sur son dernier argument :
+    \begin{align*}
+        \underline{\rec(f,g)}(\underline{n_1},\ldots,\underline{n_k},\underline 0) &= \ifthenelsee{\pi_{k+1,k+1}\;(\underline{n_1},\ldots,\underline{n_k},\underline 0) == \underline 0}{\underline f\;(\underline{n_1},\ldots,\underline{n_k})}{[\ldots]}\\
+        &\beteq \ifthenelsee{\underline 0 == \underline 0}{\underline f\;(\underline{n_1},\ldots,\underline{n_k})}{[\ldots]}\\
+        &\beteq \underline f\;(\underline{n_1},\ldots,\underline{n_k})\\
+        &\beteq \underline{f(n_1,\ldots,n_k)}\\
+        \underline{\rec(f,g)}(\underline{n_1},\ldots,\underline{n_k},\underline S\;\underline n) &\beteq \underline g\;\langle \langle(\underline{n_1},\ldots,\underline{n_k}),\pred\;(\underline S\;\underline n)\rangle,\underline{\rec(f,g)}\;\langle(\underline{n_1},\ldots,\underline{n_k}),\pred\;(\underline S\;\underline n)\rangle\\
+        &\beteq \underline g(\underline{n_1},\ldots,\underline{n_k},\underline n,\underline{\rec(f,g)}\;(\underline{n_1},\ldots,\underline{n_k},\underline n))\\
+        &\beteq \underline g(\underline{n_1},\ldots,\underline{n_k},\underline n,\underline{\rec(f,g)\;(n_1,\ldots,n_k,n)})\\
+        &\beteq \underline {g(n_1,\ldots,n_k,n,\rec(f,g)(n_1,\ldots,n_k,n))}
+    \end{align*}
+\end{proof}
+
+\begin{prop}[Schéma $\mu$]
+    Soit $f : \nat^{k+1}\to\nat$ simulée par $\underline f$, alors la fonction $g : x\mapsto \mu(x,f)$ associant à un tuple $x$ le plus petit $y$ tel que $f(x,y) = 0$ s'il existe, est simulée par la fonction $\underline g := \lambda x.\Theta(\lambda h.\lambda n.\ifthenelsee{f\;\langle x,n \rangle == \underline 0}{n}{h\;\langle x,\underline S\;\underline n \rangle})\;\underline 0$
+\end{prop}
+
+\begin{proof}
+    Soient $n_1,\ldots,n_k\in\nat$, on suppose qu'il existe $y$ (que l'on prend minimal) tel que $f(n_1,\ldots,n_k,y) = 0$. On remarque que pour tout $n < y$, on a pour une fonction $h$ quelconque $$(\lambda n.\ifthenelsee{\underline f\;\langle (\underline{n_1},\ldots,\underline{n_k}),n \rangle == \underline 0}{n}{h\;\langle (\underline{n_1},\ldots,\underline{n_k}),\underline S\;\underline n \rangle})\;\underline n \beteq h\;(\underline{n_1},\ldots,\underline{n_k},\underline{n+1})$$ car par hypothèse de minimalité de $y, f(n_1,\ldots,n_k,n) \neq 0$ et $\underline f$ simule $f$, forçant la réduction à entrer dans le cas \textit{else}. De plus, $\underline y$ est un point fixe de cette fonction. Notons $$ h := \Theta(\lambda h.\lambda n.\ifthenelsee{f\;\langle x,n \rangle == \underline 0}{n}{h\;\langle x,\underline S\;n \rangle})$$ pour $x = (\underline{n_1},\ldots,\underline{n_k})$. On montre par récurrence finie sur $y-n$ que $h\;\underline i \beteq \underline y$ :
+    \begin{itemize}[label=$\bullet$]
+        \item Par l'argument précédent, $h\;y\beteq y$
+        \item Supposons que $h\;i\beteq y$, alors 
+        \begin{align*}
+            h\;(\underline{i-1}) &\beteq \ifthenelsee{f\;\langle x,\underline{i-1} \rangle == \underline 0}{n}{h\;\langle x,\underline S\;\underline {i-1} \rangle}\\
+            &\beteq h\;\langle x,\underline S\;\underline{i-1}\rangle\\
+            &\beteq h\;(x,\underline i)\\
+            &\beteq \underline y
+        \end{align*}
+    \end{itemize}
+
+    Donc pour $i = 0$ cela nous donne $h\;\underline 0 \beteq \underline y$, soit $$\underline g\;(\underline{n_1},\ldots,\underline{n_k}) \beteq \underline{g(n_1,\ldots,n_k)}$$
+\end{proof}
+
+\begin{them}[Simulation]
+    Pour toute fonction récursive $f : \nat^k\to\nat$ il existe un lambda-terme $\underline f$ tel que $$\forall n_1\in\nat,\ldots,\forall n_k\in\nat, \underline f\;(\underline{n_1},\ldots,\underline{n_k})\beteq \underline{f(n_1,\ldots,n_k)}$$
+\end{them}
+
+\begin{proof}
+    En utilisant les propositions précédentes, on sait que les fonctions récursives atomiques sont simulables, et que la récursion, la composée et le schéma $\mu$ de fonctions simulables sont simulables, donc toutes les fonctions récursives sont simulables.
+\end{proof}
+
+Pour le sens réciproque, comme nous avons montré que l'on peut simuler les machines de Turing par des fonctions récursives, il suffit de montrer que l'on peut simuler le lambda-calcul par une machine de Turing. Nous ne le ferons pas, mais les constructions sur les indices de De Bruijn permettent par exemple de définir de façon purement algorithmique un interpréteur de lambda-calcul. Nous proposons un codage possible $\overline M$ du lambda-terme $M\in\Lambda_B$ sur l'alphabet $\Gamma := \{0,1,2,3\}$ :
+\begin{itemize}[label=$\bullet$]
+    \item $\overline n = 3^{n+1}$
+    \item $\overline{\lambda M} = 0\cdot \overline M$
+    \item $\overline{(M\;N)} = 1\cdot\overline M\cdot2\cdot\overline N$
+\end{itemize}

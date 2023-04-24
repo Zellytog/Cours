@@ -1,0 +1,292 @@
+\section{Ordinaux}
+
+Cette section va développer la théorie des ordinaux. Les ordinaux forment une classe (au sens de collection qui n'est pas un ensemble) centrale dans la théorie des ensembles, car elle constitue en quelque sorte une hiérarchie canonique des ensembles. On peut aussi les voir comme une extension de l'ensemble des entiers, en continuant d'applique l'opération de succession à $\nat$, puis à son successeur, etc. Pour pouvoir nous définir les ordinaux, il va nous falloir d'abord définir deux notions : celle de bon ordre et celle d'ensemble transitif.
+
+\subsection{Définition et propriétés d'un ordinal}
+
+Nous avons vu, lors de l'étude des algèbre booléennes, la notion d'ensemble ordonné. Un bon ordre est un cas particulier d'ensemble ordonné.
+
+\begin{defi}[Bon ordre]
+    Pour un ensemble ordonné $(X,\leq)$, on dit que $\leq$ est un bon ordre si pour toute partie non vide $F\subseteq X$, il existe un plu petit élément $f$. La version formelle de \og $\leq$ est un bon ordre\fg{} est donc $$\forall F\subseteq X. F\neq \varnothing \implies \exists m\in F. \forall y\in F. m\leq y$$
+\end{defi}
+
+On peut remarquer une première propriété :
+
+\begin{prop}
+    Si $(X,\leq)$ est bien ordonné, alors $\leq$ est un ordre total, ce qui signifie que pour $x,y\in X$, on a $x\leq y \lor y\leq x$.
+\end{prop}
+
+\begin{proof}
+    Il suffit de considérer la partie $\{x,y\}\subseteq X$ qui possède un plus petit élément.
+\end{proof}
+
+\begin{defi}[Ensemble transitif]
+    Un ensemble $X$ est dit transitif si pour tous $x,y$ tels que $x\in y$ et $y\in X$, on a $x\in X$.
+\end{defi}
+
+\begin{exo}
+    Montrer qu'être un ensemble $X$ transitif est équivalent à la proposition $$\forall Y. Y\in X \implies Y\subseteq X$$
+\end{exo}
+
+Cela nous mène à la définition d'un ordinal :
+
+\begin{defi}[Ordinal]
+    On dit qu'un ensemble $X$ est un ordinal si $X$ est transitif et $(X,\in)$ est un ensemble bien ordonné strict, c'est-à-dire que $\in$ est antiréflexive et transitive (relation d'ordre stricte), et que $\in'$, définie par $x\in y \lor x=y$, donne un bon ordre à $X$. On va noter le prédicat $\On(X)$ pour désigner le fait d'être un ordinal : \begin{multline*}\On(X) := (\forall x\in X.x\notin x) \land (\forall x\in X.\forall y\in X.\forall z\in X. x\in y\land y\in z \implies x\in z) \\\land (\forall Y.Y\in X \implies Y\subseteq X)\land (\forall Y\subseteq X. Y\neq \varnothing \implies \exists y\in Y. \forall y'\in Y. y=y' \lor y\in y')\end{multline*} 
+\end{defi}
+
+\begin{expl}
+    Les entiers comme nous les avons codés (appelés entiers de Von Neumann) sont des ordinaux. $\nat$ est aussi un ordinal, que l'on nommera en général $\omega$ lorsque nous parlons d'ordinaux. $\omega\cup\{\omega\}$ est lui aussi un ordinal.
+\end{expl}
+
+\begin{ctexpl}
+    Le prédicat $\On$ ne définit pas un ensemble : si $\On = \{X\mid \On(X)\}$ était un ensemble, alors $S\On = \On\cup\{\On\}$ serait un ordinal plus grand que $\On$, mais par définition de $\On$, $S\On\in\On$ donc par transitivité, $\On\in\On$, ce qui contredit l'hypothèse que $\in$ est une relation d'ordre stricte dans $\On$. C'est donc une classe propre. Cependant comme le prédicat $\On$ est bien défini, on peut manipuler cette classe propre presque comme un ensemble.
+\end{ctexpl}
+
+On notera par $\alpha$, $\beta$ etc. des ordinaux.
+
+Donnons alors plusieurs propriétés importantes des ordinaux :
+
+\begin{defi}[Segment initial]
+    Soit $\alpha$ un ordinal. On appelle segment initial propre de $\alpha$ un ensemble de la forme $$S_\xi(\alpha) = \{ \eta\in \alpha\mid \eta < \xi\}$$
+
+    Un segment initial de $\alpha$ est une partie $S$ de $\alpha$ telle que si $x\in S$ et $y < x$ alors $y\in S$.
+\end{defi}
+
+\begin{prop}
+    Un segment initial d'un ordinal $\alpha$ est soit $\alpha$ soit un élément de $\alpha$.
+\end{prop}
+
+\begin{proof}
+    Soit un segment initial $S_\xi(\alpha)$, alors $S_\xi(\alpha) =\{\eta\in \alpha\mid \eta\in \xi\} = \xi\cap \alpha$ or $\xi\subseteq \alpha$ donc $S_\xi(\alpha) = \xi$.
+\end{proof}
+
+\begin{prop}
+    Si $\On(X)$ et $x\in X$ alors $\On(x)$.
+\end{prop}
+
+\begin{proof}
+    Comme $X$ est transitif, les éléments de $x$ sont aussi des éléments de $X$, donc $\in$ est un ordre stricte puisqu'induit par l'ordre strict de $X$. Si $Y\subseteq x$ alors $Y\subseteq X$ comme $X$ est transitif, donc $Y$ a un plus petit élément dans $X$, qui est aussi un plus petit élément dans $x$ (puisque $x\subseteq X$). En spécialisant la transitivité de l'ordre $\in$ dans $X$ on déduit que si $y\in x$ et $z\in y$ alors $z\in x$, ce qui signifie que $x$ est transitif.
+\end{proof}
+
+\begin{prop}
+    Pour tout ordinal $\alpha$, $\alpha\notin\alpha$.
+\end{prop}
+
+\begin{proof}
+    Cette proposition est vraie par définition d'un ordinal (puisque $\in$ est antiréflexif dans $\alpha$).
+\end{proof}
+
+\begin{prop}
+    Si $\alpha$ et $\beta$ sont des ordinaux, alors soit $\alpha = \beta$, soit $\alpha\in\beta$, soit $\beta\in\alpha$ (et ces cas sont exclusifs deux à deux).
+\end{prop}
+
+\begin{proof}
+    On considère $\xi = \alpha \cap\beta$. $\xi$ est un segment initial de $\alpha$ puisque si $x\in \xi$ et $y\in x$ alors $y\in \alpha$ et $y\in \beta$ donc $y\in \xi$. De même $\xi$ est un segment initial de $\beta$, d'où $(\xi = \alpha\lor \xi \in \alpha)\land (\xi =\beta\lor \xi\in \beta)$, ce qui nous donne quatre cas :
+    \begin{itemize}
+        \item si $\xi =\alpha$ et $\xi = \beta$, alors $\alpha = \beta$.
+        \item si $\xi \in \alpha$ et $\xi = \beta$ alors $\beta\in \alpha$.
+        \item si $\xi = \alpha$ et $\xi \in \beta$ alors $\alpha\in \beta$.
+        \item si $\xi \in \alpha$ et $\xi \in \beta$ alors on en déduit que $\xi \in \xi$ puisque $\xi \in \alpha \cap \beta$, ce qui est une contradiction puisque $\xi$ est un ordinal.
+    \end{itemize}
+\end{proof}
+
+On en déduit la proposition suivante :
+
+\begin{prop}
+    La relation $\in$ est une relation de bon ordre stricte sur $\On$ et la relation d'ordre associée est $\subseteq$.
+\end{prop}
+
+\begin{exo}
+    Prouver cette proposition.
+\end{exo}
+
+\begin{defi}[Successeur]
+    Si $\alpha$ est ordinal, alors il existe un plus petit ordinal contenant $\alpha$, appelé successeur de $\alpha$ (et noté $S\alpha$ ou $\alpha+1$) qui est $\alpha \cup \{\alpha\}$.
+\end{defi}
+
+\begin{proof}
+    $\alpha + 1$ est bien un ordinal (cela se vérifie facilement) et tout ordinal $\gamma$ strictement supérieur à $\alpha$ contient les éléments de $\alpha$, donc $\alpha \subseteq \gamma$ et contient $\alpha$, donc $\alpha\in\gamma$, donc $\alpha\cup\{\alpha\}\subseteq \gamma$.
+\end{proof}
+
+\begin{prop}[Borne supérieure]
+    Soit $O$ un ensemble d'ordinaux, alors $O$ a une borne supérieure qui est $\bigcup O$.
+\end{prop}
+
+\begin{proof}
+    On définit $\beta = \bigcup O$. Si $x$ est une partie non vide de $\beta$, alors $x\cap \alpha_0 \neq \varnothing$ pour un certain $\alpha_0\in O$. Dans ce cas, $x\cap \alpha_0$ a un plus petit élément puisque c'est une partie de $\alpha_0$, et cet élément est le plus petit élément de $x$ (puisque pour tout autre ordinal $\alpha\in O$, $x\cap \alpha$ contient $x\cap \alpha_0$ ou est contenu dans celui-ci, mais quoi qu'il arrive l'élément minimal de $x\cap \alpha_0$ est bien dans $x\cap \alpha$). Donc $\beta$ est bien ordonné par $\in$. Si $x\in \beta$ et $y\in x$ alors $x\in \alpha$ pour un certain $\alpha \in O$ donc $y\in \alpha$, donc $y\in \beta$. On en déduit donc que $\beta$ est bien un ordinal. Le fait que $\beta$ soit la borne supérieure de $O$ est direct : il contient tout élément de $O$ donc $\forall \alpha \in O, \alpha \leq \beta$ et si un ordinal $\gamma$ contient tous les éléments de $O$ alors il contient aussi leur union, donc $\beta \leq \gamma$.
+\end{proof}
+
+\subsubsection{Lien avec les bons ordres}
+
+Il se trouve que les ordinaux peuvent être vus aussi comme une forme canonique d'ensemble bien ordonné, au sens où tout ensemble bien ordonné est isomorphe à un unique ordinal (un isomorphisme d'ensembles ordonnés est une bijection croissante de réciproque croissante, c'est-à-dire telle que pour tous éléments $a$ et $b$, $a \leq b \implies f(a) \leq f(b)$). On peut interpréter ce résultat comme le fait que tout ensemble bien ordonné est ordonné par $\in$ dans un ordinal, en renommant ensuite les éléments. Nous allons prouver ce théorème en plusieurs étapes.
+
+\begin{lem}
+    Soient $\alpha$ et $\beta$ deux ordinaux, et $f : \alpha \to \beta$ une application strictement croissante. Alors $\alpha \leq \beta$ et $\xi \leq f(\xi)$ pour tout $\xi \in \alpha$
+\end{lem}
+
+\begin{proof}
+    Soit $\xi$ le plus petit élément de $\alpha$ tel que $f(\xi) < \xi$ s'il en existe. Comme $f$ est strictement croissante, on a $f(f(\xi)) < f(\xi)$. Donc, en posant $\eta = f(\xi)$, on a $\eta < \xi$ et $f(\eta) < \eta$, ce qui contredit la définition de $\xi$. On a donc $\xi\leq f(\xi)$ pour tout $\xi \in \alpha$, donc $\xi\in\beta$ puisque $f(\xi)\in \beta$, donc $\alpha\subseteq \beta$, donc $\alpha\leq \beta$.
+\end{proof}
+
+\begin{prop}
+    Soient $\alpha$ et $\beta$ deux ordinaux, et $f$ un isomorphisme d'ensembles ordonnés de $\alpha$ sur $\beta$. Alors $\alpha = \beta$ et $f = \id_\alpha$.
+\end{prop}
+
+\begin{proof}
+    D'après le lemme précédent, $\alpha \leq \beta$ (puisqu'un isomorphisme d'ensembles ordonnés est par extension strictement croissant) et $\xi \leq f(\xi)$ pour tout $\xi \in \alpha$. De plus, $f^{-1}$ est un isomorphisme d'ensembles ordonnés donc $\beta \leq \alpha$, donc $\alpha = \beta$, et pour tout $\xi \in \beta$, $\xi \leq f(\xi)$. On en déduit que $f(\xi) = x$ pour tout $\xi\in\alpha$ et donc que $f = \id_\alpha$.
+\end{proof}
+
+\begin{them}
+    Pour chaque ensemble bien ordonné $(E,\leq)$, il existe un isomorphisme et un seul de $(E,\leq)$ vers un ordinal.
+\end{them}
+
+\begin{proof}
+    Montrons d'abord l'unicité : si $f$ est un isomorphisme de $(E,\leq)$ vers un ordinal $\alpha$, et $g$ un isomorphisme de $(E,\leq)$ vers $\beta$, alors en composant $g^{-1}$ et $f$ on déduit que $\alpha = \beta$ et que $g = f$.
+
+    Montrons maintenant l'existence : on pose $$B = \{x \in E \mid S_x(E) \text{ est isomorphe à un ordinal}\}$$ et on note $\beta(x)$ l'ordinal isomorphe à $x$, pour $x\in B$.
+
+    Si $y\in B$ et $x < y$ alors $x\in B$ et $\beta(x) < \beta(y)$ car dans l'isomorphisme de $S_y(E)$ sur $\beta(y)$, le segment initial $S_x(E)$ de $S_y(E)$ devient un segment initial strict de $\beta(y)$, c'est-à-dire un ordinal $\beta(x) < \beta(y)$. D'après le schéma de substitution, l'ensemble des $\beta(x)$ pour $x\in B$ est un segment initial de $\On$, c'est donc un ordinal $\delta$ et l'application $x\mapsto \beta(x)$ est un isomorphisme entre $B$ et $\delta$.
+
+    Si $B\neq E$, alors $B = S_{x_0}(E)$ pour $x_0\in E$ puisque $b$ est un segment initial de $E$. Mais cela signifie que $x_0\in B$ donc $x_0 \in S_{x_0}(E)$ ce qui contredit la définition de $S_{x_0}(E)$. Donc $B = E$ et on a un isomorphisme de $E$ dans $\beta$.
+\end{proof}
+
+\subsection{Induction transfinie}
+
+L'un des points les plus importants avec les ordinaux est la possibilité de généraliser la récurrence forte à la fois pour prouver des propositions sur tous les ordinaux et pour construire des fonctions dont le domaine est $\On$ (remarquons que ces \og fonctions\fg{} sont plus précisément des relations fonctionnelles, mais qui restreintes à des ensembles donnent des fonctions au sens de notre théorie). Nous verrons donc le théorème de construction par induction transfinie, puis quelques exemples de constructions transfinies (les opérations arithmétiques transfinies, ainsi que la hiérarchie cumulative de Von Neumann).
+
+Tout d'abord, donnons le principe de preuve par induction sur les ordinaux.
+
+\begin{prop}[Induction sur les ordinaux]
+    Soit $E(x)$ un prédicat à une variable libre, alors $$\left(\forall x. \On(x)\implies E(x)\right) \iff \left(\forall \alpha.\On(\alpha) \implies [(\forall \beta. (\beta < \alpha) \implies E(\beta))\implies E(\alpha)]\right)$$
+\end{prop}
+
+\begin{proof}
+    Un sens est évident (si $E$ est vrai sur tous les ordinaux, a alors la proposition de droite est vraie). Dans l'autre sens, si $E$ n'est pas vraie pour tous les ordinaux, on considère le plus petit ordinal tel que $E(\alpha)$ est fausse : on en déduit que $E(\alpha)$ est vraie puisque $E$ est vraie sur tous les éléments strictement plus petits que $\alpha$.
+\end{proof}
+
+\begin{rmk}
+    Dans la proposition de droite, on remarque que comme $\beta < \varnothing$ n'est jamais vrai, $E(\varnothing)$ est vrai.
+\end{rmk}
+
+Pour pouvoir définir de façon efficace nos objets, nous allons introduire une nouvelle notation : pour une relation fonctionnelle $F$, $F \upharpoonright C$ signifie la restriction de $F$ à $C$, c'est-à-dire la relation $F(x) \land x\in C$ pour un objet $x$. Nous confondrons les relations fonctionnelles et les fonctions induites : la relation fonctionnelle $F\restr C$ correspond à une fonction de $C$ dans l'union des $F(x)$ pour $x\in C$, si $C$ est un ensemble.
+
+\begin{defi}[Relation H-inductive]
+    Soit une relation fonctionnelle $H$. Une fonction $f$ est $H$-inductive si elle a pour domaine un ordinal $\alpha$ et si pour tout ordinal $\beta\in \alpha$, $f\restr \beta$ est dans le domaine de $H$ (c'est-à-dire qu'il existe un élément $y$ tel que $H(\beta,y)$ est vraie), $H(f\restr \beta,f(\beta))$.
+\end{defi}
+
+\begin{prop}
+    Il existe au plus une relation $H$-inductive de domaine $\alpha$.
+\end{prop}
+
+\begin{proof}
+    Supposons que $f$ et $g$ soient deux fonctions $H$-inductives de domaine $\alpha$. On considère alors $\beta$ le plus petit ordinal tel que $f(\beta)\neq g(\beta)$ (s'il n'existe pas, alors le résultat est prouvé). Alors pour tout $\gamma < \beta$, on en déduit que $f(\gamma) = g(\gamma)$, donc $f\restr \beta = g\restr \beta$, donc $f(\beta) = g(\beta)$ puisque $H(f\restr\beta,f(\beta))$ et $H(g\restr\beta,g(\beta))$ et $H$ est fonctionnelle, ce qui est une contradiction.
+\end{proof}
+
+On en déduit que si $f$ est $H$-inductive de domaine $\alpha$ et $\beta\in\alpha$, alors $f\restr\beta$ est $H$-inductive de domaine $\beta$.
+
+\begin{them}[Fonction $H$-inductive]
+    Soit $H$ une relation fonctionnelle, et $\alpha$ un ordinal tel que toute fonction $H$-inductive de domaine $\beta < \alpha$ soit dans le domaine de $H$. Alors il existe une fonction $H$-inductive et une seule de domaine $\alpha$.
+\end{them}
+
+\begin{proof}
+    L'unicité vient directement de la proposition précédente.
+
+    Soit $\tau$ l'ensemble des $\beta < \alpha$ tels qu'il existe une fonction $H$-inductive $f_\beta$ de domaine $\beta$. $\tau$ est un segment initial et d'après l'unicité, si $\gamma < \beta$ alors $f_\gamma = f_\beta\restr \gamma$. $\tau$ est donc un ordinal $\tau \leq \alpha$, puisque c'est un segment initial d'ordinaux. On peut donc définir $f_\tau$ par $f_\tau(\beta) = H(f_\beta)$ (en notant $H(f_\beta)$ l'unique $y$ tel que $H(f_\beta,y)$) pour $\beta\in\tau$. Si $\gamma < \beta < \tau$, alors $f_\tau(\gamma) = H(f_\gamma) = H(f_\beta\restr\gamma) = f_\beta(\gamma)$, donc $f_\beta = f_\tau\restr\beta$ donc $f_\tau(\beta) = H(f_\tau\restr\beta)$, donc $f_\tau$ est une fonction $H$-inductive de domaine $\tau$. Si $\tau < \alpha$, la définition de $\tau$ montre que $\tau\in \tau$ ce qui est impossible, donc $\tau = \alpha$ et $f_\tau$ est la fonction recherchée.
+\end{proof}
+
+On peut même étendre ce résultat en considérant la version suivante :
+
+\begin{cor}\label{cor:bla}
+    Soient $\alpha$ un ordinal, $A$ une collection, $M$ la collection des applications définies sur $\beta < \alpha$ et à valeurs dans $A$ et $H$ une relation fonctionnelle de domaine $M$ à valeurs dans $A$. Alors il existe une fonction $f$ et une seule, définie sur $\alpha$, telle que $f(\beta) = H(f\restr\beta)$ pour tout $\beta < \alpha$.
+\end{cor}
+
+On peut donc définir une fonction (voire une fonction à deux variables avec le corollaire) par induction transfinie, c'est-à-dire par induction sur les ordinaux, jusqu'à un ordinal $\alpha$ donné. Nous allons maintenant généraliser cette construction pour pouvoir générer des relations fonctionnelles dont le domaine est $\On$ et telles que leur restriction à un ordinal est une fonction.
+
+\begin{them}
+    Soit $H$ une relation fonctionnelle, telle que toute fonction $H$-inductive soit dans le domaine de $H$. On peut alors définir une relation fonctionnelle $F$, de domaine $\On$, telle que $F(\alpha) = H(f\restr\alpha)$ pour tout ordinal $\alpha$. C'est la seule relation fonctionnelle ayant ces propriétés et de plus $F\restr\alpha$ est une fonction $H$-inductive pour tout ordinal $\alpha$.
+\end{them}
+
+\begin{proof}
+    On définit $F$ simplement par $y=F(\alpha)$ si et seulement si \og il existe une fonction $H$-inductive $f_\alpha$ de domaine $\alpha$ et $y = H(f_\alpha)$.
+
+    D'après le théorème précédent, il existe une telle fonction $f_\alpha$ et une seule, donc $F$ est bien une relation fonctionnelle de domaine $\On$. De plus, si $\beta < \alpha$, on a $f_\beta = H(f_\beta) = H(f_\alpha\restr\beta) = f_\alpha(\beta)$ pour tout $\beta < \alpha$. Donc $f_\alpha = F\restr\alpha$ et $F\restr\alpha$ est $H$-inductive. Comme $F(\alpha) = H(f_\alpha)$, on a bien $F(\alpha) = H(F\restr\alpha)$.
+
+    Pour l'unicité, l'argument est toujours le même : regarder le plus petit ordinal où deux relations fonctionnelles $F$ et $G$ diffèrent et déduire qu'elles sont égales en cet ordinal puisqu'égales sur les ordinaux plus petits (strictement).
+\end{proof}
+
+On peut encore donner une version comme celle du corollaire \ref{cor:bla} :
+
+\begin{cor}
+    Soient $A$ une collection, $M$ la collection des applications définies sur les ordinaux, à valeurs dans $A$, $H$ une relation fonctionnelle de domaine $M$, à valeurs dans $A$. On peut alors définir une relation fonctionnelle $F$ de domaine $\On$ à valeurs dans $A$ telle que $F(\alpha) = H(F\restr\alpha)$ pour tout ordinal $\alpha$. C'est la seule telle relation fonctionnelle.
+\end{cor}
+
+\subsection{Opérations ordinale}
+
+Nous allons utiliser le théorème de définition des relations fonctionnelles par induction transfinie pour construire les opérations $+$ et $\times$ sur les ordinaux. Pour cela, nous allons d'abord avoir besoin du lemme suivant :
+
+\begin{lem}[Disjonction de cas sur les ordinaux]
+    Soit $\alpha$ un ordinal. Alors $\alpha$ est de l'une des formes suivantes :
+    \begin{itemize}[label=$\bullet$]
+        \item $\alpha = 0$
+        \item il existe $\beta$ tel que $\alpha = S \beta$
+        \item $\alpha$ n'est ni l'un ni l'autre, et est alors appelé ordinal limite, auquel cas $\displaystyle{\alpha = \bigcup_{\beta < \alpha} \beta}$.
+    \end{itemize}
+\end{lem}
+
+\begin{proof}
+    Le fait que ces cas sont exclusifs est évident. Il nous suffit donc de prouver que si $\alpha$ est non nul et n'est pas un successeur, alors $\alpha = \bigcup_{\beta <\alpha} \beta$.
+
+    $\alpha$ contient tous les éléments de $\bigcup_{\beta < \alpha} \beta$, il nous suffit donc de montrer l'autre inégalité. Si $\bigcup_{\beta < \alpha} \in \alpha$, alors $\alpha$ contient tous les éléments de $\bigcup_{\beta < \alpha}\beta$ et $\bigcup_{\beta < \alpha}\beta$, donc $\alpha = \bigcup_{\beta < \alpha} \beta \cup \{\bigcup_{\beta < \alpha}\beta\} = S(\bigcup_{\beta < \alpha}\beta)$ ($\alpha$ ne peut pas être strictement supérieur à ce successeur car sinon l'union ne serait pas la borne supérieure des éléments de $\alpha$) ce qui contredit l'hypothèse que $\alpha$ n'est pas successeur.
+\end{proof}
+
+On peut donc facilement définir une relation fonctionnelle sur les ordinaux par disjonction de cas sur ces ordinaux (donner une définition différente pour $0$, les successeurs et les ordinaux limites). On définit alors les opérations de la façon suivante :
+
+\begin{defi}[Addition ordinale]
+    Soient $\alpha$ et $\beta$ des ordinaux, on définit de la façon suivante l'ordinal $\alpha + \beta$ :
+    \begin{itemize}[label=$\bullet$]
+        \item $\alpha + 0 = \alpha$
+        \item $\alpha + S \beta = S (\alpha + \beta)$
+        \item $\displaystyle{\alpha + \lambda = \bigcup_{\beta < \lambda} (\alpha + \beta)}$ si $\lambda$ est un ordinal limite.
+    \end{itemize}
+
+    On remarque alors que par définition, $S(\alpha) = \alpha + 1$.
+\end{defi}
+
+\begin{exo}
+    Soit $(E_i)_{i\in I}$ une famille d'ensembles indicée par $I$. On définit $$\sum_{i\in I}E_i$$ comme l'ensemble des couples $(i,x)$ où $x\in E_i$.
+
+    Soit $\alpha$ et $\beta$ deux ordinaux. Montrer qu'en considérant l'ordre lexicographique sur $\sum_{i \in \beta} \alpha$ (donc une somme sur une famille constante d'ensembles) on trouve un ensemble bien ordonné. Montrer que cet ensemble est isomorphe à $\alpha + \beta$.
+\end{exo}
+
+\begin{rmk}
+    L'addition n'est pas commutative avec des ordinaux infinis : $1+\omega = \bigcup 1+n = \omega$ et $\omega + 1 = S(\omega) = \nat\cup\{\nat\}$.
+\end{rmk}
+
+\begin{defi}[Multiplication ordinale]
+    On définit la multiplication $\alpha \times \beta$ de la façon suivante :
+    \begin{itemize}[label=$\bullet$]
+        \item $\alpha \times 0 = 0$
+        \item $\alpha \times S \beta = \alpha \times \beta + \alpha$
+        \item $\alpha \times \lambda = \displaystyle{\bigcup_{\beta < \lambda}(\alpha \times \beta)}$ si $\lambda$ est un ordinal limite.
+    \end{itemize}
+\end{defi}
+
+\begin{exo}
+    Montrer que l'ordre lexicographique sur $\alpha \times \beta$ est un bon ordre. En déduire que $\alpha \times \beta$ en tant qu'ensemble, avec l'ordre lexicographique, est isomorphe à l'ordinal $\alpha \times \beta$.
+\end{exo}
+
+\subsubsection{Hiérarchie cumulative de Von Neumann}
+
+On définit la classe $V$ des ensembles de Von Neumann de la façon suivante :
+
+\begin{itemize}[label=$\bullet$]
+    \item $V_0 = \varnothing$
+    \item $V_{S \alpha} = \mathcal P (V_\alpha)$
+    \item si $\lambda$ est un ordinal limite, alors $V_{\lambda} = \bigcup_{\beta < \lambda} V_\beta$.
+\end{itemize}
+
+La classe $V$ est alors l'union des $V_\alpha$ pour $\alpha\in\On$ (c'est donc une classe propre, ou collection, et pas un ensemble). On pourrait par exemple écrire $V(x)$ par $$\exists \alpha. \On(\alpha) \land x\in V_\alpha$$
+
+\begin{rmk}
+    L'univers de Von Neumann $V$ est ce qu'on appelle un modèle interne de la théorie des ensembles : c'est une classe qui est stable par les axiomes de $ZF$ (et l'axiome du choix). Il se trouve que les mathématiques usuelles peuvent s'exprimer en ne considérant que $V$ et pas d'ensembles extérieurs. De plus, $V$ vérifie aussi l'axiome appelé axiome de fondation, qui signifie entre autre qu'il n'existe pas d'ensemble $a$ tel que $a\in a$. Il se trouve que l'axiome de fondation est équivalent à l'énoncé \og tout ensemble est dans la classe $V$\fg{}.
+\end{rmk}

@@ -1,0 +1,356 @@
+\section{Axiomes de Peano}
+
+Nous allons donc expliciter la théorie axiomatique PA. Pour cela, donnons d'abord le langage de l'arithmétique : $\LL=\{0,S,+,\times\}$ où, sans surprise, $0$ est une constante, $S$ une fonction d'arité $1$ représentant la fonction $x\mapsto x+1$, $+$ et $\times$ des fonctions d'arité $2$. On pourrait ajouter $\leq$ une relation binaire, mais nous allons voir que nous pouvons la définir de façon peu coûteuse. L'idée de notre définition de $\nat$ est que $\nat$ est défini comme une structure inductive avec une constante et un constructeur unaire.
+
+Plutôt que d'énoncer tous les axiomes de Peano à la suite, nous allons nous concentrer sur chacun d'eux (ou au moins chaque groupe). 
+
+\begin{defi}[Axiomes du successeur]
+    Le premier axiome est $A_1 := \forall x. \lnot (S x = 0)$, nous nous permettrons d'écrire $\lnot (a=b)$ par $a\neq b$.
+
+    Le second axiome est $A_2 := \forall x. \exists y.(x\neq 0 \to S y = x)$.
+
+    Le troisième axiome est $A_3 := \forall x.\forall y. ((S x = S y)\to (x=y))$
+\end{defi}
+
+Ces axiomes traduisent le comportement de l'opération $S$ : $0$ n'est le successeur de personne, mais tout autre élément est le successeur d'au moins un élément, et la fonction $S$ est injective (donc il n'existe finalement qu'un seul prédécesseur à un entier non nul). Les axiomes qui suivent définissent $+$ et $\times$ :
+
+\begin{defi}[Axiomes de l'addition]
+    Les deux axiomes suivants sont :
+    \begin{align*}
+        A_4 &:= \forall x. (x+0=x)\\
+        A_5 &:= \forall x. \forall y. x + (S y) = S (x + y)
+    \end{align*}
+\end{defi}
+
+Ces axiomes traduisent directement la définition récursive de l'addition. De même les deux axiomes suivants définissent la multiplication de façon récursive :
+
+\begin{defi}[Axiomes de la multiplication]
+    Les deux axiomes suivants sont :
+    \begin{align*}
+        A_6 &:= \forall x. (x\times 0 = 0)\\
+        A_7 &:= \forall x.\forall y. x\times (S y) = (x\times y) + x
+    \end{align*}
+\end{defi}
+
+On note alors $\PA_0$ la théorie $\PA_0 = \{A_1,A_2,A_3,A_4,A_5,A_6,A_7\}$. Cette théorie est très faible : elle ne permet aucune preuve par récurrence. Ceci est dû au fait qu'a priori, tous les éléments ne sont pas forcément des successeurs de $0$ : simplement qu'un élément est localement un successeur ou $0$. Cependant, si l'énoncé commun de la récurrence est \og toute partie $F\subseteq\nat$ contenant $0$ et stable pour $S$, càs telle que $x\in F \implies S x \in F$ alors $F=\nat$\fg{}, cette quantification sur les parties $F\subseteq\nat$ n'est pas définissable dans notre théorie du premier ordre (c'est exactement une quantification du second ordre). Cependant, de la façon dont on se sert de la récurrence, on remarque que la notion importante est celle de proposition, et non de sous-ensemble : on veut que toute proposition vraie pour $0$ et dont la vérité à un rang implique sa vérité au rang suivant est vraie pour tous les objets. Cette version peut se faire, pour une proposition donnée : il suffit d'écrire pour une proposition $P$ la proposition $P(0)\land (\forall x.P(x)\to P(S(x)))\to \forall x. P(x)$ et de l'ajouter en axiome. L'idée est donc, alors, d'ajouter autant d'axiomes que nous avons de propositions : on va définir alors ce qu'on appelle un schéma d'axiomes (c'est-à-dire un ensemble d'axiomes dont on décrit la forme, de façon équivalente dont on donne un algorithme de construction).
+
+\begin{defi}[Schéma d'axiomes de récurrence]
+    Pour $P$ une proposition à $n$ variables libres $x_0,\ldots,x_n$, la proposition $$\forall x_1.\ldots\forall x_n.((P(0,x_1,\ldots,x_n)\land \forall x.(P(x,x_1,\ldots,x_n)\to P(S(x),x_1,\ldots,x_n)))\to \forall x. P(x,x_1,\ldots x_n))$$ appartient à l'ensemble $\mathcal P_\mathrm i$.
+\end{defi}
+
+\begin{lem}[Récursivité de la récurrence]
+    L'ensemble $\mathcal P_\mathrm i$ est un langage récursif (et donc décidable) sur $(\LL\cup\{(,),\lor,\land,\to,\lnot,\forall.,\exists.\})^*$.
+\end{lem}
+
+\begin{proof}
+    Nous ne donnerons pas une réelle démonstration ici mais une idée de pourquoi le résultat est vraie (une démonstration rigoureuse nécessiterait d'entrer en détails dans le fonctionnement des machines de Turing, ce que nous nous refusons de faire pour garder une certaine lisibilité). Ce résultat vient directement du fait qu'on a donné une description algorithmique de $\mathcal P_\mathrm i$ (on pourrait penser que cela nous donne uniquement un ensemble récursivement énumérable, mais on peut par exemple ordonner les propositions par longueur et considérer le nombre de symboles de la proposition dont on veut savoir si elle est dans $\mathcal P_\mathrm i$ : il n'y aura qu'un nombre fini de propositions plus petites qu'il faudra donc tester).
+\end{proof}
+
+On peut alors définir PA comme l'ensemble précédent muni du schéma d'axiomes de récurrence.
+
+\begin{defi}[Théorie PA]
+    On définit $\PA := \PA_0 \cup \mathcal P_\mathrm i$.
+\end{defi}
+
+\begin{lem}[Récursivité de PA]
+    PA est un langage récursif.
+\end{lem}
+
+\begin{proof}
+    Il suffit de tester pour une proposition si elle est l'une des $7$ premières puis d'exécuter l'algorithme pour vérifier si la proposition est dans $\mathcal P_\mathrm i$.
+\end{proof}
+
+\begin{exo}
+    Montrer que les axiomes de $\mathcal P_\mathrm i$ peuvent être remplacés par une nouvelle règle :
+    \begin{center}
+        \begin{prooftree}
+            \hypo{\Gamma\vdash P(0)}
+            \hypo{\Gamma\vdash \forall x. P(x)\to P(S(x))}
+            \infer2[Rec]{\Gamma\vdash \forall x. P(x)}
+        \end{prooftree}
+    \end{center}
+    et que l'on peut alors définir PA comme la théorie $\PA_0$ enrichie de cette règle logique dans la relation de dérivation de jugement logique. \textit{Remarque : Cette règle n'a de sens que dans le langage de l'arithmétique, et on présuppose largement que $\Gamma\subseteq\PA_0$ pour que la règle ait un sens.}
+\end{exo}
+
+\begin{exo}
+    Montrer qu'il existe un modèle non standard de PA, c'est-à-dire un modèle qui n'est pas l'ensemble usuel des entiers naturels. \textit{Indication : on introduira une constante dont on montrera qu'elle n'est égale à aucun entier naturel en utilisant le théorème de compacité.}
+\end{exo}
+
+\section{L'arithmétique telle que nous la connaissons}
+
+On peut alors commencer à prouver des résultats semblant évidents mais qui n'appartiennent pas directement à la théorie. Nous ne donnerons pas d'arbre de preuve mais seulement des arguments. Leur mise en arbre de preuve sera laissée en exercice.
+
+\begin{prop}[Neutre]
+    $0$ est neutre pour $+$, c'est-à-dire que \begin{align*}
+        \forall x.x+0=x\\
+        \forall x.0+x=x
+    \end{align*}
+
+    $1$ est neutre pour $\times$ :
+    \begin{align*}
+        \forall x. x\times 1=x\\
+        \forall x. 1\times x=x
+    \end{align*}
+\end{prop}
+
+\begin{proof}
+    La première proposition est purement un axiome de notre théorie, mais la neutralité à gauche de $0$ est déjà à prouver (par récurrence évidemment). D'abord $0+0=0$ en appliquant l'axiome $A_4$, puis si $0+x=x$ alors $0+(S x) = S (0+x) = S x$ en remplaçant $0+x$ par $x$ grâce à l'hypothèse. Donc pour tout $x$, $0+x=x$.
+
+    La neutralité à droite de $1$ pour $\times$ est un simple calcul :
+    \begin{align*}
+        x\times 1 &= x\times (S 0)\\
+        &= (x\times 0) + x\\
+        &= x
+    \end{align*}
+    pour la neutralité à gauche, nous allons encore raisonner par récurrence : d'abord $1\times 0 = 0$ grâce à l'axiome $A_6$, puis si l'on suppose que $1\times n = n$ alors $1\times (S n) = (1\times n) + 1$ puis on remarque que $n+1=S n$ de façon directe, eet que $1\times n = n$ par hypothèse de récurrence, nous donnant que $1\times (S n) = S n$.
+\end{proof}
+
+\begin{prop}[Associativité et commutativité de l'addition]
+    L'addition est associative et commutative, ce qui signifie :
+    \begin{align*}
+        \forall x.\forall y.\forall z. x+(y+z) = (x+y)+z\\
+        \forall x.\forall y. x+y = y+x
+    \end{align*}
+\end{prop}
+
+\begin{proof}
+    Prouvons le premier point par récurrence sur $z$ (quitte à échanger les variables) : dans le premier cas, on a $x+y=x+y$ après réduction des additions de $0$ à droite. Si l'on suppose que $x+(y+z)=(x+y)+z$ alors $x+(y+S z) = x+S(y+z)=S(x+(y+z))$ et ici, par hypothèse de récurrence, on peut remplacer $x+(y+z)$ par $(x+y)+z$ et on finit la chaîne d'égalités par $S((x+y)+z) = (x+y) + Sz$, prouvons la propriété par récurrence.
+
+    Pour le deuxième point, nous prouverons un lemme intermédiaire : $\forall x.\forall y. S(x+y)=Sx+y$ par récurrence sur $y$ : dans le cas nul, on a $S(x+0) = S(x) + 0$ qui est vrai. Si $\forall x.S(x+y)=Sx+y$, alors $Sx+Sy = S(Sx+y)$ et par application de l'hypothèse de récurrence, en remplaçant $x$ par $Sx$, on en déduit que $S(Sx+y) = SS(x+y)$, et $SS(x+y) = S(x+Sy)$ donc $$Sx+Sy=S(x+Sy)$$ ce qui complète notre démonstration par récurrence.
+
+    Montrons maintenant la commutativité par récurrence sur $y$ : dans le cas nul, on doit montrer que $x+0=0+x$ ce qui se fait grâce au fait que $0$ est neutre. Supposons que $\forall x. x+y=y+x$, alors en fixant un certain $x$, $x+Sy=S(x+y)$ puis par hypothèse de récurrence, $S(x+y)=S(y+x)$ et en utilisant le lemme précédent, $S(y+x)=Sy+x$, donc $$x+Sy=Sy+x$$ concluant notre preuve par récurrence.
+\end{proof}
+
+Nous allons maintenant prouver la distributivité.
+
+\begin{prop}[Distributivité]
+    La multiplication est distributive sur l'addition, c'est-à-dire que : $$\forall x.\forall y.\forall z.x\times(y+z) = x\times y + x\times z$$ en prenant les conventions de priorité habituelles, et $$\forall x.\forall y.\forall z. (x+y)\times z = x\times z + y\times z$$
+\end{prop}
+
+\begin{proof}
+    Prouvons le premier résultat par récurrence sur $z$ : dans le cas où $z=0$, on trouve $\forall x.\forall y.x\times (y+0) = x\times y + x\times 0$, ce qui se vérifie facilement. Dans le cas où $\forall x.\forall y. x\times (y+z) = x\times y + x\times z$, alors pour $x,y$ fixéx, \begin{align*}    x\times (y+Sz)&=x\times S(y+z) \\
+     &= (x\times (y+z)) + x \\
+     &= (x\times y + x\times z) + x\\
+     &= x\times y + (x\times z +z)\\
+     &= x\times y + x \times (S z)
+     \end{align*}
+     ce qui conclut la récurrence.
+
+     Le deuxième résultat se prouve aussi par récurrence sur $z$ : pour $z=0$, on trouve $\forall x.\forall y. (x+y)\times 0 = 0 =x\times 0 + y\times 0$. Si $\forall x.\forall y. (x+y)\times z=x\times z + y\times z$ alors \begin{align*}
+         (x+y)\times Sz &= (x+y)\times z + (x+y)\\
+         &= (x\times z + y\times z) + (x + y)\\
+         &= (x\times z + x) + (y\times z + y)\\
+         &= (x\times Sz) + (y\times Sz)
+     \end{align*}
+     ce qui conclut la récurrence.
+\end{proof}
+
+De même, démontrons ces propriétés pour la multiplication.
+
+\begin{prop}[Associativité et commutativité de la multiplication]
+    La multiplication est associative et commutative.
+\end{prop}
+
+\begin{proof}
+    On raisonne encore par récurrence sur $z$ : dans le premier cas tout se simplifie en $0=0$. Si $\forall x.\forall y.x\times (y\times z)=(x\times y)\times z$, alors pour $x,y$ fixés, on a \begin{align*}
+        x\times (y\times Sz) &= x\times (y \times z + y)\\
+        &= x\times (y\times z) + x\times y\\
+        &= (x\times y)\times z + x\times y\\
+        &= (x\times y)\times Sz
+    \end{align*}
+    ce qui conclut la récurrence.
+
+    Pour la commutativité le cas de $y=0$ est évident. Si l'on suppose que $\forall x.x\times y=y\times x$, alors pour prouver que $x\times Sy = Sy\times x$, nous allons procéder par récurrence sur $x$ : $0\times Sy = Sy\times 0$ de façon évidente, et si $x\times Sy = Sy\times x$, alors \begin{align*}
+        Sy\times Sx &= (Sy\times x) + Sy\\
+        &= (x\times Sy) + Sy\\
+        &= ((x\times y) + x) + Sy\\
+        &= (x\times y) + (x+Sy)\\
+        &= (x\times y) + S(x+y)\\
+        &= (x\times y) + S(y+x)\\
+        &= (x\times y) + (y+Sx)\\
+        &= ((x\times y) + y) + Sx\\
+        &= ((y\times x) + y) + Sx\\
+        &= (y\times Sx) + Sx\\
+        &= (Sx \times y) + Sx\\
+        &= Sx\times Sy
+    \end{align*}
+    donc on en déduit que $\forall x. x\times Sy=Sy\times x$, donc on en déduit que $\forall y.\forall x. x\times y = y\times x$.
+\end{proof}
+
+Les opérations sont aussi régulières :
+
+\begin{prop}[Régularité]
+    On a $$\forall x.\forall y.\forall z. (x+z = y+z) \implies x=y$$ \begin{center} et \end{center} $$\forall x.\forall y.\forall z. (z\neq 0) \implies (x\times z = y\times z)\implies x=y$$
+\end{prop}
+
+\begin{proof}
+    Prouvons la proposition par récurrence sur $z$ : le premier cas est $x+0=y+0$ d'où $x=y$. Si $(x+z=y+z)\implies x=y$, alors supposons que $x+Sz=y+Sz$, par axiome on a $S(x+z)=S(y+z)$ puis, encore par axiome, que $x+z=y+z$ donc $x=y$.
+
+    Prouvons la deuxième proposition par récurrence sur $x$ et $y$ (d'abord sur $x$ puis sur $y$). Pour $x=0$, on suppose que $x\times z = y\times z$ donc que $y\times z = 0$ et que $z\neq 0$, donc $y=0=x$. Supposons alors que pour tout $y,z$, $(z\neq 0) \implies (x\times z = y\times z) \implies x=y$, et prouvons que le résultat $\forall y.\forall z.(z\neq 0)\implies (S x \times z = y\times z) \implies x =y$ est vrai par récurrence sur $y$. Dans le cas nul, on retrouve le raisonnement précédent. On suppose donc maintenant que pour tout $z$, $(z\neq 0)\implies (S x\times z = y\times z) \implies x=y$ et on veut prouver que pour tout $z$, $(z\neq 0)\implies (S x \times z = S y \times z)\implies x =y$. Supposons donc que $S x \times z = S y \times z$, alors $z\times S x = z\times S y$ par commutativité, puis par définition $z\times x + z = z\times y + z$, d'où par régularité de l'addition, $z\times x = z\times y$. Alors puisque par hypothèse $z\neq 0$, on peut appliquer l'hypothèse d'induction du début pour déduire que $x=y$.
+\end{proof}
+
+
+
+Les opérations d'addition et de multiplication se comportent bien comme on l'attend, ce qui est très rassurant quant à notre axiomatisation (avec le principe de récurrence et $7$ axiomes, nous avons déjà de nombreuses propriétés qui semblent bien correspondre à celles de $(\nat,+,\times)$).
+
+\section{Extension possible, fonction représentable}
+
+Tout d'abord, on peut définir le prédicat $x\leq y$ en disant que ce symbole, à l'origine hors du langage, est juste une façon rapide d'écrire $\exists k. x + k = y$ : en effet être inférieur pour les entiers signifie simplement qu'il y a une différence positive entre les deux entiers. On peut alors montrer que $x\leq y$ est bien une relation d'ordre, et même qu'elle est totale.
+
+\begin{exo}
+    Montrer que $\leq$ est une relation d'ordre totale dans PA. Montrer de plus qu'elle est compatible avec l'addition, c'est-à-dire que $$\forall x.\forall y.\forall z. (x\leq y) \implies (x+z\leq y+z)$$ et avec la multiplication : $$\forall x.\forall y.\forall z. (x\leq y)\implies (x\times z \leq y \times z)$$
+\end{exo}
+
+Nous pouvons donc facilement définir des prédicats en tant que sucre syntaxique : un prédicat pouvant déjà se définir par une proposition, il nous suffit de travailler au sein des propositions. Cependant, si l'on veut définir une fonction $f$ au sein de la théorie, comment faire ? Pour cela, nous allons avoir besoin d'abord de déterminer ce que l'on appelle le modèle standard de PA, qui est $\nat$ dans son sens usuel.
+
+\begin{defi}[Modèle standard de PA]
+    On définit $\nat$, le modèle standard de PA, par les définitions suivantes :
+    \begin{itemize}[label=$\bullet$]
+        \item $|\nat|$ est l'ensemble des entiers naturels tels que l'on les entend en général (à la limite, penser à leur construction dans ZF, si l'on veut être formaliste, mais sinon il suffit de s'imaginer ce qu'on entend intuitivement par $\nat$ : l'ensemble des nombres finis)
+        \item $0$ est interprété par l'entier $0$
+        \item $S$ est interprété par la fonction $x\mapsto x+1$
+        \item $+$ est interprété par l'addition évidente.
+        \item $\times$ de même.
+    \end{itemize}
+    Remarquons que chaque $n$ de $\nat$ est exactement représenté par $S^n0$ où l'on considère l'application en boucle de $S$, $n$ fois. Nous noterons $\overline n$ pour considérer le représentant dans PA du nombre $n\in \nat$.
+\end{defi}
+
+\begin{exo}
+    Montrer que tout modèle de PA possède un sous-modèle isomorphe à $\nat$, et que de plus il en est un segment initial, au sens où si $n$ est l'image d'un entier standard et $m\leq n$ alors $m$ est l'image d'un entier standard.
+\end{exo}
+
+En réalité, ce qui nous intéresse en premier lieu dans PA est de formaliser $\nat$ : si l'on peut prouver l'existence de modèles non standards de PA, l'important est que tout modèle non standard possède un représentant de $\nat$, et que l'on peut donc y définir des fonctions $\nat^k\to\nat$ par exemple.
+
+Par exemple ? Non, c'est exactement le cadre des fonctions récursives, et ce que nous allons vouloir faire maintenant est de montrer que l'on peut représenter les fonctions récursives dans PA. Commençons par définir une fonction représentable en général.
+
+\begin{defi}[Fonction représentable]
+    Soit $f : \nat^k\to\nat$ une fonction (totale), on dit que $f$ est représentable dans PA lorsqu'il existe une formule $F$ à $k+1$ variables libres telle que pour tous entiers $n_1,\ldots,n_k$, on a $$\PA\vdash \forall y.(F(y,\overline{n_1},\ldots,\overline{n_k}) \leftrightarrow y = \overline{f(n_1,\ldots,n_k)})$$
+\end{defi}
+
+Une fonction représentable est donc une fonction dont on peut définir le fait d'appartenir à son graphe par une formule $F$. Remarquons que l'on ne définit pas une formule close ici : on veut pouvoir donner en entrée à notre formule $F$ les paramètres de notre fonction $f$.
+
+Nous allons de même définir un ensemble représentable comme correspondant à une proposition :
+
+\begin{defi}[Ensemble représentable]
+    Un ensemble $A\subseteq \nat^k$ est dit représentable s'il existe une proposition $F$ à $k$ variables libres $x_1,\ldots,x_k$ telle que :
+    \begin{itemize}[label=$\bullet$]
+        \item si $(x_1,\ldots,x_k)\in A$ alors $\PA\vdash F(\overline{x_1},\ldots,\overline{x_k})$
+        \item si $(x_1,\ldots,x_k)\notin A$ alors $\PA\vdash \lnot F(\overline{x_1},\ldots,\overline{x_k})$
+    \end{itemize}
+\end{defi}
+
+\begin{exo}
+    Montrer que $A$ est représentable si et seulement si sa fonction caractéristique $1_A$ est représentable.
+\end{exo}
+
+Montrons donc que les fonctions de base de RP sont représentables :
+
+\begin{itemize}[label=$\bullet$]
+    \item La fonction successeur est évidemment représentable par $S$.
+    \item La projection $\pi_i^k$ est représentée par la formule à $k+1$ variables $x_0=x_i$ (en reprenant les conventions précédentes).
+    \item La fonction constante est représentée par la formule à $k+1$ variables $x_0 = \overline k$.
+\end{itemize}
+
+Nous allons ensuite prouver la stabilité pour les trois schémas : la composition, la récursion et l'opérateur $\mu$. Rappelons d'après notre théorème de simulation des machines de Turing qu'une fonction récursive est une fonction récursive primitive à laquelle on n'a appliqué qu'une seule foie l'opération $\mu$.
+
+\begin{lem}[Représentabilité de la composition]
+    Si $f_1,\ldots,f_p : \nat^k \to \nat$ sont représentables et $g : \nat^p \to \nat$ est représentable, alors la fonction $f : \nat^k\to\nat, x \mapsto (f_1(x),\ldots,f_p(x))$ est représentable.
+\end{lem}
+
+\begin{proof}
+    Soient $f_1,\ldots,f_p$ des fonctions représentables à $k$ entrées et $g$ une fonction représentable à $p$ entrée, représentées respectivement par $F_1,\ldots,F_p,G$. On va représenter $f$ par la proposition $$F(x_0,\ldots,x_k) := \exists y_1.\ldots \exists y_p. (G(x_0,y_1,\ldots,y_p)\land \bigwedge_{1\leq i \leq n}F_i(y_i,x_1,\ldots,x_p))$$ qui, moralement, assigne les valeurs $f_i(x_1,\ldots,x_p)$ à $y_i$ pour calculer ensuite $x_0 = g(y_1,\ldots,y_p)$. Rappelons que nous avons pour chaque $i$ et $n_1,\ldots,n_k\in\nat$ : $$\PA\vdash \forall y.(F(y,\overline{n_1},\ldots,\overline{n_k}) \leftrightarrow y= \overline{f_i(n_1,\ldots,n_k)})$$ et pour $n_1,\ldots,n_p$ : $$\PA\vdash \forall y.(G(y,\overline{n_1},\ldots,\overline{n_p})\leftrightarrow y=\overline{g(n_1,\ldots n_p)})$$
+
+    Nous allons démontrer notre résultat par complétude : soit $\MM$ un modèle de $\PA$ (on identifiera directement $\nat$ à une partie de $\MM$). Alors pour $n_1,\ldots,n_k\in\nat$ et $y\in\MM$ on a :
+    \begin{itemize}[label=$\bullet$]
+        \item $F(y,n_1,\ldots,n_k)$ vraie si et seulement si il existe $y_1,\ldots,y_p\in|\MM|$ tels que pour tout $i$, la formule $F_i(y_i,n_1,\ldots,n_k)$ est vraie et $G(y,y_1,\ldots,y_p)$ est vraaie aussi.
+        \item Ce qui équivaut, en utilisant la représentation des $f_i$ par $F_i$ dans le cadre sémantique, à ce qu'il existe $y_1,\ldots,y_p\in|\MM|$ tels que pour tout $i$, $y_i = f_i(n_1,\ldots,n_k)$ et $G(y,y_1,\ldots,y_p)$.
+        \item En utilisant la représentation de $g$ par $G$, ceci équivaut à ce qu'il existe $y_i,\ldots,_p\in|\MM|$ tels que pour tout $i$, $y_i = f_i(n_1,\ldots,n_k)$ et $y=g(y_1,\ldots,y_p)$.
+        \item Ceci revient à dire que $y = f(n_1,\ldots,n_k)$
+    \end{itemize}
+
+    Donc, comme ceci est vrai dans tout modèle, on en déduit que pour tous $n_1,\ldots,n_k\in\nat$ : $$\PA\vdash \forall y.(F(y,\overline{n_1},\ldots,\overline{n_k}) \leftrightarrow y = \overline{f(n_1,\ldots,n_k)})$$
+\end{proof}
+
+\begin{rmk}
+    On interprète bien $f_i$ par $f_i$ et non par $f_i^\MM$ car les $f_i$ sont des fonctions déjà définies dans le modèle $\MM$, en tant que fonctions sur la sous-interprétation $\nat$. Il en va de même pour $g$.
+\end{rmk}
+
+Plutôt que de nous occuper du schéma de récursion, nous allons d'abord coder l'opérateur $\mu$. Cependant, nous imposons la restriction de ne travailler qu'avec des fonctions totales (donc nous allons utiliser des fonctions récursives mais pas récursives partielles, ce qui peut être engendré par l'ensemble des fonctions récursives primitives avec l'ajout de l'opérateur $\mu$).
+
+\begin{lem}[Représentabilité de l'opérateur mu]
+    Si à partir de fonctions représentables on obtient par l'opérateur $\mu$ une fonction totale, alors la fonction est représentable.
+\end{lem}
+
+\begin{proof}
+    Soient $g : \nat^{k+1}\to\nat$ représentable totale et $f : \nat^k\to\nat$ définie par $$f(x_1,\ldots,x_k) = \mu(x_0,g(x_0,\ldots,x_k))$$ et supposons que $f$ est totale. Montrons que $f$ est représentable :
+
+    Soit $G$ représentant $g$, on définit $$F(y,x_1,\ldots,x_k) := G(0,y,x_1,\ldots,x_k)\land (\forall z. z<y \to \lnot G(0,z,x_1,\ldots,x_k))$$ pour représenter $f$. Soit $\MM$ un modèle de PA et $n_1,\ldots,n_k$ des entiers, $y\in|\MM|$. Alors $F(y,n_1,\ldots,n_k)$ est vraie si et seulement si $G(0,y,n_1,\ldots,n_k)$ et pour tout $z<y$, $\lnot G(0,z,n_1,\ldots,n_k)$. Montrons que $b = f(n_1,\ldots,n_k)$ est le seul élément à satisfaire $F(y,n_1,\ldots,n_k)$ :
+
+    $F(b,n_1,\ldots,n_k)$ est équivalent à $G(0,b,n_1,\ldots,n_k)$ et pour tout $z<b$, $\lnot G(0,z,n_1,\ldots,n_k)$ or $G(0,b,n_1,\ldots,n_k)$ est vraie car $G$ représente $g$ et $b$ est définie par $\mu$-opérateur. De plus, comme $\nat$ est un segment initial de $\MM$, on en déduit que tout élément $z < b$ est dans $\nat$, et $\lnot G(0,z,n_1,\ldots,n_k)$ est donc directement vraie par définition du $\mu$-opérateur. Donc $F(b,n_1,\ldots,n_k)$ est vraie. S'il existait un autre $y$ satisfaisant $F(y,n_1,\ldots,n_k)$ alors par définition si $y$ est entier standard, on a $y=b$ (par $\mu$-opération) et si $y$ est entier non standard, alors forcément $y>b$ donc la condition $\forall z. z<y \to \lnot G(0,y,n_1,\ldots,n_k)$ n'est pas respectée pour $z=b$.
+
+    Donc l'équivalence est vraie dans tout modèle, donc l'opérateur $\mu$ donne une fonction représentable si totale.
+\end{proof}
+
+Pour montrer la représentabilité du schéma de récursion primitif, nous aurons besoin d'abord d'un lemme nous permettant de représenter des séquences finies d'entiers. C'est-à-dire une fonction qui, pour un tuple $(k_1,\ldots,k_p)$ associe une fonction $i\mapsto k_i$. C'est le lemme que nous allons montrer maintenant.
+
+\begin{lem}[Fonction $\beta$ de Gödel]
+    Il existe une fonction $\beta$ à trois arguments, représentable et récursive primitive, telle que pour toute suite finie $(k_0,\ldots,k_p)$ il existe $b,c\in\nat$ tels que $\beta(b,c,i)=k_i$ pour tout $0\leq i \leq p$.
+\end{lem}
+
+\begin{proof}
+    Nous allons définir $\beta$ de la façon suivante : $\beta(x,y,z) = x\% (1+(z+1)y)$ où $\%$ représente le reste par la division euclidienne. Sa définition en tant que fonction représentable et récursive primitive est évidente (puisqu'elle utilise l'arithmétique standard) en considérant que l'on peut représenter $a\%b$ par $R(r,a,b) := \exists q.a = b\times q + r\land 0 \leq r < b$. L'existence de $b$ et $c$ codant la séquence est une conséquence du théorème des restes chinois : si $x_0,\ldots,x_p$ sont premiers entre eux deux à deux, et $y_0,\ldots,y_p$ sont des entiers, alors il existe un entier $\alpha$ tel que \begin{align*}
+        \alpha &\equiv y_0 [x_0]\\
+        &\vdots\\
+        \alpha &\equiv y_n [x_n]
+    \end{align*}
+    
+    Le but est alors de créer un système de congruences permettant de coder notre suite : de par la forme de notre système et de notre fonction, on souhaite que $y_i=k_i$ et on va définir $x_i = i \times y + 1$ en prenant $y$ supérieur à tous les $k_i$ tel que pour tout $i<p$, $y\times i + 1$ forme une suite finie de nombres premiers entre eux deux à deux. Le résultat tient alors dans le fait que l'on va prendre $b := \alpha$, $c := y$ et $i$ variant de $0$ à $p$.
+\end{proof}
+
+\begin{exo}
+    Prouver qu'il existe bien un tel $y$ en prenant $p!$ : pour $1\leq i,j \leq p+1$ où $i\neq j$, $i\times p! + 1$ et $j\times p! + 1$ sont premiers entre eux.
+\end{exo}
+
+On peut désormais prouver la stabilité par récursion primitive :
+
+\begin{lem}[Stabilité par récursion]
+    L'ensemble des fonctions (totales) représentables est stable par schéma de récursion primitive.
+\end{lem}
+
+\begin{proof}
+    Pour construire notre schéma de récursion, prenons $g$ et $h$ deux fonctions représentables, et $G,H$ les propositions les représentant. Soit $B$ la proposition représentant la fonction $\beta$ de Gödel, en prenant l'indice en premier argument. Soit $$B'(x_0,x_1,x_2,x_3) := B(x_0,x_1,x_2,x_3)\land (\forall z < x_0, \lnot B(z,x_1,x_2,x_3))$$ alors par un argument similaire à celui pour définir la représentation de l'opérateur $\mu$, $B'$ a la propriété suivante : si $\MM\models \PA$, $x$ est standard dans $\MM$ et $a,b,c$ sont des éléments de $|\MM|$, alors $\MM\models B'(x,a,b,c)$ implique que pour tout autre $x'$ (standard ou non), $\MM\models B'(x',a,b,c)$ implique $x=x'$. On définit $f$ comme obtenue par le schéma de récursion primitive sur $g$ et $h$ ($g$ pour le cas nul et $h$ pour la récursion). Remarquons qu'alors, dans $\nat$, $y=f(x_0,\ldots,x_k)$ si et seulement s'il existe une suite $z_0,\ldots,z_{x_0}$ telle que $$z_0 = g(x_1,\ldots,x_k)$$ et $$z_{i+1} = h(i,z_i,x_1,\ldots,x_k)$$ pour $i<x_0$, et $y=z_{x_0}$, ce qui revient à \begin{multline*}
+        F(y,x_0,\ldots,x_k) := \exists a.\exists b. \Bigg( \exists z_0. (B'(z_0,0,a,b)\land G(z_0,x_1,\ldots,x_k)) \\ 
+        \land \forall i. (i<x_0) \to \exists z.\exists z'. \big( B'(z,i,a,b)\land B'(z',Si,a,b)\land H(z',i,z,x_1,\ldots,x_k) \big) \land B'(y,x_0,a,b)
+        \Bigg)
+    \end{multline*}
+
+    Prouvons que $F$ représente $f$, en prenant un modèle $\MM\models \PA$, $n_0,\ldots,n_k\in\nat$ et $c\in\MM$ :
+    \begin{itemize}[label=$\bullet$]
+        \item si $c$ interprète $f(n_0,\ldots,n_k)$ alors en choisissant $a$ et $b$ pour générer la bonne suite, comme décrite plus tôt, on a bien $F(c,n_0,\ldots,n_k)$.
+        \item réciproquement, si $\MM\models F(c,\overline{n_0},\ldots,\overline{n_k})$ alors il existe $a$ et $b$ ainsi que $z_0$ tels que $B'(z_0,0,a,b)$ et $G(z_0,n_1,\ldots,n_k)$ donc $z_0=g(n_1,\ldots,n_k)$, ensuite pour tout $i < n_0$ il existe $z,z'$ tels que $B'(z,i,a,b)$ et $B'(z',Si,a,b)$ et $H(z',i,z,n_1,\ldots,n_k)$, ce qui signifie que la $i+1$\ieme{} composante de la suite finie définie par $\beta(a,b)$ est telle que $z_{i+1}=h(z_i,i,n_1,\ldots,n_k)$ donc (on peut le prouver par récurrence finie) on a une suite $z_0,\ldots,z_{n_0}$ respectant les conditions pour que $c=f(n_0,\ldots,n_k)$.
+    \end{itemize}
+
+    Donc $f$ est représentée par $F$.
+\end{proof}
+
+On en déduit le théorème de représentation :
+
+\begin{them}[Représentation]
+    Si $f$ est une fonction récursive totale, alors elle est représentable dans PA.
+\end{them}
+
+\begin{proof}
+    La preuve est une conséquence directe des lemmes précédents.
+\end{proof}
+
+\begin{rmk}
+    En réalité, nous ne nous sommes à aucun moment servi d'une récursion : ce théorème est valide directement dans $\PA_0$, qu'on appelle l'arithmétique de Robinson. Remarquons aussi qu'avec le schéma de récursion on peut au contraire définir $+$ et $\times$ en tant que fonctions représentables. Enfin, pointons le fait que la représentabilité de $\times$ est essentielle pour le théorème de représentation à travers la définition de la fonction $\beta$ de Gödel : il est nécessaire de pouvoir représenter par exemple $\%$ qui nécessite d'employer la multiplication.
+
+    En effet, l'arithmétique n'utilisant que l'addition et pas la multiplication, appelée arithmétique de Presburger, est décidable même par automate fini. Nous verrons que ce n'est pas du tout le cas pour $\PA$ (ni $\PA_0$).
+\end{rmk}
+
+\begin{rmk}[A propos du choix de PA]
+    Pourquoi avoir décidé de présenter ces théorèmes dans $\PA$ plutôt que $\PA_0$ alors que cela ne fait aucune différence ? Simplement d'un point de vue pédagogique : l'arithmétique de Robinson étant plus faible, certaines choses \og inattendues\fg{} peuvent s'y produire, là où le comportement des modèles de $\PA$, bien que parfois surprenant (les modèles non standards de $\PA$ sont durs à conceptualiser mentalement), est très régulier puisqu'on peut y coller son interprétation de $\nat$, encore plus en sachant que $\nat$ est isomorphe à un segment initial de tout modèle de $\PA$.
+\end{rmk}
+
+Nous avons donc moyen d'enrichir, en utilisant des propositions (tout de même illisibles), notre langage en utilisant des relations fonctionnelles. On pourrait par exemple définir l'exponentiation, et globalement toutes les fonctions auxquelles on pense (oui, la fonction $x\mapsto \lfloor \ln(x)\rfloor$  peut se représenter dans $\PA$).

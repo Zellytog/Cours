@@ -1,0 +1,226 @@
+\section{\'Equations et inégalités}
+
+Cette section s'intéressera à la manipulation d'équations et d'inéquations. Une équation est une proposition composée uniquement de la relation \og $=$\fg{} utilisée une fois avec une variable libre, appelée inconnue, souvent notée $x$, dont l'objectif est de trouver la valeur. On appelle membre gauche et membre droit, respectivement, les expression se trouvant à la gauche et à la droite du \og $=$\fg{}. C'est donc un prédicat égalitaire dont on cherche à établir le domaine de vérité : trouver ce domaine s'appelle résoudre l'équation.
+
+\begin{expl}
+    Voici plusieurs équations :
+    $$x+1=0 \qquad x^2+7x+8=12 \qquad 28=0$$
+    on remarque que la troisième équation est simplement fausse : il n'y a aucune solution à cette équation.
+\end{expl}
+
+On utilisera ici un fait important et axiomatique (c'est-à-dire qu'il est accepté comme vrai car à la base même de nos raisonnements) :
+
+\begin{ax}
+    Si $a=b$ alors dans toute proposition de la forme $P(a)$, $P(b)$ a les mêmes valeurs de vérité.
+\end{ax}
+
+Cela nous renseigne sur une condition suffisante pour résoudre une équation : une équation de la forme $x=a$ où $a\in\reel$ admet comme solutions exactement $\{a\}$.
+
+\subsection{\'Equation du premier degré}\label{equa1d}
+
+\'Etudions tout d'abord la forme la plus simple d'une équation, l'équation du premier degré, c'est-à-dire de la forme suivante : $$ ax+b = c$$ où $a,b,c\in\reel$ et $a\neq 0$ (car sinon, il n'y a pas de $x$, donc l'équation est directement résolue).
+
+Nous allons pour cela montrer une propriété importante :
+
+\begin{prop}
+    Soient $a$ et $b$ deux objet, et $f$ une fonction prenant ces objets en argument. Alors $a=b\implies f(a)=f(b)$.
+\end{prop}
+\begin{proof}
+    On suppose que $a=b$.
+    On sait qu'il existe un unique couple de la forme $(a,\alpha)\in\Gamma_f$, or $a=b$ donc le couple contenant l'image de $b$ est aussi $(a,\alpha)$, donc $f(b)=f(a)=\alpha$.
+\end{proof}
+
+Cette proposition est évidente, mais elle est nécessaire pour plusieurs raisonnements. En effet, on peut maintenant trouver des solutions en appliquant des fonctions aux deux membres de l'équation. Remarquons que nous n'avons qu'une implication, or nous voulons l'ensemble exact des valeurs de $x$ pour lesquelles l'équation est vérifiée : il faut donc si l'on recourt à cette méthode vérifier que chaque solution trouvée est bel et bien solution de l'équation en réinjectant la valeur dans l'équation (ceci signifie remplacer $x$ par la valeur trouvée).
+
+\begin{expl}
+    Si l'on cherche $x$ tel que $x=5$ alors on peut appliquer la fonction carré, donnant $x^2=25$, or $-5$ aussi vérifie cette équation. Il faut donc vérifier pour chaque valeur de $x$ trouvée si elle est bien appropriée ou si elle est en réalité un \og faux positif\fg{}.
+\end{expl}
+
+Grâce à cette proposition, nous allons prouver deux corollaires tout aussi importants.
+
+\begin{cor}
+    Soient $a$ et $b$ deux réels et $k$ un réel non nul. Alors $$a=b\iff k\times a = k\times b$$
+\end{cor}
+\begin{proof}
+    Soit $f : x \mapsto k\times x$ de réciproque $g : x \mapsto \dfrac{1}{k}\times x$, en composant par $f$ puis par $g$, on obtient $a=b\implies k\times a = k\times b$ puis $k\times a = k\times b\implies a=b$, d'où \fbox{$a=b\iff k\times a = k\times b$.}
+\end{proof}
+
+\begin{cor}
+    Soient $a$ et $b$ deux réels, et $k$ un réel. Alors $$a=b \iff a+k=b+k$$
+\end{cor}
+\begin{proof}
+    La preuve se fait de la même façon que pour le corollaire précédent, avec les fonctions $f : x \mapsto x + k$ et $g : x\mapsto x-k$.
+\end{proof}
+
+\begin{rmk}
+    En utilisant les deux corollaires, on trouve que $a=b\iff k\times a + k' = k\times b + k'$ pour $k\neq 0$.
+\end{rmk}
+
+Nous pouvons désormais résoudre une équation du premier degré :
+
+\begin{them}[\'Equations du premier degré]
+    Soient $a$ et $b$ deux réels. Alors $$ax+b=c\iff x = \dfrac{c-b}{a}$$
+\end{them}
+\begin{proof}
+    On additionne $-b$ dans chaque membre puis on multiplie chaque membre par $\dfrac{1}{a}$ pour obtenir l'équation sous la forme voulue.
+\end{proof}
+
+Nous avons dès lors la solution directe à n'importe quelle équation du 1$^{\mathrm{er}}$ degré.
+
+\subsection{Système d'équations du premier degré}
+
+Nous allons maintenant nous intéresser à un système de deux équations. Un système de deux équations est un prédicat à deux variables libres contenant deux égalités séparées par un \og et\fg{}. Plutôt que $$(ax+by+c=d)\land (a'x+b'y+c'=d')$$ nous noterons le système sous la forme suivante : $$\syst{ax+by+c}{d}{a'x+b'y+c'}{d'}$$
+
+Pour résoudre ce type d'équations, nous allons recourir à une nouvelle proposition. Nous allons utiliser ce que l'on appelle des combinaisons linéaires d'équations.
+
+\begin{prop}
+    Soit un système $S$ de deux équations tel que décrit plus haut. Alors le système est équivalent, pour tout k non nul, au système 
+    $$ \syst{ax+by+c}{d}{a'x+b'y+c'+k(ax+by+c)}{d'+kd}$$
+\end{prop}
+\begin{proof}
+    En effet, on additionne des deux côtés $kd$ à la deuxième équation, et on remplace ensuite $d$ par $ax+by+c$.
+\end{proof}
+
+Pouvoir faire des combinaisons linéaires d'équations va nous permettre d'éliminer directement une des variable dans la deuxième équation.
+
+\begin{exo}
+    Soit le système $S$ suivant :
+    $$\syst{2x+3y}{5}{6x+y}{12}$$
+    trouver $k$ tel qu'en additionnant $k$ fois la première ligne à la deuxième ligne, l'équation restante est une équation du premier degré. La résoudre et l'injecter dans la première ligne pour trouver une deuxième équation du premier degré. La résoudre.
+\end{exo}
+
+\begin{exo}[Formule générale $\textbf{*}$]
+    Trouver à partir de la méthode précédente, pour le système $$\syst{ax+by+c}{d}{a'x+b'y+c'}{d'}$$ la formule générale du couple $(x,y)$ solution. On supposera de plus que $ab'-b'a\neq 0$.
+\end{exo}
+
+\subsection{Inéquations}
+
+Cette section se concentrera plus précisément sur les inéquations. Comme les équations, nous parlons de prédicat à une inconnue, mais au lieu d'une relation égalitaire, nous utilisons comme relation une inégalité, c'est-à-dire l'une des relations suivantes : $\leq,<,>,\geq$.
+
+Là encore, il est évident qu'une inéquation de la forme $x\RR a$ où $\RR$ est l'une des relations citées plus tôt, se résout directement (par exemple $x\leq 2$ a comme solution évidente $]-\infty;2]$).
+
+Nous allons démontrer un résultat proche du premier résultat démontré dans la section \ref{equa1d}, mais pour la conservation d'équations.
+
+Pour cela, nous devons ajouter une définition.
+
+\begin{defi}
+    Une fonction $f : \reel \to \reel$ est dite croissante si $\forall x\in\reel,\forall y\in\reel, x\leq y \implies f(x)\leq f(y)$.
+    
+    $f$ est dite strictement croissante si $\forall x\in\reel,\forall y\in\reel, x< y \implies f(x) < f(y)$.
+    
+    $f$ est dite décroissante si $\forall x\in\reel,\forall y\in\reel, x\leq y \implies f(x)\geq f(y)$.
+    
+    $f$ est dite strictement décroissante si $\forall x\in\reel,\forall y\in\reel, x< y \implies f(x) > f(y)$.
+\end{defi}
+
+\begin{rmk}
+    Une fonction strictement croissante (respectivement décroissante) est donc croissante (respectivement décroissante).
+\end{rmk}
+
+\begin{prop}
+    Soit $f$ une fonction croissante, alors $ax\leq b \implies f(ax)\leq f(b)$.
+    
+    Si $f$ est décroissante, alors $ax\leq b \implies f(ax)\geq f(b)$.
+    
+    De même si $f$ est strictement croissante ou décroissante en remplaçant l'inégalité large par une inégalité stricte.
+\end{prop}
+\begin{proof}
+    Cela tient directement à la définition d'une fonction croissante.
+\end{proof}
+
+Cette propriété des fonctions croissantes est utile pour additionner et soustraire, car l'addition par un nombre fixé et la multiplication par un réel strictement positif sont des fonctions croissantes.
+
+\begin{prop}
+    Soit $k$ un nombre réel, alors $x\mapsto x + k$ est strictement croissante.
+\end{prop}
+\begin{proof}
+    On remarque directement que si $x<y$, alors $x-y<0$. Or $x-y=x+k-(y+k)$ donc $x+k-(y+k)<0$ ce qui est équivalent à $x+k<y+k$. D'où la stricte croissance de la fonction.
+\end{proof}
+
+\begin{prop}
+    Soit $k$ un nombre réel strictement positif, alors $x\mapsto k\times x$ est strictement croissante. Si $k<0$ alors $x\mapsto k\times x$ est strictement décroissante.
+\end{prop}
+\begin{proof}
+    On remarque que si $x<y$ alors $k(x-y)<0$ puisque $k$ est strictement positif et $x-y$ strictement négatif. Donc $kx<ky$, d'où le résultat.
+    
+    Dans le cas où $k<0$, $k(x-y)>0$ donc $kx>ky$.
+\end{proof}
+
+De là, on en déduit comment résoudre une inéquation du premier degré en multipliant et additionnant des termes. En effet, ces deux fonctions donnent des inéquations équivalentes quand on compose, puisque ce sont des bijections et que leur réciproque est aussi croissante strictement.
+
+\begin{them}[Inéquation du premier degré]
+    Soit une inéquation de la forme $ax+b<c$, alors la solution est $]-\infty ; \dfrac{c-b}{a}[$ si $a>0$ et $]\dfrac{c-b}{a};+\infty[$ si $a<0$
+\end{them}
+\begin{proof}
+    Nous montrerons uniquement le premier cas. On compose par $f : x \mapsto x-b$ puis par $g : x \mapsto \dfrac{x}{a}$ pour en déduire directement $x<\dfrac{c-b}{a}$.
+\end{proof}
+
+\subsection{Résolution d'équation du second degré}
+
+Nous allons désormais nous concentrer sur les équations du second degré, c'est-à-dire où il y a un terme en $x^2$, mais avant ça nous devons traiter un cas particulier d'équation, appelé équations à produit nul.
+
+\begin{them}
+    $\mathbb R$ est intègre, ce qui signifie que $ab=0 \iff (a=0)\lor (b=0)$.
+\end{them}
+\begin{proof}
+    Supposons que $a=0$ ou $b=0$, alors de façon évidente $ab=0$. Maintenant, si l'on suppose que $a\neq 0$ et $b\neq 0$, alors on peut diviser $ab$ par $b$ pour obtenir $a$, qui est par hypothèse différent de $0$. Donc $ab\neq 0$.
+\end{proof}
+
+Ce théorème nous permet de déduire une façon de résoudre une équation particulière.
+
+\begin{prop}
+    L'équation $(ax+b)(a'x+b')=0$ est équivalente à $ax+b=0\lor a'x+b'=0$.
+\end{prop}
+
+\begin{rmk}
+    De plus, de par la définition même de l'union ensembliste, si l'on a un système de la forme $E_1\lor E_2$ où $E_1$ et $E_2$ sont des équations, alors en notant $S_1$ et $S_2$ les ensembles de solution respectivement de $E_1$ et $E_2$, la solution du système est $S_1\cup S_2$.
+\end{rmk}
+
+Nous souhaitons désormais résoudre une équation de la forme $$ax^2+bx+c=0$$ où $a\neq 0$. On peut se convaincre que résoudre cette équation nous permet de résoudre n'importe quelle équation avec un $x^2$, quitte à devoir faire passer d'un seul côté du \og$=$\fg{} tous les termes. Grâce au résultat précédent, on sait qu'il suffit pour résoudre cette équation de trouver une forme factorisée de l'équation, c'est-à-dire mettre l'équation sous la forme $(ax+b)(a'x+b')=0$, auquel cas nous avons une équation à produit nul et deux équations du premier degré.
+
+Pour commencer, nous allons nous intéresser à une forme restreinte de ce problème.
+
+\begin{prop}\label{utile1}
+    La solution à une équation de la forme $$x^2=a$$ pour $a\geq0$ est $\{\sqrt a;-\sqrt a\}$ (et il n'y a pas de solution pour $a<0$.
+\end{prop}
+\begin{proof}
+    Nous faisons une simple série de calculs :
+    \begin{align*}
+        x^2=a & \iff x^2-a=0\\
+        &\iff (x-\sqrt{a})(x+\sqrt a)=0\\
+        &\iff x-\sqrt a = 0 \quad \lor\quad  x+\sqrt a = 0\\
+        x^2=a&\iff x=\sqrt a \quad \lor\quad  x = -\sqrt a
+    \end{align*}
+\end{proof}
+
+Ce cas particulier nous renseigne sur la forme que nous pouvons vouloir donner à notre équation du second degré : si l'on peut mettre l'équation sous la forme $(ax+b)^2=c$ alors on peut réutiliser cette méthode pour trouver l'ensemble (potentiellement vide) des solutions de l'équation. Nous voulons donc trouver $\alpha$, $\beta$ et $\gamma$ tels que $ax^2+bx+c=0\iff (\alpha x + \beta)^2=\gamma$. Nous allons pour cela définir ce que l'on appelle la forme canonique.
+
+\begin{defi}[Forme canonique]
+    Soit une équation du second degré de la forme $$ax^2+bx+c=0$$ alors cette équation est équivalente à $$a\left(x+\dfrac{b}{2a}\right)^2-\dfrac{b^2-4ac}{4a}=0$$ appelée forme canonique de l'équation.
+\end{defi}
+\begin{proof}
+    Nous allons simplement développer la forme canonique :
+    \begin{align*}
+        a\left(x+\dfrac{b}{2a}\right)^2-\dfrac{b^2-4ac}{4a} &= ax^2+2\dfrac{abx}{2a}+\dfrac{b^2}{4a^2}-\dfrac{b^2-4ac}{4a}\\
+        a\left(x+\dfrac{b}{2a}\right)^2-\dfrac{b^2-4ac}{4a} &= ax^2+bx+c
+    \end{align*}
+    D'où l'équivalence des deux équations.
+\end{proof}
+
+L'équation donnée ci-dessus est donc équivalence à $$\left(x+\dfrac{b}{2a}\right)^2=\dfrac{b^2-4ac}{4a^2}$$ or $a^2>0$ donc il y a (au moins) une solution si et seulement si $b^2-4ac\geq 0$. On en déduit le critère pour résoudre une équation du second degré.
+
+\begin{them}[\'Equation du second degré]
+    Soit une équation du second degré de la forme $$ax^2+bx+c=0$$ où $a\neq 0$. Soit $\Delta = b^2-4ac$, alors suivant le signe de $\Delta$ :
+    \begin{itemize}[label=$\bullet$]
+        \item Si $\Delta>0$ alors il y a deux solutions : $x=\dfrac{-b+\sqrt \Delta}{2a}\lor x=\dfrac{-b-\sqrt \Delta}{2a}$.
+        \item Si $\Delta = 0$ alors il y a une seule solution : $x=\dfrac{-b}{2a}$.
+        \item Si $\Delta < 0$ alors il n'y a pas de solution.
+    \end{itemize}
+\end{them}
+\begin{proof}
+    Il suffit d'utiliser la proposition \ref{utile1} pour l'équation sous la forme canonique.
+\end{proof}
+
+Dans le cas où $\Delta < 0$, en réalité, il existe des solutions : simplement, celles-ci ne sont pas réelles mais complexes. Les nombres complexes sont le thème du prochain chapitre ; ils sont des nombres tels qu'il existe $i$, appelé nombre imaginaire, qui a la particularité que $i^2=-1$.
+
+\newpage

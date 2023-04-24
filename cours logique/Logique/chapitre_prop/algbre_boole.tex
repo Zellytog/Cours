@@ -1,0 +1,206 @@
+\section{Algèbres de Boole}
+
+Le calcul propositionnel nous a donné un formalisme pour parler de propositions, de vérité et de preuves. Nous avons vu que les éléments essentiels du calcul propositionnels sont les constructeurs (c'est-à-dire $\lor$,$\land$,$\to$,$\lnot$) des propositions, puisque ce calcul ne s'intéresse qu'au lien entre les propositions. Ceci motive alors l'étude des algèbres de Boole, qui sont des structures se comportant de la même façon : elles possèdent des constructeurs $\lor$,$\land$ et $\lnot$ (remarquons que $P \to Q \equiv \lnot P \lor Q$ et qu'il suffit donc des trois constructeurs précédents). Le formalisme permettant au mieux de généraliser ces constructeurs se trouve dans la théorie des treillis (une branche de la théorie des ensembles ordonnés). Nous verrons donc d'abord des rappels de théorie des ordres, pour définir ensuite les algèbres de Boole. Nous ferons finalement le lien avec le calcul propositionnel par le biais de l'algèbre de Lindenbaum-Tarski.
+
+\subsection{Un peu de théorie des ensembles ordonnés}
+
+Dans la suite de cette section, nous fixerons $(X,\preceq)$ un ensemble ordonné. Rappelons qu'un ensemble ordonné est un ensemble (ici $X$) muni d'une relation $\preceq$ vérifiant :
+\begin{itemize}[label=$\bullet$]
+    \item pour tout élément $x\in X$, $x\preceq x$
+    \item pour tous éléments $x,y \in X$, si $x\preceq y$ et $y\preceq x$ alors $x=y$
+    \item pour tous éléments $x,y,z \in X$, si $x\preceq y$ et $y\preceq z$ alors $x\preceq z$.
+\end{itemize}
+On dit que $x$ est inférieur à $y$ si $x\preceq y$.
+
+\begin{expl}
+    Si les exemples d'ensembles ordonnés ne manquent pas, l'exemple canonique que nous utiliserons ici est, pour un ensemble $E$ fixé, l'ensemble ordonné $(\mathcal P(E),\subseteq)$ des parties de $E$ ordonnées par l'inclusion. Remarquons déjà que les opérations ensemblistes $\cup$ et $\cap$ ont une portée logique assez forte : pour une partie $A$ et une partie $B$, on peut écrire $A\cup B =\{x\in E\mid x\in A \lor x\in B\}$. De même, $E\setminus A$ peut s'écrire $\{x\in E\mid \lnot (x\in A)\}$. Nous verrons au long de cette section que les opérations ensemblistes revêtent un aspect logique similaire au calcul propositionnel.
+\end{expl}
+
+Un point essentiel de l'étude des ensembles ordonnés est la notion de majorant et de minorant :
+
+\begin{defi}[Majorant, minorant]
+    Soit $Y$ une partie de $X$, on dit que $M$ est un majorant de $Y$ si tout élément de $Y$ est inférieur à $M$. On dit que $m$ est un minorant de $Y$ si tout élément de $Y$ est supérieur à $m$.
+\end{defi}
+
+\begin{rmk}
+    De par ces premières définitions, on s'aperçoit déjà d'un phénomène très important en théorie des ensembles ordonnés, qu'on appelle la dualité : chaque notion peut s'énoncer de deux façons différentes suivant si l'on considère la relation $\preceq$ (\og inférieur à\fg{}) ou $\succeq$ (\og supérieur à\fg{}). En effet, la relation $\succeq$ définie par $x\succeq y \iff y\preceq x$ inverse les minorants, les majorants, et toutes les notions d'ordre que nous verrons plus tard. C'est pour cela que nous donnerons en général deux définitions mais une seule preuve : l'autre se déduit en reprenant la preuve dans l'ordre opposé.
+\end{rmk}
+
+\begin{expl}
+    Dans notre cas, une \og partie de $X$\fg{} correspond à un ensemble de parties de $E$, c'est-à-dire une partie de $\mathcal P(E)$. Remarquons d'abord que si $F\subseteq \mathcal P(E)$ alors $\varnothing$ et $E$ sont respectivement un minorant et un majorant de $F$. Un autre minorant de $F$ est $\bigcap F$, c'est-à-dire l'intersection de toutes les parties de $E$ appartenant à $F$.
+\end{expl}
+
+A partir de ces exemples, on voit qu'il existe de meilleurs minorants que d'autres : si $\varnothing$ est minorant de toute partie de $\mathcal P(E)$, l'intersection nous donne un minorant que l'on pourrait dire \og taillé sur mesure\fg{}. En fait, il est même le meilleur minorant, au sens suivant :
+
+\begin{defi}[Borne supérieure, borne inférieure]
+    Soit $F$ une partie de $X$. La borne supérieure de $F$, notée $\sup_F$ ou $\sup(F)$, si elle existe, est le plus petit majorant de $F$ : c'est le majorant de $F$ tel que pour tout $M$ majorant de $F$, $\sup(F)\preceq M$.
+
+    La borne inférieure, elle, est le plus grand minorant et se note $\inf_F$ ou $\inf(F)$. C'est donc le minorant de $F$ tel que pour tout autre minorant $m$ de $F$, on ait $m\preceq \inf(F)$.
+\end{defi}
+
+\begin{proof}
+    Puisque l'on a dit \og le\fg{}, c'est pour indiquer qu'il est unique (sous réserve d'existence) : prouvons-le. Supposons que $s,s'$ soient deux borne supérieures de $F$. Alors $s$ est un majorant de $F$, donc par définition du fait que $s'$ est borne supérieure, $s'\preceq s$. De même, $s'$ est majorant de $F$ donc $s\preceq s'$. Il en résulte par double inégalité que $s=s'$ : la borne supérieure est unique si elle existe.
+\end{proof}
+
+Ce problème de l'existence d'une borne supérieure semble ne pas exister dans notre exemple canonique, d'après l'exercice suivant :
+
+\begin{exo}
+    Soit $E$ un ensemble, et $(\mathcal P(E),\subseteq)$ l'ensemble ordonné de ses parties. Montrer que pour tout ensemble $F$ de parties de $E$, la borne supérieure de $F$ est $\bigcup F$ et sa borne inférieure est $\bigcap F$.
+\end{exo}
+
+Pourtant, il existe bien des cas où il n'existe pas de borne supérieure, par exemple en considérant l'ordre donné par le diagramme de la figure \ref{fig:ordre} (une flèches $x\to y$ représente le fait que $x\preceq y$) et la partie $\{x_1,x_2\}$.
+
+\includefig{Logique/chapitre_prop/ordre.tex}{Ordre sans borne supérieure}\label{fig:ordre}
+
+Comme nous l'avons dit plus tôt, notre candidat pour l'opération $\lor$ par exemple est $\cup$, ce qui signifie que nous voudrions avoir, pour toute partie, une borne supérieure. Cependant, cette exigence est peut-être un peu trop grande, puisque $\lor$ est une opération binaire (que l'on peut étendre facilement en une opération $n$-aire) : nous souhaitons donc principalement avoir des bornes supérieures et inférieures pour les parties finies.
+
+\subsection{Vers les algèbres de Boole}
+
+\begin{defi}[Treillis]
+    Un ensemble ordonné est un treillis si pour toute partie finie $F\subseteq_\mathrm{fin} X$, il existe une borne supérieure et une borne inférieure à $F$, que nous noterons respectivement $\bigvee F$ et $\bigwedge F$.
+\end{defi}
+
+\begin{rmk}
+    Remarquons que $\varnothing$ est une partie finie de $X$. Par convention, si $F=\varnothing$, alors $\bigvee F = \bot$ et $\bigwedge F = \top$ où $\top$ et $\bot$ sont respectivement le majorant et le minorant de $X$. Un treillis est donc un ensemble borné, c'est-à-dire un ensemble avec un majorant et un minorant.
+\end{rmk}
+
+\begin{exo}
+    Montrer que ces conditions sont équivalentes à l'existence :
+    \begin{itemize}[label=$\bullet$]
+    \item d'un majorat $\top$
+    \item d'un minorant $\bot$
+    \item d'une opération binaire $\vee$ telle que pour tous éléments $x,y$, $x\preceq x\vee y$, $y\preceq x\vee y$ et pour tout $z$ tel que $x\preceq z$ et $y\preceq z$, $x\vee y\preceq z$
+    \item d'une opération binaire $\wedge$ telle que pour tous élément $x,y$, $x\wedge y\preceq x$, $x\wedge y\preceq y$ et pour tout $z$ tel que $z\preceq x$ et $z\preceq y$, $z\preceq x\wedge y$
+    \end{itemize}
+\end{exo}
+
+Nous utiliserons en général la version binaire $\lor$ et $\land$ plutôt que des bornes sur des parties finies, à la fois par souci de lisibilité et car nous avons vu qu'il suffit de travailler avec ces opérations.
+
+\begin{exo}
+    Montrer que $\top$ est neutre pour $\wedge$, c'est-à-dire que $x\wedge \top = x$ pour tout x. De même, $\bot$ est neutre pour $\vee$ (par dualité).
+\end{exo}
+
+\begin{exo}
+    Montrer que $\wedge$ est associatif, c'est-à-dire que $x\wedge (y\wedge z) = (x\wedge y)\wedge z$ (on écrira alors directement $x\wedge y \wedge z$) et commutatif, c'est-à-dire que $x\wedge y = y\wedge x$. De même $\vee$ est associatif et commutatif par dualité.
+\end{exo}
+
+\begin{exo}
+    Montrer que pour tout $x,y$, les propositions suivantes sont équivalentes : 
+    \begin{itemize}[label=$\bullet$]
+        \item $x\preceq y$
+        \item $x\wedge y = x$
+        \item $x\vee y = y$
+    \end{itemize}
+\end{exo}
+
+\begin{expl}
+    On remarque directement qu'en prenant $\wedge = \cap$ et $\vee = \cup$ dans notre exemple canonique, notre ensemble de parties est bien un treillis. Un fait supplémentaire est qu'il existe une distributivité : $A\cup(B\cap C) = (A\cup B)\cap(A\cup C)$.
+\end{expl}
+
+En fait, cette distributivité ne peut se déduire directement du fait d'être un treillis, c'est pour cela qu'on définit les treillis distributifs :
+
+\begin{defi}[Treillis distributif]
+    Un treillis est dit distributif si pour tous éléments $x,y,z$ l'une des deux conditions équivalentes est vérifiées :
+        \begin{align*}
+            x\wedge(y\vee z) &= (x\wedge y)\vee(x\wedge z)\vspace{0.5cm}\\
+            x\vee(y\wedge z) &= (x\vee y)\wedge(x \vee z)
+        \end{align*}
+\end{defi}
+
+Pour prouver notre équivalence, nous allons introduire un lemme :
+
+\begin{lem}
+    Pour tous $x,y$, $x\vee (y\wedge x) = x$ et $x\wedge(x\vee y) = x$.
+\end{lem}
+\begin{proof}
+    Nous ne prouverons que la première égalité, l'autre suivant par dualité :
+    \begin{itemize}[label=$\bullet$]
+        \item d'abord, par définition de $\vee$, $x\preceq x\vee (y\wedge x)$
+        \item par réflexivity, $x\preceq x$, et par définition de $\wedge$, $y\wedge x \preceq x$, il s'ensuit que $x\vee (y\wedge x) \preceq x$
+    \end{itemize}
+    Par double inégalité, notre égalité est vérifiée.
+\end{proof}
+
+Nous pouvons maintenant procéder à la preuve de l'équivalence des distributivités :
+
+\begin{proof}
+    Là encore, la dualité nous permet de ne montrer que l'une des deux implications, nous supposerons donc la première égalité pour prouver la deuxième :
+    \begin{align*}
+        x\vee(y\wedge z) &= (x\vee(y\wedge x)) \vee (y\wedge z)\\
+        &= x\vee [(y\wedge x)\vee (y\wedge z)]\\
+        &= x\vee [y\wedge(x\vee z)]\\
+        &= [x\wedge (x\vee z)] \vee [y\wedge(x\vee z)]\\
+        x\vee (y\wedge z) &= (x\vee y) \wedge (x\vee z)
+    \end{align*}
+\end{proof}
+
+Notre exemple canonique est évidemment un treillis distributif. Il nous reste à définir la négation dans un tel treillis, et nous aurons alors défini la notion d'algèbre de Boole. On base cette définition sur la remarque suivante : dans un ensemble $E$, pour une partie $A\subseteq E$ on a $B = \complement_E A$ si et seulement si $B\cup A = E$ et $B\cap A = \varnothing$.
+
+\begin{defi}[Complément]
+    Soit $x$ un élément d'un treillis distributif. On dit que $x'$ est le complément de $x$ si $x\lor x' = \top$ et $x\land x' = \bot$.
+\end{defi}
+
+\begin{proof}
+    Nous allons prouver que le complément est unique, sous réserve d'existence. Soit $x$ un élément, et $c,c'$ deux compléments de $x$. Alors :
+    \begin{align*}
+        c &= c\wedge \top\\
+        &= c\wedge (x\vee c')\\
+        &= (c\wedge x) \vee (c\wedge c')\\
+        &= \bot \vee (c\wedge c')\\
+        c &= c\wedge c'
+    \end{align*}
+    On en déduit que $c\preceq c'$. Comme $c$ et $c'$ ont des rôles symétriques, la même suite d'égalités peut se faire pour prouver que $c'\preceq c$, donc $c=c'$.
+\end{proof}
+
+On notera alors $\lnot x$ le complément de $x$, s'il existe. La définition d'algèbre de Boole peut enfin être donnée :
+
+\begin{defi}[Algèbre de Boole]
+    Une algèbre de Boole, ou algèbre booléenne, est un treillis distributif complémenté, i.e. tel que tout élément possède un complément.
+\end{defi}
+
+\begin{expl}
+    On retrouve donc que $(\mathcal P(E),\subseteq)$ est une algèbre de Boole, avec l'intersection et l'union comme opérations binaires, $\varnothing$ et $E$ comme minorant et majorant, et $E\setminus X$ comme complémentaire d'une partie $X$.
+\end{expl}
+
+\begin{rmk}
+    Il existe une algèbre de Boole triviale, qui est l'ensemble $\{\top,\bot\}$, assimilable à $\mathcal P(\{\varnothing\})$, ne contenant que deux éléments et dont les définitions des opérations sont évidentes.
+\end{rmk}
+
+\begin{exo}
+    Montrer que dans une algèbre de Boole, les loi de De Morgan sont vérifiées : $$\lnot(x\vee y) = \lnot x \wedge \lnot y\qquad \lnot(x\wedge y) = \lnot x \vee \lnot y$$
+    et que la loi de la double négation est vérifiée aussi : $$ \lnot\lnot x = x$$
+\end{exo}
+
+Nous pouvons aussi définir des morphismes d'algèbres de Boole, c'est-à-dire des fonctions entre algèbres de Boole qui transmettent l'information d'une algèbre de Boole :
+
+\begin{defi}[Morphisme d'algèbre de Boole]
+    Si $(X,\preceq,\lor,\land,\lnot)$ et $(Y,\leq,\sqcup,\sqcap,\sim)$ sont deux algèbre de Boole, on appelle morphisme d'algèbre de Boole un morphisme de treillis, c'est-à-dire une fonction $f : X \to Y$ telle que pour tout $x,y\in X$, on ait $f(x\vee y)=f(x)\sqcup f(y)$ et $f(x\wedge y)=f(x)\sqcap f(y)$ ainsi que $f(\top_X)=\top_Y$ et $f(\bot_X)=\bot_Y$.
+\end{defi}
+
+\begin{exo}
+    Montrer que cette définition suffit à montrer que $f(\lnot x)= \;\sim\!\! f(x)$.
+\end{exo}
+
+\begin{exo}[Les algèbres de Boole comme catégorie]
+    Montrer que l'identité sur une algèbre de Boole est un morphisme d'algèbre de Boole et que la composée de deux morphisme d'algèbres de Boole est encore un morphisme d'algèbre de Boole.
+\end{exo}
+
+\begin{defi}
+    On dit que deux algèbre de Boole $\mathcal B$ et $\mathcal B'$ sont isomorphes s'il existe deux morphismes d'algèbres de Boole $f : \mathcal B \to \mathcal B'$ et $g : \mathcal B' \to \mathcal B$ telles que $f\circ g = \mathrm{id}_{\mathcal B'}$ et $g\circ f = \mathrm{id}_{\mathcal B}$
+\end{defi}
+
+\subsection{Algèbre de Lindenbaum-Tarski}
+
+Comme le comportement d'une algèbre de Boole est similaire à celui du calcul propositionnel (en remplaçant l'équivalence de propositions par l'égalité), nous allons construire une algèbre de Boole associée à notre calcul propositionnel.
+
+\begin{defi}[Algèbre de Lindenbaum-Tarski]
+    Soit $\mathcal P$ l'ensemble des propositions, on définit $\overline{\mathcal P} = \quot{\mathcal P}{\equiv}$ c'est-à-dire l'ensemble des propositions quotienté par la relation d'équivalence sémantique (ou syntaxique, les deux coïncidant), cela signifie que si $P\equiv Q$ alors on considère que $P=Q$.
+    On munit $\overline{\mathcal P}$ de la relation d'ordre de conséquence sémantique, ou de façon équivalente de la relation $P\vdash Q$. On a alors une algèbre de Boole, notée $\mathcal L(\mathcal P)$, en prenant comme opérations $\lor$,$\land$ et $\lnot$.
+\end{defi}
+
+\begin{exo}
+    Vérifier que cette définition donne bien une algèbre de Boole.
+\end{exo}
+
+\newpage
+\thispagestyle{empty}

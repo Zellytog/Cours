@@ -1,0 +1,156 @@
+\section{Produit scalaire}
+
+Cette partie s'intéresse à un outil important à la fois en mathématiques et en physique : le produit scalaire. Nous le définirons puis en donnerons des définitions équivalentes, dans un premier temps. Ensuite, nous donnerons plusieurs propriétés du produit scalaire et nous verrons enfin une application du produit scalaire pour déterminer une équation de cercle. Pour donner des définitions équivalentes, il nous faut démontrer un premier théorème : le théorème d'Al Kashi.
+
+\subsection{Définitions}
+
+Le produit scalaire est une opérations prenant deux vecteurs et renvoyant un réel. On peut l'assimiler à une opération étudiant la projection d'un vecteur sur un autre (nous verrons une propriété rendant cette idée plus claire).
+
+\begin{defi}
+    Soient $\vecteur u$ et $\vecteur v$ deux vecteurs du plan. On appelle produit scalaire, et on note $\vecteur u \cdot \vecteur v$, le réel $$\vecteur u \cdot \vecteur v = \|\vecteur u\|\times \|\vecteur v\|\times \cos(\vecteur u,\vecteur v)$$
+\end{defi}
+
+\subsubsection{Identités de polarisation}
+
+\begin{them}[Al-Kashi]
+    Soit $(ABC)$ un triangle. En notant $a,b,c$ les longueur des côtés opposés aux sommets, respectivement, $A,B$ et $C$, alors $$c^2=a^2+b^2-2ab\cos(\widehat{ACB})$$
+\end{them}
+
+\includefig{Geometrie/Figures/tiangle.tex}{Notations utilisées}
+
+\begin{proof}
+    On veut donc évaluer $c^2$. Pour cela, on utilisera le projeté orthogonal de $B$ sur $(AC)$ (noté $H$, c.f. figure $17$). De plus, nous voulons exprimer les longueurs avec $\hat C = \widehat{ACB}$.
+    
+    Tout d'abord, dans le triangle $(ABH)$, par trigonométrie, on trouve que $CH=\cos(\hat C)a$, d'où $AH=b-a\cos(\hat C)$. De plus, toujours par trigonométrie, $h=a\sin(\hat C)$.
+    
+    En utilisant le théorème de Pythagore dans $(ABH)$, rectangle en $H$, on en déduit que $c^2=h^2+AH^2$, d'où en remplaçant $AH$ et $h$ :
+    $$c^2=(b-a\cos(\hat C))^2+a^2\sin^2(\hat C)$$
+    ce qui, en développant, donne $c^2=b^2+a^2(\cos^2(\hat C)+\sin^2(\hat C))-2ab\cos(\hat C)$ or $\cos^2(\hat C)+\sin^2(\hat C)=1$, d'où \fbox{$c^2=b^2+a^2-2ab\cos(\hat C)$.}
+\end{proof}
+
+Grâce au théorème d'Al Kashi, on peut désormais trouver de nouvelles formules pour calculer le produit scalaire.
+
+\begin{prop}[Identité de polarisation 1]
+    Soient $\vecteur u$ et $\vecteur v$ deux vecteurs du plan, on a l'égalité suivante :
+    $$\vecteur u \cdot \vecteur v = \frac{1}{2}\left(\left\|\vecteur u + \vecteur v\right\|^2-\left\|\vecteur u\right\|^2 - \left\|\vecteur v\right\|^2\right)$$
+\end{prop}
+
+\includefig{Geometrie/Figures/triangle.tex}{Notations utilisées}
+
+\begin{proof}
+    Nous utiliserons les notations de la figure $18$. On remarque d'abord que $\hat B=\pi-(\vecteur u,\vecteur v)$ (en effet, en prolongeant le vecteur $\vecteur u$, on obtient un angle total plat et l'angle $(\vecteur u,\vecteur v)$ de l'autre côté de $\hat B$).
+    
+    On en déduit donc, en utilisant Al Kashi, que $\|\vecteur u + \vecteur v\|^2=\|\vecteur u\|^2+\|\vecteur v\|^2+2\|\vecteur u\|\|\vecteur v\|\cos(\vecteur u,\vecteur v)$ or$\|\vecteur u\|\|\vecteur v\|\cos(\vecteur u,\vecteur v)=\vecteur u \cdot \vecteur v$. En isolant $\vecteur u \cdot \vecteur v$, on en déduit l'équation souhaitée, c'est-à-dire \fbox{$\vecteur u \cdot \vecteur v = \frac{1}{2}\left(\left\|\vecteur u + \vecteur v\right\|^2-\left\|\vecteur u\right\|^2 - \left\|\vecteur v\right\|^2\right)$.} 
+\end{proof}
+
+De plus, le même théorème nous permet de déduire une autre formule.
+
+\begin{prop}[Identité de polarisation 2]
+    Soient $\vecteur u$ et $\vecteur v$ deux vecteurs du plan. L'égalité suivante est vérifiée :
+    $$\vecteur u \cdot \vecteur v = \frac{1}{2}\left(\left\|\vecteur u\right\|^2 + \left\|\vecteur v\right\|^2 - \left\|\vecteur u - \vecteur v\right\|^2\right)
+    $$
+\end{prop}
+
+\includefig{Geometrie/Figures/triangle_2.tex}{Notations utilisées}
+
+\begin{proof}
+    Nous utiliserons les notations de la figure $19$. La formule d'Al Kashi donne directement 
+    $$\|\vecteur u - \vecteur v\|^2=\|\vecteur u\|^2 + \|\vecteur v\|^2-2\vecteur u\cdot \vecteur v$$
+    d'où en isolant le produit scalaire \fbox{$\vecteur u \cdot \vecteur v = \frac{1}{2}\left(\left\|\vecteur u\right\|^2 + \left\|\vecteur v\right\|^2 - \left\|\vecteur u - \vecteur v\right\|^2\right)$.}
+\end{proof}
+
+Les deux équations précédentes nous fournissent une dernière expression du produit scalaire.
+
+\begin{prop}[Identité de polarisation 3]
+    Pour deux vecteurs $\vecteur u$ et $\vecteur v$, le produit scalaire s'exprime $$\vecteur u \cdot \vecteur v = \frac{1}{4}\left(\left\|\vecteur u + \vecteur v\right\|^2 - \left\|\vecteur u - \vecteur v\right\|^2 \right)
+    $$
+\end{prop}
+
+\begin{proof}
+    Il suffit d'additionner les deux identités précédente puis de diviser ces identités par $2$.
+\end{proof}
+
+Enfin, si l'on dispose d'une base orthonormée $(\vecteur e_1,\vecteur e_2)$, on obtient une nouvelle identité.
+
+\begin{prop}
+    Soit $(\vecteur e_1,\vecteur e_2)$ une base orthonormée, $\vecteur u$ et $\vecteur v$ deux vecteurs de coordonnées respectives $(x,y)$ et $(x',y')$, alors $$\vecteur u\cdot \vecteur v=xx'+yy'$$
+\end{prop}
+\begin{proof}
+    Il suffit de développer la troisième identité de polarisation, en utilisant le fait que $\|\vecteur u+\vecteur v\|^2=(x+x')^2+(y+y')^2$ et $\|\vecteur u-\vecteur v\|^2=(x-x')^2+(x-y')^2$ car la base est orthonormée.
+\end{proof}
+
+\subsection{Propriétés}
+
+Nous allons montrer les propriétés essentielles du produit scalaire.
+
+Tout d'abord, le produit scalaire est dit symétrique.
+
+\begin{prop}[Symétrie]
+    Soient $\vecteur u$ et $\vecteur v$ deux vecteurs, alors $$\vecteur u\cdot\vecteur v = \vecteur v \cdot \vecteur u$$
+\end{prop}
+\begin{proof}
+    En repassant par la définition, on remarque qu'il suffit de prouver que $\cos(\vecteur u,\vecteur v)=\cos(\vecteur v,\vecteur u)$, or $\underline{\cos(\vecteur v,\vecteur u)}=\cos(-(\vecteur u,\vecteur v))=\underline{\cos(\vecteur u,\vecteur v)}$.
+\end{proof}
+
+De plus, le produit scalaire est dit bilinéaire.
+
+\begin{prop}[Bilinéarité]
+    Soient $\vecteur u$, $\vecteur v$ et $\vecteur w$ des vecteur, et $k\in\reel$. Alors $$ \vecteur u\cdot\left(\vecteur v +k\vecteur w\right)=\left(\vecteur u\cdot \vecteur v \right)+k\left(\vecteur u\cdot \vecteur w\right)$$
+\end{prop}
+\begin{proof}
+    Soit $(\vecteur e_1,\vecteur e_2)$ une base orthonormée et $(x,y)$, $(x',y')$, $(x'',y'')$ les coordonnées respectives de $\vecteur u$, $\vecteur v$ et $\vecteur w$. Alors $$\underline{ \vecteur u\cdot\left(\vecteur v +k\vecteur w\right)} = x(x'+kx'')+y(y'+ky'')=(xx'+yy')+k(xx''+yy'')=\underline{\left(\vecteur u\cdot \vecteur v\right) + k\left(\vecteur u\cdot \vecteur w\right)}$$
+\end{proof}
+
+\begin{rmk}
+    La symétrie permet de déduire que $$\left(\vecteur u+k'\vecteur {u'}\right)\cdot\left(\vecteur v +k\vecteur {v'}\right) = \vecteur u\cdot \vecteur v+k'\left(\vecteur {u'}\cdot\vecteur v\right)+k\left(\vecteur u\cdot \vecteur{v'}\right)+kk'\left(\vecteur{u'}\cdot\vecteur{v'}\right)$$
+\end{rmk}
+
+Nous avons dans l'introduction de cette partie mentionné un lien avec la projection d'un vecteur sur un autre. Voici la propriété qui illustre ce lien.
+
+\begin{prop}\label{projection}
+    Soient $\vecteur u$ et $\vecteur v$ deux vecteurs, ainsi que $\vecteur w$ le projeté orthogonal de $\vecteur w$ sur la droite prolongeant $\vecteur u$. Alors $$\vecteur u\cdot \vecteur v = \vecteur u \cdot \vecteur w$$
+\end{prop}
+
+\includefig{Geometrie/Figures/projection.tex}{Illustration de la proporition \ref{projection}}
+
+\begin{proof}
+    La trigonométrie nous donne directement $\|\vecteur w\|=\|\vecteur v\|\cos(\vecteur u,\vecteur v)$ or on sait de plus, par propriété du projeté orthogonal, que $(\vecteur u,\vecteur w)=1$, d'où le résultat.
+\end{proof}
+
+On peut de plus calculer la norme à partir du produit scalaire.
+
+\begin{prop}
+    Soit $\vecteur u$ un vecteur du plan. Alors $$\|\vecteur u\|^2=\vecteur u\cdot\vecteur u$$
+\end{prop}
+\begin{proof}
+    Le résultat est évident en repassant par la définition.
+\end{proof}
+
+Enfin, le produit scalaire sert de critère d'orthogonalité (i.e. de critère pour savoir si deux vecteurs sont de directions perpendiculaires).
+
+\begin{prop}
+    Soient $\vecteur u$ et $\vecteur v$ deux vecteurs. Alors $\vecteur u$ et $\vecteur v$ sont orthogonaux si et seulement si $\vecteur u\cdot\vecteur v = 0$.
+\end{prop}
+\begin{proof}
+    Si l'un des vecteurs est nul, il est par convention orthogonal à tout autre vecteur. Si les deux vecteurs sont non nuls, alors :
+    
+    Si les deux vecteurs ont un angle absolu différent de $\dfrac{\pi}{2}$, par définition, $\cos(\vecteur u,\vecteur v)$ est non nul, donc $\vecteur u\cdot \vecteur v \neq 0$.
+    
+    Si les deux vecteurs ont un angle absolu de $\dfrac{\pi}{2}$, alors le cosinus de leur angle est nul donc les deux vecteurs sont nuls.
+    
+    Donc \fbox{$\vecteur u\bot \vecteur v \iff \vecteur u \cdot \vecteur v = 0$.}
+\end{proof}
+
+\subsection{Application à un cercle}
+
+Nous donnons dans cette partie un problème sous forme d'exercice.
+
+\begin{exo}
+    Soient $A$ et $B$ deux points. Le but de ce problème est de décrire l'ensemble des point formant le cercle $\mathcal C$ de diamètre $[AB]$.
+    \begin{itemize}[label=$\bullet$]
+        \item Soit $M$. Montrer que $M\in\mathcal C\iff \vecteur{MA}\cdot \vecteur{MB} = 0$.
+        \item En posant une base orthonormée, en déduire une équation du cercle en fonction des coordonnées de $A$ et $B$. \textit{Indication :} on posera les coordonnées du point $M$ comme valant $(x,y)$, qui seront les variables de l'équation de cercle.
+    \end{itemize}
+\end{exo}
+
+\newpage

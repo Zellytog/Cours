@@ -1,0 +1,208 @@
+\section{Définition des propositions}
+
+Cette section vise à présenter les propositions, que nous introduirons comme des objets syntaxiques. La façon de séparer les propositions de leur interprétation (par exemple de dire que $\forall x. x = x$ n'est pas le même objet que $\top$) est une démarche qui se révélera fructueuse pour pouvoir trouver le bon formalisme pour parler de preuves et de valeur de vérité. On peut voir cela comme un analogue à la distinction entre un polynôme formel et une fonction polynomiale : le premier permet d'étudier de façon plus systématique le deuxième.
+
+La première approche que nous aurons sera celle du calcul des propositions : on peut considérer une proposition (dans son sens intuitif) comme une phrase portant sur des objets mathématiques, par exemple avec la proposition $1 = 1$, auxquelles on associe des mots de liaison, comme $(1 = 1) \lor (0 = 1)$ indiquant que $1=1$ ou $0=1$. Cependant, on peut s'abstraire des prédicats de la forme $1=1$ et remplacer ceux-ci par une variable booléenne : une variable $x$ pouvant valoir $1$ (si elle représente une proposition atomique vraie) ou $0$ (si elle est fausse). Dans un second temps seulement, nous verrons le calcul des prédicats, permettant de parler plus précisément de ces propositions atomiques.
+
+\subsection{Calcul des propositions}
+
+\begin{defi}[Proposition]
+    Soit un ensemble infini (dénombrable) de variables booléennes $\VV$ que nous noterons $x_1,x_2,\ldots$, nous définissons l'ensemble des propositions $\Prop$ par la grammaire suivante : $$ P,Q ::= x_i \mid \top\mid \bot \mid (P\to Q) \mid (P \lor Q) \mid (P\land Q)\mid (\lnot P)$$ où $\top$ et $\bot$ sont deux propositions atomiques constantes (appelées \og vrai\fg{} et \og absurde\fg{}).
+\end{defi}
+
+\begin{rmk}
+    Un constructeur de cette grammaire est aussi appelé connecteur logique.
+\end{rmk}
+
+\begin{expl}
+    Voici quelques propositions :
+    \begin{itemize}[label=$\bullet$]
+        \item $\top$
+        \item $((\top \land (\lnot x_1))\lor (x_2\to x_3))$
+    \end{itemize}
+\end{expl}
+
+\begin{rmk}
+    Nous simplifierons l'écriture en rendant $\lnot$ le constructeur le plus prioritaire, $\lor$ et $\land$ prioritaire sur $\to$ et $\land$ prioritaire sur $\lor$ (le tout pour omettre un maximum de parenthèses). Par exemple la dernière proposition donnée en exemple peut se réécrire $\top\land \lnot x_1 \lor (x_2\to x_3)$. Enfin, l'opération $\to$ sera associative à droite : $x_0 \to x_1 \to x_2$ se lira $x_0 \to (x_1\to x_2)$.
+\end{rmk}
+
+Nous avons déjà une intuition assez naturelle de ce que veut dire chaque constructeur : par exemple, $P\land Q$ est vraie exactement lorsque $P$ et $Q$ à la fois sont vraies. Cette idée intuitive peut se formaliser par ce que l'on appelle des tables de vérité, représentant pour un connecteur la valeur de la proposition qu'il construit en fonction de la valeur de vérité de ses entrée. Voici les tables de vérité des différents connecteurs logiques :
+
+{\begin{figure}[htb]
+\centering
+\begin{tabular}{|c|c|}
+    \hline
+     $P$ & $\lnot P$ \\ \hline\hline
+     0 & 1 \\ \hline
+     1 & 0 \\ \hline
+\end{tabular}
+\quad
+\begin{tabular}{|c|c|c|}
+    \hline
+     $P$ & $Q$ & $P\to Q$ \\ \hline\hline
+     0 & 0 & 1\\ \hline
+     0 & 1 & 1\\ \hline
+     1 & 0 & 0\\ \hline
+     1 & 1 & 1\\ \hline
+\end{tabular}
+\quad
+\begin{tabular}{|c|c|c|}
+    \hline
+     $P$ & $Q$ & $P\lor Q$  \\ \hline\hline
+     0 & 0 & 0 \\ \hline
+     0 & 1 & 1 \\ \hline
+     1 & 0 & 1 \\ \hline
+     1 & 1 & 1\\ \hline
+\end{tabular}
+\quad
+\begin{tabular}{|c|c|c|}
+    \hline
+     $P$ & $Q$ & $P\land Q$ \\ \hline\hline
+     0 & 0 & 0 \\ \hline
+     0 & 1 & 0 \\ \hline
+     1 & 0 & 0 \\ \hline
+     1 & 1 & 1 \\ \hline
+\end{tabular}
+\caption{Tables de vérité}
+\end{figure}}
+\newpage
+
+On peut alors essayer de donner une table de vérité pour n'importe quelle formule propositionnelle, mais les tables de vérité ont plusieurs inconvénients : elles sont longues à faire et elles sont difficiles à étudier mathématiquement. Nous leur préférerons donc la notion de valuation, que nous allons maintenant introduire.
+
+\begin{defi}[Valuation]
+    Soit une fonction $\nu : \VV \to \{0,1\}$ (qui à une variable associe si elle est vraie ou non), nous allons étendre par induction $\nu$ en une fonction $\nu^*:\Prop \to \{0,1\}$ par les règles suivantes :
+    \begin{center}
+        \begin{prooftree}
+            \infer0[$\top$]{\nu^*(\top)=1}
+        \end{prooftree}
+        \quad
+        \begin{prooftree}
+            \infer0[$\bot$]{\nu^*(\bot)=0}
+        \end{prooftree}
+        \quad
+        \begin{prooftree}
+            \infer0[Ax]{\nu^*(x_i) = \nu(x_i)}
+        \end{prooftree}
+        \\
+        \vspace{0.5cm}
+        \begin{prooftree}
+            \hypo{\nu^*(P) = b}
+            \infer1[$\lnot$]{\nu^*(\lnot P) = 1 - b}
+        \end{prooftree}
+        \quad
+        \begin{prooftree}
+            \hypo{\nu^*(P) = b_1}
+            \hypo{\nu^*(Q) = b_2}
+            \infer2[$\to$]{\nu^*(P\to Q) = 1-b_1+b_1\times b_2}
+        \end{prooftree}\\
+        \vspace{0.5cm}
+        \begin{prooftree}
+            \hypo{\nu^*(P) = b_1}
+            \hypo{\nu^*(Q) = b_2}
+            \infer2[$\lor$]{\nu^*(P\lor Q) = b_1 + b_2 - b_1\times b_2}
+        \end{prooftree}
+        \quad
+        \begin{prooftree}
+            \hypo{\nu^*(P) = b_1}
+            \hypo{\nu^*(Q) = b_2}
+            \infer2[$\land$]{\nu^*(P\land Q) = b_1\times b_2}
+        \end{prooftree}
+    \end{center}
+\end{defi}
+
+\begin{rmk}
+    Les opérations utilisées pour les valuations de $P\to Q$ et $P\lor Q$ sont un peu longues, mais elles correspondent simplement à leur table de vérité.
+\end{rmk}
+
+\begin{exo}
+    Montrer par une dérivation que chaque table de vérité est vérifiée avec notre définition de $\nu^*$.
+\end{exo}
+
+\begin{exo}
+    Montrer que deux valuations $\nu,\nu'$ donnent la même valeur sur une proposition $P$ si pour toute variable $x_i$ intervenant dans $P$, $\nu(x_i)=\nu'(x_i)$.
+\end{exo}
+
+On peut donc se restreindre aux valuations $\nu$ partielles, c'est-à-dire n'associant qu'un nombre fini de valeurs à l'ensemble $\VV$, dont le domaine contient les variables intervenant dans une proposition $P$, pour évaluer $P$.
+
+\begin{expl}
+    Soit la proposition $P := x_0\lor x_1 \to x_2$, et la valuation $$\nu : x_0 \mapsto 0, x_1 \mapsto 1, x_2 \mapsto 0$$ on peut alors calculer $\nu^*(P)$ :
+    \begin{center}
+        \begin{prooftree}
+            \infer0[Ax]{\nu^*(x_0)=0}
+            \infer0[Ax]{\nu^*(x_1)=1}
+            \infer2[$\lor$]{\nu^*(x_0\lor x_1) = 1}
+            \infer0[Ax]{\nu^*(x_2)=0}
+            \infer2[$\to$]{\nu^*(x_0\lor x_1 \to x_2) = 0}
+        \end{prooftree}
+    \end{center}
+\end{expl}
+
+Si l'on considère que $1$ signifie que la proposition est vraie et que $0$ signifie que la proposition est fausse, on peut donc dire qu'une proposition est vraie pour une certaine valuation. 
+
+\begin{defi}[Modèle d'une proposition]
+    Soit $\nu$ une valuation. On dit que $P$ est vraie (ou satisfaite) pour la valuation $\nu$, ou encore que $\nu$ est modèle de $P$, et on note $\nu\models P$, si $\nu^*(P) = 1$.
+\end{defi}
+
+\begin{defi}[Tautologie]
+    On dit que $P$ est une tautologie si pour toute valuation $\nu$, $\nu^*\models P$.
+\end{defi}
+
+Par la suite, on confondra directement $\nu$ et $\nu^*$.
+
+\subsection{Satisfiabilité et compacité}
+
+\'Etendons maintenant notre notion de vérité pour un ensemble de propositions :
+
+\begin{defi}[Satisfiabilité]
+    On dit qu'une formule $P$ est satisfiable s'il existe une valuation $\nu$ telle que $\nu\models P$.
+
+    Si $\mathbf{P}\subseteq \Prop$ est un ensemble de proposition, alors on dit que $\mathbf{P}$ est satisfiable s'il existe une valuation $\nu$ telle que pour tout $P\in\mathbf{P}$, $\nu\models P$. On note alors $\nu\models \textbf{P}$.
+\end{defi}
+
+\begin{rmk}
+    Cette digression est hors du cadre de ce document, mais le problème de trouver, étant donnée une proposition, si elle est satisfiable, est un problème dit NP-complet. Il est historiquement le premier problème démontré comme étant NP-complet et revêt en ce sens une importance primordiale en théorie de la complexité algorithmique.
+\end{rmk}
+
+Donnons aussi la définition d'un ensemble contradictoire :
+
+\begin{defi}[Ensemble contradictoire]
+    Un ensemble $\mathbf P\subseteq \mathcal P$ (potentiellement infini) est contradictoire s'il n'existe pas de valuation $\nu$ telle que $\nu\models \mathbf P$.
+\end{defi}
+
+Le calcul des propositions n'est malheureusement pas le plus pertinent, car il manque à ce système deux éléments essentiels : pouvoir s'appliquer à des objets mathématiques et pouvoir introduire des quantifications. Nous nous contenterons donc de donner un théorème central de la logique : le théorème de compacité.
+
+\begin{defi}[Ensemble finiment satisfiable, contradictoire]
+    Soit $\mathbf{P}$ un ensemble (infini) de propositions, on dit que $\mathbf{P}$ est finiment satisfiable si pour toute partie finie $P\subseteq_{\mathrm{fin}}\mathbf P$, $P$ est satisfiable.
+    
+    De même, $\mathbf P$ est dite finiment contradictoire s'il existe une partie finie de $\mathbf P$ qui est contradictoire.
+\end{defi}
+
+\begin{them}[Compacité de la logique propositionnelle]
+    Soit $\mathbf P$ un ensemble de propositions. Alors $\mathbf P$ est satisfiable si et seulement si $\mathbf P$ est finiment satisfiable.
+\end{them}
+
+\begin{proof}
+    Il est évident qu'un ensemble satisfiable est finiment satisfiable, le théorème tient bien sûr dans le sens réciproque.
+
+    Soit un ensemble de propositions $\mathbf P$. Nous allons définir une suite $(\varepsilon_n)$ qui définira notre valuation par $\nu(x_n)=\varepsilon_n$. Cette construction se fera par induction :
+    \begin{itemize}[label=$\bullet$]
+        \item Tout d'abord, deux cas sont possibles :
+        \begin{enumerate}
+            \item\label{cas1} pour tout sous-ensemble fini $B$, il existe une valuation $\delta$ satisfiant $B$ et telle que $\delta(x_0)=0$ : dans ce cas on définit $\varepsilon_0 = 0$.
+            \item\label{cas2} il existe un sous-ensemble fini $B_0$ tel que pour toute valuation $\delta$ satisfiant $B_0$, $\delta(x_0)=1$ : dans ce cas on définit $\varepsilon_0 = 1$.
+        \end{enumerate} 
+        \item Montrons l'initialisation de la propriété \og il existe une suite $\varepsilon_0,\ldots,\varepsilon_n$ telle que pour tout sous-ensemble $B$ il existe un valuation $\delta$ satisfaisant $B$ et telle que $\delta(x_i)=\varepsilon_i$\fg{} : dans le cas \ref{cas1}, le résultat est direct. Dans le cas \ref{cas2}, alors pour une partie finie $B$ on considère $B\cup B_0$ : si $\delta\models B\cup B_0$ alors $\delta\models B_0$ donc $\delta(x_0)=1$ et $\delta\models B$, donc notre hypothèse est vérifiée.
+        \item Supposons qu'il existe une suite $\varepsilon_0,\ldots,\varepsilon_n$ vérifiant les conditions énoncées, alors on peut encore séparer deux cas :
+        \begin{enumerate}
+            \item pour toute partie finie $B$ il existe une valuation $\delta\models B$ telle que $\delta(x_i)=\varepsilon_i$ pour $i\leq n$, on a aussi $\delta(x_{n+1})=0$.
+            \item il existe une partie finie $B_{n+1}$ telle que pour toute valuation $\delta\models B$ telle que $\delta(x_i) =\varepsilon_i$ pour $i\leq n$, on a $\delta(x_{n+1})=1$.
+        \end{enumerate}
+        Dans le premier cas, on définit $\varepsilon_{n+1}=0$ et l'hérédité est vérifiée, et dans le deuxième cas on définir $\varepsilon_{n+1}=1$ et alors pour $B$ une partie finie, il existe $\delta\models B \cup B_{n+1}$ avec $\delta(x_i)=\varepsilon_i$ pour $i\leq n$, et comme $\delta\models B_{n+1}$ on en déduit qu'il existe $\delta\models B$ avec $\delta(x_i) =\varepsilon_i$ pour $i\leq n+1$.
+    \end{itemize}
+
+    Ainsi, par récurrence, nous avons défini la valuation $\nu : x_i \mapsto \varepsilon_i$ qui satisfait toute proposition de $\mathbf P$.
+\end{proof}
+
+\begin{exo}[Formulation équivalente du théorème de compacité]
+    Montrer que le théorème de compacité équivaut au théorème suivant : tout ensemble est contradictoire si et seulement s'il est finiment contradictoire.
+\end{exo}

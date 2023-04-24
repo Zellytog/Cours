@@ -1,0 +1,12 @@
+\EEE
+\lblA
+\lblB
+\fill[color = gray!30] \AAA;
+\fill [color = gray!30] \BBB;
+\begin{scope}
+    \clip \BBB;
+    \fill [color = white] \AAA
+\end{scope}
+\draw \AAA;
+\draw \BBB;
+\draw (0,0) ++ (135:2) ++ (-125:2) node[below left]{$A\Delta B$};

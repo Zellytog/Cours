@@ -1,0 +1,51 @@
+\setcounter{page}{1}\part{Logique}
+
+\chapter{Structure inductive et calcul propositionnel}
+
+Nous traiterons dans ce chapitre des propositions en tant qu'objets syntaxiques. Pour cela, nous introduirons dans la première section les outils de base pour raisonner sur des ensembles inductifs et des prédicats inductifs. Nous construirons ensuite le calcul propositionnel du premier ordre sans quantificateur, pour définir la notion de valuation et le calcul en déduction naturel (qui sera notre choix de formalisme de preuve pour ce document). Nous y prouverons alors les théorèmes de compacité, de correction et de complétude. La fin du chapitre consistera en une introduction aux algèbres de Boole puis à une construction de l'algèbre de Lindenbaum-Tarski du calcul propositionnel.
+
+\input{Logique/chapitre_prop/structure_inductive.tex}
+
+\input{Logique/chapitre_prop/propositions.tex}
+
+\input{Logique/chapitre_prop/semantique_calcul_prop.tex}
+
+\input{Logique/chapitre_prop/algbre_boole.tex}
+
+\chapter{Calcul des prédicats}
+
+Là où le calcul propositionnel étudiait les propositions uniquement par leurs liens logiques, le calcul des prédicats établit une étude plus fine en considérant que les propositions peuvent porter sur des objets mathématiques. C'est à partir de cette étape que notre système propositionnel est suffisamment expressif pour formaliser les mathématiques. Nous allons, comme dans le chapitre précédent, y présenter les règles syntaxiques de la déduction naturelle (il sera nécessaire d'introduire de nouvelles règles puisque nous avons un système étendu) ainsi que la notion de théorie logique, puis nous parlerons de la notion de $\mathcal L$-structure, pour pouvoir alors parler de modèle. Nous donnerons ensuite les théorèmes de correction et de complétude de la déduction naturelle, ainsi que celui de compacité. Nous terminerons sur des considérations de théorie des modèles avec le théorème de Lovenheim-Skolem.
+
+\input{Logique/chapitre_pred/prem_def.tex}
+
+\input{Logique/chapitre_pred/correction_pred.tex}
+
+\chapter{Calculabilité}
+
+Une part essentielle de la logique, qui s'est largement développée pendant le \textsc{xx}\ieme{} siècle, est la théorie de la calculabilité. On pourrait considérer cette théorie comme la fondation de la notion d'algorithme, qui n'avais jusqu'alors pas vraiment de définition rigoureuse (et on continue en général de considérer qu'un algorithme est \og une suite de tâches simples, applicables par une machine \fg{}). La thèse de Church-Turing dit, en substance, que la bonne notion de ce qu'est un algorithme, est représenté par l'un des trois formalismes équivalents suivant : les machines de Turing, les fonctions récursives et le lambda-calcul (il existe de nombreux autres formalisme équivalents mais ces trois-là sont les fondamentaux). Nous dédierons une partie entière au lambda-calcul pour des raisons liées à la logique, et nous allons donc traiter les deux autres formalismes. Plus précisément, ce chapitre s'organisera tout d'abord en menant aux machines de Turing par le biais des automates finis puis des automates à pile, avant de parler à proprement parler de machine de Turing et des principaux théorèmes dessus. Nous verrons enfin les fonctions récursives et leur équivalence avec les machines de Turing.
+
+La calculabilité s'occupe de deux cas distincts : décider ou calculer. Le premier cas concerne celui où l'on considère une propriété sur des objets, et que l'on veut pouvoir décider de si l'objet en question a cette propriété (par exemple savoir si un entier est pair). Le deuxième cas, plus général, consiste à définir un processus permettant d'effectuer des opérations sur une entrée pour en obtenir une sortie : cela correspond exactement à l'intuition que l'on a d'une fonction, et l'on traitera donc de fonctions. On peut facilement utiliser le second cas pour parler du premier cas en calculant la fonction caractéristique de l'ensemble des éléments vérifiant la propriété, mais la décision sera notre première façon d'aborder la calculabilité, aussi la considérerons-nous pendant plus longtemps.
+
+\input{Logique/chapitre_calculabilite/automate_fini.tex}
+
+\input{Logique/chapitre_calculabilite/automate_pile.tex}
+
+\input{Logique/chapitre_calculabilite/machine_turing.tex}
+
+\chapter{Arithmétique de Peano et incomplétude}
+
+Nous avons étudié la logique des prédicats, mais ne l'avons pas encore mise en \oe uvre. Ce chapitre en sera une première application : nous allons introduire l'axiomatisation de l'arithmétique de Peano, c'est-à-dire la théorie axiomatique définissant les entiers naturels usuellement. Nous commencerons donc par énoncer les axiomes de la théorie nommée PA, pour ensuite définir quelques propriétés basiques. Historiquement, l'axiomatisation de l'arithmétique a été la première réussite du logicisme : réussir à formuler de façon purement formelle ce que nous entendons par les entiers et leurs relations usuelles. C'est cette réussite qui a mené David Hilbert à poser la question à toute la communauté scientifique : \og arriverons-nous à décider toute proposition arithmétique de façon purement mécanique ?\fg{} (Nous dirions maintenant \og existe-t-il un algorithme décidant les proposition vraies ?\fg{} mais le problème a été posé avant que la théorie de la calculabilité émerge). La réponse, bien connue maintenant, est non : non seulement il n'existe pas d'algorithme permettant de décider les propositions, mais tout système suffisamment expressif pour parler de toute l'arithmétique, mais suffisamment restreint pour être manipulable, possède des propositions qui sont indécidables, c'est le premier théorème d'incomplétude de Gödel. Nous reviendrons à la fin du chapitre sur ce théorème, ainsi que le second, qui sont des passages obligés du traitement moderne de la logique. Bien sûr, nous avons maintenant l'outil de la calculabilité qui rendra beaucoup plus digeste (bien que toujours très dur à assimiler) la preuve que nous ferons du premier théorème, là où historiquement la preuve est plus vieille que la notion de machine de Turing. Le second théorème d'incomplétude sera mentionné mais non développé, pour des raisons que nous développerons dans la dernière section.
+
+\input{Logique/chapitre_PA/axiomatisation.tex}
+
+\input{Logique/chapitre_PA/incompletude_1.tex}
+
+\chapter{Théorie des ensembles}
+
+En parallèle du développement de la logique, et de sa focalisation sur l'arithmétique, les logiciens, après le travail de Cantor, ont commencé à comprendre qu'il était possible d'exprimer de nombreux phénomènes à travers les ensembles. Si l'arrivée du paradoxe de Russell a d'abord fait croire à la défaite de cette théorie, l'axiomatisation de la théorie des ensembles par Zermelo et Fraenkel a ouvert la voie à l'unification des mathématiques. Nous allons donc étudier d'abord quels sont ces axiomes, puis comment encoder les mathématiques de base dedans. La suite du chapitre sera dédiée à la théorie des ordinaux et des cardinaux, qui sont des outils majeurs de la théorie des ensembles.
+
+\input{Logique/th_ensembles/axiomes.tex}
+
+\input{Logique/th_ensembles/ordinaux.tex}
+
+\input{Logique/th_ensembles/cardinaux.tex}

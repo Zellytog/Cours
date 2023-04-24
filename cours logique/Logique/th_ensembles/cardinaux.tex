@@ -1,0 +1,177 @@
+\section{Axiome du choix}
+
+Nous allons maintenant nous intéresser plus précisément à l'axiome du choix, qui est utilisé en mathématique avec parcimonie pour des questions de constructibilité. Nous allons simplement donner les énoncés équivalents de l'axiome du choix, donc le lemme de Zermelo et le lemme de Zorn, et les raisons poussant à ne pas toujours le considérer. L'axiome du choix, comme son nom l'indique, permet d'effectuer des choix. Cela signifie, étant donnée une collection d'ensembles non vides (donc un ensemble arbitrairement grand d'ensembles non vides), de prendre un élément de chacun de ces ensembles non vides. Dans le cas fini, l'axiome du choix est vrai, mais dans le cas infini cet axiome est nécessaire.
+
+\begin{ax}[Choix]
+    On a trois énoncés équivalents de l'axiome du choix :
+    \begin{itemize}[label=$\bullet$]
+        \item Pour chaque ensemble $a$ dont les éléments sont non vides et disjoints deux à deux, il existe un ensemble dont l'intersection avec chaque élément de $a$ est un ensemble à un seul élément.
+        \item Pour tout ensemble $a$, il existe une application $h$ de l'ensemble des parties non vides de $a$ dans $a$ telle que $f(x)\in x$ pour toute partie $x$ non vide de $a$.
+        \item Le produit d'une famille d'ensembles non vides est non vide.
+    \end{itemize}
+\end{ax}
+
+\begin{proof}
+    Montrons que la deuxième définition implique la première : on appelle $b$ la réunion des éléments de $a$. En appliquant l'axiome du choix dans sa deuxième formulation à $b$, comme chaque élément $x$ de $a$ est une partie non vide de $b$, l'ensemble $\{h(x)\mid x\in a\}$ a exactement un élément en commun avec chaque élément $x$ de $a$.
+
+    La première définition implique la troisième : on définit $(a_i)_{i\in I}$ une famille d'ensembles non vides. Soit $b_i = \{i\}\times a_i$. Alors $(b_i)_{i\in I}$ est formée d'ensembles non vides et disjoints deux à deux. Soit $\xi$ un ensemble tel que $\xi\cap b_i$ ait un seul élément pour tout $i\in I$, alors $(\xi\cap\bigcup_{i\in I} b_i)\in \prod_{i \in I}a_i$, par définition de $\prod_{i\in I}a_i$.
+
+    La troisième définition implique la deuxième : si $a$ est un ensemble quelconque, on forme le produit $$\prod_{x\subseteq a, x \neq \varnothing} x$$ d'après la troisième formulation de l'axiome du choix cet ensemble est non vide. Pour un élément $\varphi$ de cet ensemble, $\varphi(x)\in x$ pour toute partie $x$ non vide de $a$.
+\end{proof}
+
+Une formulation assez utile est le théorème de Zermelo, qui dit que tout ensemble peut être muni d'un bon ordre. Ceci signifie en particulier que tout ensemble est isomorphe à un ordinal en prenant ce bon ordre.
+
+\begin{them}[Zermelo]
+    Il existe un bon ordre sur tout ensemble.
+\end{them}
+
+\begin{proof}
+    Cet énoncé implique la deuxième formulation de l'axiome du choix : on considère un bon ordre $\leq$ sur l'ensemble $E$ et on définit $h : \mathcal P(E) \setminus \{\varnothing\} \to E$ par $h(x) = \min(x)$ où le minimum est défini par le fait que $\leq$ est un bon ordre.
+
+    Réciproquement, soit $E$ un ensemble, on suppose que la deuxème formulation de l'axiome du choix est vraie et donc qu'on a $h : \mathcal P(E)\setminus \{\varnothing \}\to E$ où $h(x)\in x$. Supposons qu'il n'existe pas de bon ordre sur $E$. On définit une relation fonctionnelle $H$, dont le domaine est la collection des fonctions $f$ dont l'image ne contient pas $a$. Cette relation est définie en posant $H(f) = h(a\setminus \mathrm{Im}(f))$.
+
+    Soit $f$ une fonction $H$-inductive, dont le domaine est un ordinal $\alpha$. Pour $\beta < \alpha$, on a $f(\beta) = H(f\restr\beta)\in a\setminus \mathrm{Im}(f\restr\beta)$, donc $f(\beta)\notin \mathrm{Im}(f\restr\beta)$. Par suite, si $\gamma < \beta$, on a $f(\beta) \neq f(\gamma)$, ce qui montre que $f$ est une injection de $\alpha$ dans $E$. Si $f$ n'est pas dans le domaine de $H$, on a $\mathrm{f}\supseteq E$. Par suite, $f$ est une bijection de l'ordinal $\alpha$ vers $E$. Il en résulte que $E$ peut être bien ordonné, ce qui est faux par hypothèse.
+
+    Donc toute fonction $H$-inductive est dans le domaine de $H$. On a donc une relation fonctionnelle $y = F(\alpha)$ de domaine $\On$ telle que $F(\alpha) = H(F\restr\alpha)$ et $F\restr\alpha$ est $H$-inductive pour tout ordinal $\alpha$. Par suite, $G\restr\alpha$ est une injection de $\alpha$ dans $E$ et donc $F$ est une relation fonctionnelle injective de domaine $\On$, à valeurs dans $E$. Ceci est clairement impossible, donc il existe un bon ordre sur $E$.
+\end{proof}
+
+\begin{rmk}
+    Cette preuve est un peu plus forte que l'équivalence entre l'axiome du choix et le théorème de Zermelo : elle montre que pour un ensemble $E$ donné, avoir un bon ordre est équivalent à avoir une fonction $h : \mathcal P(E)\setminus\{\varnothing\}\to E$ telle que $h(x)\in x$.
+\end{rmk}
+
+Le théorème de Zorn découle aussi de l'axiome du choix :
+
+\begin{them}[Zorn]
+    Soit $E$ un ensemble ordonné dont toute partie bien ordonnée est majorée. Alors $E$ possède un élément maximal (i.e. un élément $x$ tel que $\forall y\in E, \lnot (x < y)$).
+\end{them}
+
+\begin{proof}
+    Soit $(E,\leq)$ un ensemble ordonné, on suppose que l'on dispose d'une fonction $h : \mathcal P(E)\setminus\{\varnothing\}\to E$ telle que $h(x)\in x$. Soit $c$ l'ensemble des parties de $a$ qui ont un majorant strict. On définit une application $m : c \to E$ en posant $$m(x) = h(\text{l'ensemble des majorants stricts de } x)$$ donc pour tout $x\in c$, $m(x)$ est un majorant strict de $x$.
+
+    On définit une relation fonctionnelle $H$ dont le domaine est la collection des fonctions $f$ telles que $\mathrm{Im}(f)\in c$, en posant $H(f) = m(\mathrm{Im}(f))$.
+
+    Soit $f$ une fonction $H$-inductive, dont le domaine est un ordinal $\alpha$. Pour $\beta < \alpha$, on a $f(\beta) = H(f\restr\beta)$ qui est un majorant strict de $\mathrm{Im}(f\restr\beta)$. Si $\gamma < \beta$, on a $f(\gamma) < f(\beta)$, dont $f$ est une fonction strictement croissante de $\alpha$ dans $E$. L'image de $f$ est donc une partie bien ordonnée de $E$, et a donc un majorant $\mu\in E$.
+
+    Si $f$ n'est pas dans le domaine de $H$, on a $\mathrm{Im}(f)\notin c$. Alors $\mathrm{Im}(f)$ n'a pas de majorant strict. Il en résulte que $\mu$ n'a pas de majorant strict, c'est-à-dire est maximal, ce qui donne le résultat cherché.
+
+    Si on suppose que toute fonction $H$-inductive est dans le domaine de $H$, alors on a une relation fonctionnelle $y = F(\alpha)$ de domaine $\On$ telle que $F(\alpha) = H(F\restr\alpha)$ et $F\restr\alpha$ est $H$-inductive pour tout ordinal $\alpha$. On a donc une relation fonctionnelle strictement croissante (donc injective) de $\On$ dans $E$, ce qui est impossible.
+\end{proof}
+
+Le sens réciproque se démontre à partir d'une version affaiblie du théorème de Zorn.
+
+\begin{prop}
+    Si tout ensemble ordonné qui a la propriété que tout sous-ensemble totalement ordonné possède une borne supérieure, a un élément maximal, alors l'axiome du choix est vrai.
+\end{prop}
+
+\begin{proof}
+    Soit $E$ un ensemble dont tous les éléments sont non vides et disjoints deux à deux. Soit $U$ la réunion des éléments de $E$ et $X$ l'ensemble des parties de $U$ qui rencontrent chaque élément $x$ de $E$ en un élément au plus. $X$ est ordonné par l'inclusion. Soit $Y$ un sous-ensemble totalement ordonné de $X$, alors $\bigcup_{y\in Y} y \in X$. L'ensemble $X$ a la propriété exigée, et on en déduit donc un élément $y_0 \in X$ maximal. Alors $x\cap y_0$ est un ensemble a un élément (s'il ne possède pas d'élément, on peut ajouter un élément à $y_0$ ce qui contredit la maximalité) pour tout élément $x$ de $E$.
+\end{proof}
+
+Accepter l'axiome du choix revient donc à accepter (un ou) toutes les propositions ci-dessus. Le problème principal de cet axiome est que les raisonnements qu'il engendre sont dits non constructifs. Cela signifie que l'on a l'existence d'objets qu'on ne peut pas forcément exhiber. Par exemple il devient possible de montrer que l'ensemble $\reel / \mathbb Q$ possède un système de représentant (ce qui revient à dire que $\mathbb R$ en tant que $\mathbb Q$-ev a une base), mais il est impossible de construire un tel système de représentants.
+
+\section{Cardinal}
+
+Nous allons finir ce chapitre en mentionnant les cardinaux, qui sont une façon de mesurer la taille d'ensembles. Nous utiliserons l'axiome du choix dans cette partie.
+
+L'idée première pour définir un cardinal est de regarder les ensembles modulo la relation d'équipotence. Ceci signifie qu'on considère une relation $E\equiv F$ si et seulement s'il existe une bijection entre $E$ et $F$. Le problème de cette construction est qu'il est impossible de construire un ensemble quotient ainsi, puisqu'il n'y a pas d'ensemble de tous les ensembles. Cependant, on peut souhaiter chercher un représentant de chaque classe d'équivalence, en considérant pour un ensemble $E$ un ensemble canonique qui lui serait associé. C'est avec cette stratégie que l'on définit un cardinal, en prenant comme famille d'ensembles canoniques les ordinaux, où l'on considère le plus petit ordinal possible pour une classe d'équipotence donnée.
+
+\begin{defi}[Cardinal]
+    On appelle cardinal un ordinal $\kappa$ tel que pour tout ordinal $\alpha < \kappa$, $\alpha$ n'est pas en bijection avec $\kappa$ (c'est donc le plus petit ordinal de se classe d'équipotence).
+
+    On dit qu'un ensemble $E$ est de cardinal $\kappa$ s'il est en bijection avec $\kappa$. Par le théorème de Zermelo pour tout ensemble $E$ il existe un cardinal, noté $\card E$, associé à l'ensemble $E$.
+\end{defi}
+
+\begin{rmk}
+    A priori, le théorème de Zermelo n'empêche pas plusieurs bons ordres d'être donnés à un ensemble $E$ donné, et alors $E$ pourrait alors être isomorphe à deux ordinaux différent suivant l'ordre associé. Cependant, ceux deux ordinaux sont en bijection entre eux, et sont donc associés au même cardinal.
+\end{rmk}
+
+On note $\Cn$ la classe (propre) des cardinaux.
+
+\begin{prop}
+    Soient $E$ et $F$ deux ensembles non vides. Les conditions suivantes sont équivalentes :
+    \begin{itemize}[label=$\bullet$]
+        \item il existe une injection $i : E \to F$.
+        \item il existe une surjection $s : F \to E$.
+        \item $\card E\leq \card F$.
+    \end{itemize}
+\end{prop}
+
+\begin{proof}
+    S'il existe une injection $i : E \to F$ alors on construit une surjection $s : F \to E$ en prenant un élément $x_0\in E$ et en envoyant chaque antécédent d'un élément $x$ par $i$ sur $x$, et chaque élément de $F$ sans antécédent sur $x_0$.
+
+    S'il existe une surjection $s : F \to E$, alors on construit une injection $i : E \to F$ en utilisant l'axiome du choix pour prendre un représentant de chaque ensemble $s^{-1}(\{y\})$ et en envoyant $y$ dessus.
+
+    Si $\card E\leq \card F$ alors on a deux bijections $f : E \to \card E$ et $g : F \to \card F$ ainsi qu'une injection $i : \card E\to \card F $ définie comme l'identité sur $\card E$. En composant ces applications, on en déduit une injection de $E$ dans $F$.
+
+    Soit $j$ une injection de $E$ dans $F$, alors $g\circ j$ est une injection de $E$ dans $\card E$. L'image de cette fonction est alors un ensemble bien ordonné $u\subseteq \card E$ : on a donc un isomorphisme $\phi : \beta\to u$. Ceci signifie que $\beta \leq \card E$. Comme $E$ est équipotent à $u$ et donc à $\beta$, on en déduit que $\card E\leq \beta$, donc $\card E\leq \card E$.
+\end{proof}
+
+Le théorème suivant est un théorème classique de théorie des ensembles :
+
+\begin{them}[Cantor-Bernstein]
+    Soient $E$ et $F$ deux ensemble tels qu'il existe une injection de $E$ dans $F$ et une injection de $F$ dans $E$. Alors il existe une bijection entre $E$ et $F$.
+\end{them}
+
+\begin{proof}
+    Dans le cas actuel, la preuve découle directement du résultat précédent : on déduit par double inégalité que $\card E = \card E$ donc $E$ et $F$ sont équipotents à un même cardinal : ils sont donc équipotents.
+\end{proof}
+
+L'inégalité définie par \og il existe une injection d'un ensemble dans l'autre\fg{} définie donc un ordre total sur les cardinaux.
+
+On va pour finir définir les deux familles $\aleph$ et $\beth$ de cardinaux. Pour la première nous allons d'abord voir le résultat suivant :
+
+\begin{prop}
+    Soit $\kappa$, alors il existe un plus petit cardinal plus grand que $\kappa$, que l'on va noter $\kappa^+$.
+\end{prop}
+
+\begin{proof}
+    Le résultat suivant nous montre que pour tout cardinal $\kappa$ il existe un cardinal $\kappa' > \kappa$. Ainsi les cardinaux supérieurs strictement à $\kappa$ forment une classe d'ordinaux, et possède donc un plus petit élément : cet élément est $\kappa^+$.
+\end{proof}
+
+On définit alors la classe $\aleph$ comme la hiérarchie des cardinaux infinis :
+
+\begin{defi}[Aleph]
+    Les nombres aleph sont définis par induction transfinie :
+    \begin{itemize}[label=$\bullet$]
+        \item $\aleph_0 = \omega$
+        \item $\aleph_{S\alpha} = \aleph_\alpha^+$
+        \item si $\lambda$ est un ordinal limite, alors $\aleph_\lambda = \bigcup_{\beta < \lambda} \aleph_\beta$.
+    \end{itemize}
+\end{defi}
+
+Le théorème de Cantor nous donne l'existence pour chaque ensemble d'un ensemble strictement plus grand :
+
+\begin{them}[Cantor]
+    Soit $E$ un ensemble, alors $\mathcal P(E)$ est de cardinal strictement supérieur à $E$.
+\end{them}
+
+\begin{proof}
+    On a une injection évidente de $E$ dans $\mathcal P(E)$ qui à $x$ associe $\{x\}$. Supposons qu'il existe une bijection entre $E$ et $\mathcal P(E)$. Notons cette bijection $y$, on définit alors $F = \{ x \in E \mid x\notin f(x)\}$. Puisque $f$ est une bijection, on trouve $y$ tel que $F = f(y)$. Si $y\in F$, alors par définition de $F$ on en déduit que $y\notin f(y) = F$, ce qui est une contradiction. Si $y\notin F$, alors par définition de $F$ on en déduit que $y\in F$ puisque $F\notin f(y)$ : on a encore une contradiction. Il n'y a donc pas de bijection entre $E$ et $\mathcal P(E)$.
+\end{proof}
+
+On définit alors la hiérarchie des nombres $\beth$ :
+
+\begin{defi}[Beth]
+    Les nombres beth sont définis par induction transfinie :
+    \begin{itemize}[label=$\bullet$]
+        \item $\beth_0 = \aleph_0$
+        \item $\beth_{S\alpha} = \mathcal P(\beth_\alpha)$
+        \item si $\lambda$ est un ordinal limite, $\beth_\lambda = \bigcup_{\beta < \lambda} \beth_\beta$.
+    \end{itemize}
+\end{defi}
+
+L'hypothèse du continu se formule alors de la façon suivante :
+
+\begin{ax}[Hypothèse du continu]
+    $\beth_1 = \aleph_1$
+\end{ax}
+
+Et l'hypothèse du continu généralisée est :
+
+\begin{ax}[Hypothèse du continu généralisée]
+    Pour tout ordinal $\alpha$, $\aleph_\alpha = \beth_\alpha$.
+\end{ax}
+
+\begin{rmk}
+    Ces deux résultats sont donnés en tant qu'axiomes car il a été démontré par Cohen, avec la méthode du forcing, que l'hypothèse du continu était indépendante des axiomes de ZF(C) et donc indémontrable dans ces théories. Ces résultats sont donc ni vrais ni faux, ils dépendent des modèles de ZF(C) dans lesquels on se place. La démonstration de Cohen, se basant sur la technique du forcing, dépasse largement le cadre de ce cours.
+\end{rmk}

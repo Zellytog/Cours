@@ -1,0 +1,332 @@
+\section[Lambda-calcul]{Le lambda-calcul}
+
+\subsection{Définition du lambda-calcul}
+
+Le lambda-calcul, à l'origine inventé par Church dans les années 1920 pour définir la notion de calculabilité, a ensuite permis l'essor de la programmation fonctionnelle. Le principe est simple : tout ce que l'on manipule sont des fonctions. Les objets manipulés seront appelés lambda-termes, et nous auront pour les définir besoin d'un ensemble $\mathcal V$ infini de variables, que nous noterons avec des lettres ($x,y,z,a,b,\ldots$). Nous allons maintenant définir l'ensemble $\Lambda$ des lambda-termes.
+
+\begin{defi}[Lambda-terme]
+    On appelle lambda-terme un élément $M\in\Lambda$ construit par la grammaire suivante : $$M,N ::= x\mid \lambda x. M\mid (M N)$$
+    
+    Cette grammaire est donnée sous une forme de Backus-Naur. Cette forme consiste à donner une définition récursive en explicitant comment construire les éléments de base (ici les variables symbolisées par le $x$) et comment, à partir d'une expression, en construire une plus grand (ici les deux autres cas). Nous utiliserons abondamment cette notation.
+\end{defi}
+
+Décrivons rapidement ce que signifie chaque partie de notre définition :
+\begin{enumerate}
+    \item Un terme de la forme $x$ n'a pas de signification propre, il en aura par rapport à un terme plus grand.
+    \item Un terme de la forme $\lambda x. M$ correspond à la fonction $x\mapsto M$, qui à $x$ associe l'expression $M$. $x$ apparaîtra en général dans $M$, mais ça n'est pas forcément le cas.
+    \item Un terme de la forme $(M N)$ correspond à l'application de la fonction qui correspond à $M$ à l'argument qui correspond à $N$. On remarque donc qu'une expression de la forme $(\lambda x.M) N$ est une expression que l'on pourrait lire \og l'expression $M$ où $x$ est remplacé par $N$\fg{}. Nous verrons cela plus tard. Une dernière remarque : on écrit largement $f\; x$ au lieu de $f(x)$ pour simplifier nos notations.
+\end{enumerate}
+
+\begin{expl}
+    Donnons quelques lambda-termes classiques :
+    \begin{itemize}[label=$\bullet$]
+        \item $I = \lambda x.x$ correspond à la fonction identité : $I : x\mapsto x$.
+        \item $\top = \lambda x. \lambda y.x$ correspond à la fonction donnant une fonction constante. On peut aussi la voir comme une fonction de deux variables, $x$ et $y$, retournant la première variable $x$.
+        \item $\bot = \lambda x.\lambda y. y$ correspond à la fonction de deux variables qui retourne la deuxième variable.
+        \item $\Omega = \omega \omega = (\lambda x.xx)(\lambda x.xx)$ représente un calcul qui ne se termine pas. On verra en effet que $\Omega$ donne un calcul infini valant $\Omega$ à chaque étape.
+    \end{itemize}
+\end{expl}
+
+Faisons ici un \textit{aparte} pour détailler ce que nous entendons par fonction à plusieurs variables. En effet, le lambda-calcul ne permet de manipuler que des fonctions à une variable et ne permet pas de manipuler des couples en premier lieu. Cependant, une fonction $(x,y)\mapsto f(x,y)$ est strictement équivalente à une fonction $x\mapsto (y\mapsto f(x,y))$, c'est ce qu'on appelle la curryfication. Nous allons donc considérer comme fonction à plusieurs variables une fonction de cette forme. Pour faciliter la lecture, nous emploierons alors le raccourci $\lambda x y.$ pour signifier $\lambda x.\lambda y.$ et ainsi de suite pour un nombre de variables quelconques. Enfin, et encore pour faciliter la lecture, nous allons supposer que l'application de fonction est associative à gauche, ce qui signifie que $f\;x\;y$ se lit $(f\;x)\;y$, nous permettant de manipuler les fonctions à plusieurs variables en écrivant juste les variables à la suite. Par exemple, avec ces notations, $\top\;1\;0 = 1$.
+
+
+\begin{exo}
+    Pour cet exercice, on suppose qu'on dispose quand même des entiers naturels et des opérations arithmétiques. \'Ecrire un lambda-terme correspondant :
+    \begin{itemize}[label=$\bullet$]
+        \item à la fonction $x \mapsto x+1$
+        \item à la fonction $(x,y)\mapsto x+y$
+        \item à l'expression $((x,y)\mapsto x+y)\;13\;12$
+        \item à la composition : $\circ : (f,g) \mapsto (x\mapsto f\; g \; x)$
+    \end{itemize}
+\end{exo}
+
+\subsubsection{Variables libres, liées, alpha-équivalence}
+
+Remarquons que les variables à l'intérieur d'une fonction sont muette, c'est-à-dire que la fonction $\lambda y.y$ est moralement la même que $I=\lambda x.x$ précédemment définie. Il convient donc de définir une notion permettant de traiter les variables muettes ou non. Cette notion est celle de variable libre et de variable liée. Une variable libre est une variable qui est fixée, qui n'apparaît pas dans un $\lambda$ placé \og plus haut\fg{} dans l'expression. Une variable liée, au contraire, est une variable telle qu'on peut trouver un $\lambda$ qui la rend muette.
+
+Nous allons donner une définition formelle de ces notions sous forme de règles d'inférences. Ces règles permettent de définir une relation par induction en énonçant les prémisses de la relation en haut d'une barre horizontale et sa conclusion en bas.
+
+\begin{defi}[Variable libre, variable liée, formule close]
+    Définissons l'ensemble $\varlib{M}$ des variables libres de $M$ par induction sur la structure de $M$ :
+    $$\dfrac{}{\varlib{x}=\{x\}}\qquad \dfrac{\varlib{M}=A}{\varlib{\lambda x. M}=A\setminus \{x\}}\qquad \dfrac{\varlib {M}=A \quad \varlib{N}=B}{\varlib{M N}=A\cup B}$$
+    
+    On définit l'ensemble des variables liées par induction, de la même façon :
+    $$\dfrac{}{\varlie{x}=\varnothing}\qquad \dfrac{\varlie{M}=A}{\varlie{\lambda x. M}=A\cup \{x\}}\qquad \dfrac{\varlie {M}=A \quad \varlie{N}=B}{\varlie{M N}=A\cup B}$$
+    
+    On appelle formule close un lambda-terme $M$ tel que $\varlib M=\varnothing$. Nous utiliserons principalement des formules closes.
+    
+    Enfin, on appelle ensemble des variables d'une expression $M$, et l'on note $\mathrm v$, l'ensemble $$\mathrm v (M)= \varlib{M}\cup\varlie{M}$$
+\end{defi}
+
+\begin{exo}
+    Donner les variables libres des expression suivantes :
+    \begin{itemize}[label=$\bullet$]
+        \item I
+        \item $\lambda y.x$
+        \item $(\lambda x. y y)(\lambda y.z z)$
+    \end{itemize}
+\end{exo}
+
+Ces notions permettent de définir rigoureusement comment renommer une variable. Pour cela, il faut faire attention au cas de la capture de variable. Par exemple si l'on prend $\lambda x.y$ et que l'on renomme $x$ en $y$, alors on obtient $\lambda y.y$ : ceci n'est pas satisfaisant puisque les deux termes n'ont pas du tout le même sens. Pour éviter ce problème, on va faire, chaque fois qu'il y a une lambda-abstraction (un terme de la forme $\lambda x.M$) avec une variable libre du même nom que celle que l'on souhaite renommer, un changement de nom de la variable du $\lambda$.
+
+\begin{defi}[Substitution]
+    Soit $M$ et $N$ deux lambda-termes. On note $M[N/x]$ le lambda-terme défini par :
+    $$ \dfrac{}{x[N/x]=N}\qquad \dfrac{}{y[N/x]=y}\qquad\dfrac{M[N/x]=M'\quad P[N/x]=P'}{(M P)[N/x] = M' P'}$$$$\dfrac{}{(\lambda x.M)[N/x]=\lambda x.M}\quad\dfrac{M[z/y][N/x]=M'\quad z\notin\varlib{N}\cup\varlib{M}}{(\lambda y.M)[N/x]=\lambda z.M'}\;y\in\varlib{N}  \quad\dfrac{M[N/x]=M'}{(\lambda y.M)[N/x]=\lambda y.M'}$$
+    
+    Le terme à côté de la règle d'inférence numéro $5$ donne une condition supplémentaire d'application de la règle.
+\end{defi}
+
+\begin{expl}
+    Voici plusieurs substitutions :
+    \begin{itemize}[label=$\bullet$]
+        \item $I[y/x] = \lambda y.y$
+        \item $(\lambda x.x\; y)[a/y] = \lambda x.x\; a$
+        \item $(\lambda x.x\;y)[x/y] = \lambda z.z\; x$
+    \end{itemize}
+\end{expl}
+
+Nous nommons alpha-conversion ou alpha-équivalence le fait que deux termes qui ne varient qu'au nom près de leurs variables liées sont des termes identiques.
+
+\begin{defi}[Alpha-équivalence]
+    Soient $M$ et $N$ deux lambda-termes, on définit la relation $=_\alpha$ par les règles :
+    $$\dfrac{}{M=_\alpha M}\qquad\dfrac{M =_\alpha N \quad N=_\alpha P}{M=_\alpha P}\qquad \dfrac{M=_\alpha N}{N=_\alpha M}$$
+    $$\dfrac{}{\lambda x.M =_\alpha \lambda y.M[y/x]}\qquad\dfrac{M=_\alpha M' \quad N=_\alpha N'}{(M\;N) =_\alpha (M'\;N')}\qquad\dfrac{M=_\alpha N}{\lambda x. M =_\alpha \lambda x. N}$$
+\end{defi}
+
+\begin{rmk}
+    La première ligne permet de définir l'alpha-équivalence comme une relation d'équivalence. La deuxième ligne possède essentiellement la première règle, disant qu'un renommage dans un terme ne change pas le terme. Les autres règles de la deuxième ligne expriment que l'on peut effectuer ce renommage \og à l'intérieur\fg{} des termes.
+\end{rmk}
+
+Nous travaillerons désormais non pas dans $\Lambda$ mais dans $\quot{\Lambda}{=_\alpha}$ pour assimiler des lambda-termes alpha-équivalents (nous utiliserons donc désormais $\Lambda$ pour dire $\quot{\Lambda}{=_\alpha}$).
+
+\subsubsection{Réduction de termes}
+
+La réduction est l'élément central du lambda-calcul. En effet, c'est par lui que l'on obtient la sémantique opérationnelle du lambda-calcul, c'est-à-dire le comportement des termes de notre système formel. On appelle ces réductions des beta-réductions. Elles correspondent exactement à l'intuition que nous avons donnée au début de cette section : l'application à un argument $N$ de la fonction $\lambda x. M$ se réduit en $M$ dans lequel on a remplacé les occurrences de $x$ par $N$ : c'est exactement $M[N/x]$.
+
+\begin{defi}[Beta-réduction]
+    On définit la beta-réduction par les règles suivantes :
+    $$\dfrac{}{(\lambda x.M) N \betareq M[N/x]}\qquad \dfrac{M \betareq M'}{(\lambda x.M)\betareq(\lambda x.M')}\qquad\dfrac{M \betareq M'}{(M N) \betareq (M' N)}\qquad \dfrac{N \betareq N'}{(M N)\betareq (M N')}$$
+    
+    On appelle redex, de l'anglais \textit{reducible expression}, une expressoin de la forme $(\lambda x. M) N$.
+    
+    On dit qu'un lambda-terme $M$ est sous une forme normale s'il n'existe pas de terme $N$ tel que $M\betareq N$.
+    
+    On dit que $M$ se réduit en $N$ si $M\betareq^* N$, où $\betareq^*$ est la clôture transitive et réflexive de $\betareq$.
+\end{defi}
+
+\begin{exo}
+    On peut ainsi calculer les réductions suivantes :
+    \begin{itemize}[label=$\bullet$]
+        \item $I I \betareq^* I$
+        \item $\top I (\bot \top \top) \betareq^* I$
+        \item $\Omega \betareq^* \Omega$
+    \end{itemize}
+\end{exo}
+
+\begin{rmk}
+    Nous utilisons des notations telles que $\top$ ou $I$. Ces notations permettent de factoriser le code et donc d'éviter d'avoir des lignes incompréhensibles car surchargées de symboles. En effet, $I I$ semble directement donner l'identité, rien que par l'habitude des mathématiques.
+\end{rmk}
+
+Nous allons enfin définir une équivalence à partir de cette relation, appelée beta-équivalence. Les termes beta-équivalents correspondent à des termes qui donnent le même résultat.
+
+\begin{defi}[Beta-équivalence]
+    Deux termes $M$ et $N$ sont dits beta-équivalents, que l'on note $M=_\beta N$, s'ils sont équivalents pour la clôture symétrique, réflexive et transitive de $\betareq$. Ceci signifie qu'il existe une suite $M,M_1,\ldots,M_n,N$ (potentiellement nulle, où $M=N$) telle que $M_i\betareq M_{i+1}$ ou $M_i \leftarrow_\beta M_{i+1}$ (en considérant $M=M_0$ et $N=M_{n+1}$).
+\end{defi}
+
+\subsubsection{Propriétés du lambda-calcul}
+
+Nous citerons ici, sans les démontrer, les propriétés essentielles du lambda-calcul.
+
+\begin{prop}[Confluence]
+    Soient $M,N,P\in\Lambda$ tels que $M\betareq N$ et $M\betareq P$, alors il existe un terme $Q$ tel que $N\betareq^* Q$ et $M\betareq^* Q$.
+\end{prop}
+
+Ce résultat de confluence nous indique que l'ordre dans lequel on effectue les réductions dans un terme importe peu.
+
+Le prochain résultat, appelé la propriété de Church-Rosser, assure entre autre qu'il y a unicité, si elle existe, de la forme normale d'un terme (la fore normale à laquelle on aboutit en effectuant un maximum de réductions à la suite depuis le terme en question).
+
+\begin{them}[Church-Rosser]
+    Soit $(M,N)\in\Lambda^2$ tels que $M=_\beta N$. Alors il existe un terme $v$ tel que $M\betareq v$ et $N\betareq v$.
+\end{them}
+
+Nous devons maintenant préciser la notion de terme normalisable et fortement normalisable. En effet, on remarque que le terme $\Omega$, se réduisant vers lui-même, n'arrive jamais à une forme normale : il y a donc des termes ne possédant pas de forme normale, et certains en possédant une.
+
+\begin{defi}[Terme normalisable]
+    Un terme $M$ est dit normalisable s'il existe $N$ une forme normal telle que $M\betareq^* N$. Il est dit fortement normalisable si toute suite de réduction partant de $M$ est finie (cela équivaut à ce que toute suite de réduction converge vers une unique forme normale, par la propriété de Church-Rosser).
+\end{defi}
+
+\begin{expl}
+    \ 
+    \begin{itemize}[label=$\bullet$]
+        \item Comme nous l'avons vu, $\Omega$ n'est pas normalisable.
+        \item Le terme $\top \omega \omega$ (où $\omega = \lambda x.x\;x$) est fortement normalisable.
+        \item le terme $(\lambda x. y)(\omega \omega)$, lui, est normalisable mais non fortement normalisable, puisqu'on peut effectuer une suite infinie de réductions sur $\omega \omega$.
+    \end{itemize}
+\end{expl}
+
+\begin{exo}
+    Nous avons vu un lambda-terme restant constant lors de sa réduction, $\Omega$. Trouver un lambda-terme dont la taille grandit à mesure de ses réductions.
+\end{exo}
+
+\begin{exo}[$*$]
+    Trouver un lambda-terme $M$ tel que :
+    \begin{enumerate}
+        \item $M$ est normalisable.
+        \item $M\; I$ n'est pas normalisable.
+        \item $M\; I\; I$ est normalisable.
+        \item $M\; I\; I\; I$ n'est pas normalisable.
+    \end{enumerate}
+    avec la définition précédente de $I$.
+\end{exo}
+
+\subsection{Coder en lambda-calcul}
+
+Cette section définira le codage en lambda-calcul des entiers, des booléens, des couples et des opérations arithmétiques de base, avant de parler de récursion. Nous utiliserons pour cela l'égalité $=_\beta$ définie plus tôt, car cette égalité nous permet d'ignorer les détails de codage une fois que l'on a établi un codage (on travaillera ainsi, au fil de cette section, avec de plus en plus de boîtes noires).
+
+\subsubsection{Les entiers de Church}
+
+Nous allons maintenant voir comment définir un entier en lambda-calcul. Pour cela, l'idée est qu'un nombre $n$ peut se représenter en tant que fonction comme une itérée. Ceci signifie que le nombre $n$ sera représenté par la fonction $\barre n = \lambda f.\lambda x. f^n\;x$ où $f^0\; x = x$ et $f^{n+1}\; x = f^n\;(f\;x)$. De plus, on définit les entiers à partir de deux primitives (ou constructeurs) : l'élément $0$ et l'élément $S$, ou successeur, qui correspond à la fonction $x\mapsto x+1$.
+
+\begin{defi}[Entier de Church]
+    On définit les entiers de Church par les constructeurs suivants :
+    $$\barre 0 = \lambda f.\lambda x. x\qquad S\; \barre n = \lambda f.\lambda x. \barre n\; f\; (f\; x)$$
+\end{defi}
+
+\begin{expl}
+    Calculons ensemble $\barre 1$ et $\barre 2$ :
+    \begin{align*}
+        \barre 1 &= \lambda f.\lambda x.\barre 0\; f\; (f\; x)\\
+        &= \lambda f.\lambda x.(\lambda f.\lambda x. x)\; f\; (f\; x)\\
+        &\betareq \lambda f.\lambda x. f\; x\\
+        \\
+        \barre 2 &= \lambda f.\lambda x.\barre 1\; f\; (f\; x)\\
+        &\betareq \lambda f.\lambda x.f\; (f\; x)\\
+        &= \lambda f.\lambda x.f^2\; x\\
+    \end{align*}
+    Ainsi nos définitions semblent bien nous donner que $\barre n =_\beta \lambda f.\lambda x. f^n\;x$.
+\end{expl}
+
+\begin{exo}
+    Montrer par récurrence que $S^n\; \barre 0 \betareq^* \lambda f.\lambda x. f^n\; x$
+\end{exo}
+
+\begin{rmk}
+    Le coodage des entiers de Church nous donne naturellement un principe d'itération : si l'on veut appliquer $n$ fois la fonction $f$ à l'argument $x$, alors il suffit simplement d'écrire $\barre n\;f\;x$.
+\end{rmk}
+
+Nous avons maintenant deux choix pour coder l'addition. La première, directe, est $$\mathrm{add} = \lambda n.\lambda m. \lambda f.\lambda x. n\;f\;(m\;f\;x)$$ mais nous utiliserons plutôt une définition utilisant $S$ :
+
+\begin{defi}[Addition]
+    Nous définissons l'addition comme le lambda-terme suivant :
+    $$\mathrm{add} = \lambda m.\lambda n.n\; S\; m$$ et nous noterons $a+b$ pour $\mathrm{add}\; a\; b$.
+\end{defi}
+
+\begin{rmk}
+    Dans les deux définition, il n'y a pas de barre sur $n$ et $m$. Cela est dû au fait que dedans, $m$ et $n$ sont juste des fonctions quelconques (l'argument de $\mathrm{add}$ pourrait très bien être $\top$) et non les fonctions particulières de la forme $\barre n$.
+\end{rmk}
+
+\begin{exo}
+    Montrer par récurrence que les deux définitions de $\mathrm{add}$ retournent bien la somme de deux nombres, c'est-à-dire que $\barre n+\barre m = \barre{n+m}$.
+\end{exo}
+
+\begin{defi}[Multiplication]
+    Nous définissons la multiplication comme le lambda-terme suivant :
+    $$\mathrm{mult} = \lambda n.\lambda m. \lambda f\;x. n\;(m\;f)\; x$$ et nous noterons $a\times b$ pour $\mathrm{mult}\;a\;b$.
+\end{defi}
+
+\begin{exo}
+    Montrer par récurrence que $\barre n\times \barre m = \barre{n\times m}$.
+\end{exo}
+
+\subsubsection{Les booléens et les couples}
+
+Nous avons en fait déjà défini les booléens, c'est-à-dire les deux valeurs $\top$ et $\bot$. Ce sont donc les deux projections de $\Lambda^2$ sur $\Lambda$ curryfiées. Ces deux valeurs permettent de coder l'expression \texttt{if} $b$ \texttt{then} $e$ \texttt{else} $e'$ pour $b$, $e$ et $e'$ trois expressions, dont $b$ représente un booléen.
+
+\begin{defi}[If/then/else]
+    On définit \texttt{if} $b$ \texttt{then} $e$ \texttt{else} $e'$ par l'expression :
+    $$\texttt{if }b \texttt{ then }e \texttt{ else }e' = b\; e\; e'$$
+\end{defi}
+
+On voit bien, alors, que $$\ifthenelse{\top}{e}{e'}\betareq e$$\begin{center} et\end{center}$$\ifthenelse{\bot}{e}{e'}\betareq e'$$
+
+On peut aussi définir les opérateurs booléens classiques.
+
+\begin{defi}[Opérateurs booléens]
+    Les opérateurs $\lor$, $\land$ et $\lnot$ sont définis par leur fonction curryfiée, préfixe, suivante :
+    $$\mathrm{or}=\lambda b.\lambda b'. b \;\top \;b'\qquad \mathrm{and}=\lambda b.\lambda b'.b \;b'\;\bot\qquad \mathrm{not}=\lambda b. b \;\bot\;\top$$
+\end{defi}
+
+\begin{exo}
+    Montrer que ces codages sont corrects, par disjonction de cas quand $b$ et $b'$ prennent des valeurs dans $\{\top,\bot\}$.
+\end{exo}
+
+Concentrons-nous maintenant sur le codage des couples en lambda-calcul. Un couple est caractérisée par les deux éléments qui le constituent : on peut donc la caractériser par le résultat de ses projections. Un couple $\langle a,b\rangle$ peut donc s'écrire par le couple $\langle \pi_1\langle a,b\rangle,\pi_2\langle a,b\rangle\rangle$. Si cette écriture complexifie tout, on peut maintenant curryfier l'intérieur de chaque argument pour obtenir $\langle \top\;a\;b,\bot\;a\;b\rangle$. Ainsi, un couple est caractérisée par le résultat qu'elle a lorsqu'on y applique $\top$ ou $\bot$.
+
+\begin{defi}[Couple]
+    On définit $\langle x,y\rangle$, le couple constituée de $x$ et $y$, par le lambda-terme :
+    $$\langle x,y\rangle = \lambda b.b\;x\;y$$
+\end{defi}
+
+On note, de plus, $\pi_1=\top$ et $\pi_2=\bot$. Si ces notations semblent être inutiles puisque nous avons déjà une notation pour $\top$ et $\bot$, les expressions identiques expriment des utilisations différentes et améliorent la lisibilité (d'ailleurs $\barre 0$ est aussi un terme identique à $\bot$).
+
+\begin{exo}
+    Trouver un lambda-terme représentant une fonction \eqz{} qui renvoie $\top$ à $\barre 0$ et $\bot$ à $\barre n$ pour $n>0$.
+\end{exo}
+
+\begin{exo}[L'opération prédécesseur]
+    Cet exercice vise à définir la fonction $\mathrm{pred} : x\mapsto x-1$, définie pour les entiers en convenant que $\mathrm{pred}(0)=0$.
+    \begin{enumerate}
+        \item \'Ecrire une fonction qui, étant donnée un couple $\langle n,m\rangle$, retourne le couple $\langle m,m+1\rangle$.
+        \item Donner un lambda-terme qui, étant donné un entier $n$, renvoie le couple $\langle n-1,n\rangle$. \textit{Indication : on remarquera qu'appliquer $n$ fois la fonction précédemment définie au couple $\langle 0,0\rangle$ retourne le bon résultat.}
+        \item En déduire une fonction $\mathrm{prec}$ et une fonction $\mathrm{minus}$, donnant l'opération $-$.
+    \end{enumerate}
+\end{exo}
+
+\subsubsection{A propos de la récursivité}
+
+La récursivité est l'unique élément manquant pour montrer que le lambda-calcul est aussi expressif que les langages de programmation habituels. Une fonction récursive est une fonction de la forme $f(x)=g(f,x)$, c'est-à-dire que l'expression de $f$ s'exprime avec $f$.
+
+\begin{expl}
+    La fonction $\mathrm{fact}$, factorielle, peut s'exprimer de la façon suivante :
+    $$\begin{array}[t]{lrcl}
+\mathrm{fact} : & 0 & \longmapsto & 2 \\
+    & n & \longmapsto & n\times \mathrm{fact}\;(n-1) \end{array}$$
+\end{expl}
+
+Si nous voulions écrire cet exemple avec un lambda-terme, nous écririons $$\mathrm{fact}=\lambda n.\ifthenelse{\eqz\;n}{\barre 1}{n\times \mathrm{fact}\;(\mathrm{prec}\;n)}$$ mais nous ne pouvons pas écrire ainsi fact dans la définition de fact. Il faut donc trouver un moyen d'exprimer cette équation d'une autre façon.
+
+Pour cela, nous utiliserons un combinateur de point fixe. En effet, il suffit de trouver un point fixe à l'équation suivante : $$\lambda g.\lambda n.\ifthenelse{\eqz\;n}{\barre 1}{n\times g\;(\mathrm{prec}\;n)}$$ car en effet, un point fixe de cette fonction est une fonction $f$ telle que $$f=\lambda n.\ifthenelse{\eqz\;n}{\barre 1}{n\times f\;(\mathrm{prec}\;n)}$$ qui est la définition que nous voulons de fact.
+
+\begin{defi}[Combinateur de point fixe]
+    Nous définissons le combinateur de point fixe $Y$ par le lambda-terme suivant : $$Y=\lambda f.(\lambda x.f\;x\;x)\;(\lambda x.f\;x\;x)$$
+    
+    Nous définissons le combinateur de point fixe $\Theta$ par le lambda-terme suivant :
+    $$\Theta = (\lambda f.\lambda x. (x\;(f\;f\;x)))\;(\lambda f.\lambda x. (x\;(f\;f\;x)))$$
+\end{defi}
+
+\begin{exo}
+    Montrer que pour tout lambda-terme $f$, $Y\;f=_\beta f(Y\;f)$ et que $\Theta f \betareq^* f(\Theta\; f)$.
+\end{exo}
+
+Ainsi nous pouvons définir la fonction factorielle :
+$$\mathrm{fact} = Y \bigg(\lambda g.\lambda n.\ifthenelse{\eqz\;n}{\barre 1}{n\times g\;(\mathrm{prec}\;n)}\bigg)$$
+
+\begin{exo}
+    Réduire $\mathrm{fact}\;5$.
+\end{exo}
+
+\begin{exo}
+    Cet exercice vise à coder en lambda-calcul la suite de Fibonacci.
+    \begin{enumerate}
+        \item Montrer que la relation $$u_{n+2}=u_{n+1}+u_n$$ peut s'exprimer comme une relation de récurrence d'ordre $1$ sur une autre suite. \\
+        \textit{Indication : on considérera la suite des termes de la forme $\langle u_i,u_{i+1}\rangle$.}
+        \item En déduire un codage de la suite de Fibonacci définie par :
+        $$\begin{array}{rcl}
+            \mathrm{fib}\; \barre 0 &=& \barre 0 \\
+            \mathrm{fib}\; \barre 1 &=& \barre 1 \\
+            \mathrm{fib}\; (S\;S\;\barre n) &=& \mathrm{fib}\;(S\;n) + \mathrm{fib}\;n\\
+        \end{array} $$
+    \end{enumerate}
+\end{exo}
+
+\newpage

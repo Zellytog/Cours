@@ -1,0 +1,242 @@
+\section{Ordre et domaine}
+
+Nous supposons ici connues les notions basiques de théorie des ordres (relation d'ordre, borne supérieure, majorant, etc).
+
+\subsection{Définitions de base}
+
+\begin{defi}[Ordre partiel, dirigé]
+    Soit $(D,\leq)$ un ensemble ordonné. On dit qu'une partie $\Delta\subseteq D$ est filtrante si $$\forall x,y\in\Delta,\exists z\in\Delta, x\leq z\land y\leq z$$ Un exemple classique de partie filtrante est celui des chaînes, que l'on peut voir comme des suites croissantes d'éléments. On notera $\Delta\subsetdir D$ pour dire que $\Delta$ est une partie filtrante de $D$.
+    
+    On dit que $D$ est un ordre partiel dirigé complet si toute partie filtrante $\Delta\subseteq D$ admet une borne supérieure, qu'on notera $\bigvee\Delta$. Si de plus, $D$ possède un minorant, que l'on notera $\bot$, alors on dit que $D$ est un ordre partiel complet. On abrégera désormais \og ordre partiel dirigé complet\fg{} en dcpo (\textit{directed complete partial order}) et \og ordre partiel complet\fg{} en cpo (\textit{complete partial order}).
+\end{defi}
+
+Définissons maintenant la notion adaptée de morphisme dans ce contexte.
+
+\begin{defi}[Fonction croissante, continue]
+    Soient deux dcpo $D$ et $D'$ et $f : D\to D'$. On dit que $f$ est croissante lorsque $$\forall x,y\in D, x\leq y\implies f(x)\leq f(y)$$ et continue lorsque $f$ est croissante et que $$\forall \Delta\subsetdir D, f(\bigvee\Delta)=\bigvee f(\Delta)$$
+\end{defi}
+
+\begin{exo}
+    Pour s'assurer que la définition de fonction continue est valide, vérifier que l'image d'une partie filtrante par une fonction croissante est une partie filtrante de l'ensemble d'arrivée.
+\end{exo}
+
+\begin{exo}
+    Montrer que si $D$ est un dcpo, alors l'identité est continue sur $D$. Montrer que la composée de deux fonctions continues est continue.
+\end{exo}
+
+De l'exercice précédent, on déduit que les dcpo forment une catégorie, notée $\dcpo$ (cf. Définition \ref{categorie}). De plus, $\cpo$ est la sous-catégorie pleine dont les objets sont les cpo.
+
+Donnons des exemples classiques et utiles de cpo. La vérification que ceux-ci sont des cpo est laissée en exercice.
+
+\begin{expl}
+    \ 
+    \begin{itemize}[label=$\bullet$]
+        \item Si $X$ est un ensemble, alors l'ensemble $X_\bot=X\cup\{\bot\}$ (où $\bot\notin X$) est un cpo en le munissant de l'ordre défini par $$x\leq y\iff x=\bot \lor x=y$$ On appelle cela le domaine plat de $X$. Par exemple, le domaine $\mathbb N_\bot$ peut être représenté par la figure~\ref{Nbot}, indiquant l'ordre dans l'ensemble par une flèche.
+        \begin{figure}[t]
+        \centering
+        \rule{17cm}{0.5pt}\\
+        \vspace{1cm}
+        \begin{tikzcd}
+            0 & 1 & 2 & 3 & \cdots\\
+            & &\bot\ar[ull]\ar[ul]\ar[u]\ar[ur]\ar[urr]& & \\
+        \end{tikzcd}\\
+        \rule{17cm}{0.5pt}
+        \caption{Domaine $\mathbb N_\bot$}
+        \label{Nbot}
+        \end{figure}
+        
+        \item Si $X$ et $Y$ sont deux ensembles, alors l'ensemble des fonction partielles de $X$ dans $Y$, noté $X\pto Y$, forme un cpo. L'ordre est donné par l'inclusion des graphes de fonction, c'est-à-dire que $f\leq g$ si $g$ est égale à $f$ là où $f$ est définie. Le minorant de cet ensemble est la fonction définie nulle part.
+    \end{itemize}
+\end{expl}
+
+Nous pouvons déjà motiver notre étude des cpo par un premier résultat : une fonction continue d'un cpo dans lui-même possède un point fixe (ce qui fait des cpo de bons candidats pour modéliser le combinateur $Y$).
+
+\begin{prop}
+    Soit $(D,\leq)$ un cpo et $f : D\to D$ continue. Alors $\displaystyle{\bigvee_{n\in\mathbb N}f^n(\bot)}$ est le plus petit pré-point fixe de $f$ (c'est-à-dire point $x$ tel que $f(x)\leq x$).
+\end{prop}
+\begin{proof}
+    Tout d'abord, cet élément existe car $(f^n(\bot))$ est une suite croissante d'éléments. En effet, comme $\bot\leq f(\bot)$, en appliquant $n$ fois $f$ qui est croissante, on en déduit que $f^n(\bot)\leq f^{n+1}(\bot)$. C'est un point fixe car $$f\left(\bigvee_{n\in\mathbb N}f^n(\bot)\right)=\bigvee_{n\in\mathbb N} f^{n+1}(\bot)=\bigvee_{n\in\mathbb N}f^n(\bot)$$
+    
+    De plus, si $f(x)\leq x$, alors on peut montrer par récurrence que $f^n(\bot)\leq x$. Le car $n=0$ est évident par minoration de $\bot$, et si $f^n(\bot)\leq x$ alors $f^{n+1}(\bot)\leq f(x)$ donc $f^{n+1}(\bot)\leq x$ par transitivité. On en déduit par inégalité sur les bornes supérieures le résultat.
+\end{proof}
+
+\begin{exo}
+    Soit $D$ un treillis complet, c'est-à-dire que $D$ est un ensemble ordonné tel que toute partie de $D$ a une borne supérieure et une borne inférieure, et soit $f : D \to D$ croissante. Montrer qu'elle a un plus petit point fixe, qui est $\displaystyle{\bigwedge\compre{x}{f(x)\leq x}}$, et que l'ensemble des points fixes de $f$ forme un treillis complet.
+\end{exo}
+
+\begin{exo}
+    Soit $D$ un cpo, $f : D \to D$ croissante. On définit par induction transfinie $f^0=\bot$, $f^{\lambda+1}=f(f^\lambda)$ et pour $\lambda$ ordinal limite, $f^\lambda=\displaystyle{\bigvee_{\alpha< \lambda} f^\alpha}$. Montrer qu'il existe un ordinal $\mu$ tel que $f^\mu$ est le plus petit pré-point fixe de $f$. \textit{Indication : un cpo étant un ensemble, il est plus petit que la classe des ordinaux.}
+\end{exo}
+
+\subsection{\'Elements finis}
+
+Intéressons-nous désormais aux éléments comportant de l'information finie. En effet, nous allons vouloir écrire nos éléments comme des limites d'éléments finis, par exemple pour définir une fonction comme la limite d'un graphe se remplissant au fur et à mesure. Pour cela, nous avons besoin de la notion d'élément compact
+
+\begin{defi}[\'Element compact]
+    Soit $D$ un dcpo. On appelle élément compact (ou fini) de $D$ un élément $d\in D$ tel que $$\forall \Delta\subsetdir D, \left[d\leq \bigvee \Delta \implies \exists \delta\in\Delta, d\leq \delta\right]$$
+    
+    On note l'ensemble des éléments compacts de $D$ par $\compact D$.
+\end{defi}
+
+On souhaite alors déterminer des dcpo où les éléments sont des limites de suites de compacts, d'où la notion d'algébricité.
+
+\begin{defi}[Algébricité]
+    On dit d'un dcpo $D$ qu'il est algébrique si pour tout $x\in D$, l'ensemble $\Delta=\compre{d}{d\in\compact D, d\leq x}$ est une partie filtrante telle que $\bigvee\Delta = x$. On appelle les éléments de $\Delta$ les approximations de $x$, et on dit que $\compact D$ est la base de $D$.
+    
+    La sous-catégorie pleine de $\dcpo$ contenant les dcpo algébriques est notée $\adcpo$, et de même $\acpo$ est la sous-catégorie pleine de $\cpo$ contenant les cpo algébriques.
+\end{defi}
+
+\begin{expl}
+    Nous avons vu que $X\pto Y$ est un cpo, c'est en fait un acpo où les éléments compacts sont les fonctions de domaine de définition fini.
+\end{expl}
+
+\begin{exo}
+    Prouver que l'exemple précédent est bien un acpo.
+\end{exo}
+
+Définissons maintenant une caractérisation de la continuité, qui sera plus naturelle en considérant les éléments compacts comme finis (en effet, on souhaite donc particulièrement regarder des limites dans $\compact D$).
+
+\begin{prop}[$\epsilon\delta$-continuité]
+    Soient $D$ et $D'$ deux adcpo. Alors
+    \begin{itemize}[label=$\bullet$]
+        \item Une fonction $f : D \to D'$ est continue si et seulement si elle est croissante et pour tout $d'\in\compact{D'}$ et $x\in D$ tel que $d'\leq f(x)$, il existe $d\in\compact D$ tel que $d'\leq f(d)$.
+        \item L'ensemble $\compre{(d,d')\in\compact{D}\times\compact{D'}}{d'\leq f(d)}$ détermine le graphe de la fonction $f$.
+    \end{itemize}
+\end{prop}
+
+\begin{proof}
+    Prouvons le premier point.
+    
+    Supposons $f$ continue. Soit $d'$ et $x$ pris comme dans l'énoncé, tels que $d'\leq f(x)$. Alors on trouve une partie filtrante $\Delta$ de $\compact D$ dont $x$ est la borne supérieure, et comme $f(\Delta)$ est une partie filtrante de borne supérieure plus grande que $d'$, par compacité de $d'$ on trouve $f(d)$ tel que $d'\leq f(d)$, donc il existe bien un tel $d\in\compact D$. Réciproquement, montrons que $f$ est continue. Soit $\Delta\subsetdir D$. Par croissance, on a $\bigvee f(\Delta)\leq f(\bigvee\Delta)$. Pour montrer l'inégalité inverse, il suffit de montrer que pour tout élément compact $d'$ tel que $d'\leq \bigvee f(\Delta)$ (par algébricité de $D'$), il existe $d\in\Delta$ tel que $d'\leq f(d)$. On construit d'abord $\delta\in\compact D$ tel que $d'\leq f(\delta)$ et $\delta \leq \bigvee f(\Delta)$, et on construit alors $d$ à partir de la compacité de $\delta$.
+    
+    On remarque que pour $x\in D$, on a 
+    \begin{align*}
+        f(x) &= \bigvee \compre{d'}{d'\in\compact{D'}, d'\leq f(x)}\\
+        &= \bigvee \compre{d'}{d'\in\compact{D'}, \exists d\in\compact D, d\leq x\land d'\leq f(d)}
+    \end{align*}
+    
+    D'où le résultat.
+\end{proof}
+
+\subsection{Construire des dcpo}
+
+Nous avons déjà une intuition de ce que nous voulons pour interpréter notre langage OCaml : nous allons utiliser des cpo, et une fonction sera une fonction continue sur ces cpo. Pour pouvoir utiliser ce modèle, il nous faut cependant construire des ensembles adaptés aux ajouts que nous avons faits. Il faut donc pouvoir construire une notion qui permette d'avoir à la fois nos domaines et aussi des domaines pour le produit et l'espace des fonctions continues. Ces domaines sont les domaines de Scott, que nous verrons en fin de partie.
+
+\begin{defi}[Produit de dcpo]
+    Soient $D$ et $D'$ deux dcpo. On définit leur produit $D\times D'$ en donnant l'ordre $$(d,d')\leq (e,e')\iff d\leq e\land d'\leq e'$$ Si $D$ et $D'$ sont des cpo, alors $D\times D'$ est aussi un cpo.
+\end{defi}
+
+\begin{proof}
+    Soit $\Delta\subsetdir D\times D'$. On définit $\Delta_D=\compre{d}{\exists d'\in D', (d,d')\in\Delta}$ et de même $\Delta_{D'}$. On peut alors définir $(\delta,\delta')=(\bigvee \Delta_D,\bigvee \Delta_{D'})$. On vérifie directement que $(\delta,\delta')=\bigvee \Delta$. Enfin, le minorant de deux cpo est $(\bot,\bot)$.
+\end{proof}
+
+Donnons un résultat primordial pour justifier la continuité des fonctions que nous utiliserons. En effet, si la continuité n'est en général pas simplement la continuité pour chaque argument, il se trouve que c'est le cas ici.
+
+\begin{prop}
+    Soient $D,D',E$ des dcpo, et $f : D\times D'\to E$. Alors $f$ est continue si et seulement si les fonctions $f_x : y \mapsto f(x,y)$ et les fonctions $f_y : x\mapsto f(x,y)$ sont continues pour tout $x$ et tout $y$.
+\end{prop}
+
+\begin{proof}
+    Le sens direct se fait de façon en remarquant que si $\Delta\subsetdir D'$ alors pour tout $x\in D$, $(x,\Delta)=\compre{(x,\delta)}{\delta\in\Delta}$ est une partie filtrante de $D\times D'$. Alors $$\bigvee f_x(\Delta)= \bigvee f(x,\Delta)=f\bigvee(x,\Delta)=f_x(\bigvee \Delta)$$
+    
+    Réciproquement, soit $f$ continue en chaque argument. Alors soit $\Delta\subsetdir D\times D'$. On réutilise la définition précédente de $\Delta_D$ et $\Delta_{D'}$. Alors :
+    \begin{center}
+        \begin{align*}
+            f(\bigvee \Delta) &= f(\bigvee \Delta_D,\bigvee \Delta_{D'})=\bigvee f(\Delta_D,\bigvee\Delta_{D'})\\
+            &= \bigvee \compre{\delta,\bigvee\Delta}{\delta\in \Delta_D} = \bigvee f(\Delta_D,\Delta_{D'})
+        \end{align*}
+    \end{center}
+    
+    Il convient alors de prouver que $\bigvee f(\Delta_D,\Delta_{D'})=\bigvee f(\Delta)$. $\Delta\subseteq \Delta_D\times\Delta_{D'}$ d'où l'une des inégalités. Réciproquement, comme $\Delta$ est filtrant, pour chaque élément de $\Delta_D\times \Delta_{D'}$ il existe un majorant dans $\Delta$.
+\end{proof}
+
+Pour le produit, l'algébricité se passe correctement.
+
+\begin{prop}
+    Soient $D,D'$ deux adcpo, alors $D\times D'$ est un adcpo et $\compact{D\times D'}=\compact D\times \compact{D'}$.
+\end{prop}
+
+\begin{proof}
+    Prouvons d'abord l'égalité sur les éléments compacts.
+    
+    Soit $(d,d')\in\compact{D\times D'}$. Soit $\Delta\subsetdir D$ tel que $d'\leq \bigvee \Delta$. Alors $(\Delta,d')\subsetdir D\times D'$ et $(d,d')\leq \bigvee (\Delta,d')$ donc par algébricité on trouve un élément $\delta$ de $\Delta$ tel que $d\leq \delta$, donc $d$ est algébrique. De même, on prouve que $d'$ est algébrique. Donc $\compact{D\times D'}\subseteq \compact{D}\times\compact{D'}$.
+    
+    Soit $(d,d')\in\compact D\times \compact{D'}$. Soit $\Delta\subsetdir D\times D'$ tel que $(d,d')\leq \bigvee \Delta$. On sait que $\bigvee\Delta=\bigvee(\Delta_D,\Delta_{D'})$, donc on trouve par algébricité de $d$ et de $d'$, respectivement $\delta\in\Delta_D$ et $\delta'\in\Delta_{D'}$ tels que $d\leq \delta$ et $d'\leq \delta'$. Or par définition de $\Delta_D$ et $\Delta_{D'}$, on trouve $\alpha$ et $\alpha'$ tels que $(\delta,\alpha)\in\Delta$ et $(\alpha',\delta')\in\Delta$. Puisque $\Delta$ est filtrante, on trouve $(\beta,\beta')$ supérieur à ces deux valeur, dans $\Delta$. Donc on a trouvé $(d,d')\leq (\beta,\beta')\in\Delta$ : $(d,d')$ est algébrique dans $D\times D'$.
+    
+    Montrons alors que $D\times D'$ est algébrique. Soit $(x,y)\in D\times D'$. La partie de $\compact{D\times D'}$ donnée par $\compre{(d,d')}{(d,d')\in\compact{D\times D'},(d,d')\leq (x,y)}$ est filtrante car filtrante sur chaque coordonnée. De plus, En étudiant coordonnée par coordonnée, on en déduit bien que $(x,y)$ est la borne supérieure de cet ensemble.
+\end{proof}
+
+Intéressons-nous maintenant à l'espace fonctionnel d'un dcpo.
+
+\begin{defi}[Espace des fonctions d'un dcpo]
+    L'ensemble $D\to D'$, constitué des fonctions continues de $D$ dans $D'$, pour $D$ et $D'$ deux dcpo, est aussi un dcpo, avec l'ordre suivant :
+    $$f\leq f'\iff \forall x\in D, f(x)\leq f'(x)$$
+    
+    De plus, si $D'$ est un cpo, alors $D\to D'$ est un cpo.
+\end{defi}
+
+\begin{proof}
+    Soit $\Delta\subsetdir D\to D'$. On pose $f : x \mapsto \bigvee \Delta(x)$. Montrons que cette fonction est bien continue. Soit $\Delta'\subsetdir D$. Alors 
+    \begin{center}
+        \begin{align*}
+            f(\bigvee\Delta') &= \bigvee\Delta(\bigvee \Delta') = \bigvee\compre{\bigvee g(\Delta')}{g\in\Delta}=\bigvee\Delta(\Delta')\\
+            &= \bigvee\compre{\bigvee \Delta(\delta)}{\delta\in\Delta'}=\bigvee f(\Delta')
+        \end{align*}
+    \end{center}
+    
+    De plus, $x\mapsto \bot$ est un minorant de $D\to D'$ s'il existe.
+\end{proof}
+
+Les exercices suivants serviront pour l'interprétation catégorique du lambda-calcul.
+
+\begin{exo}
+    Soit $D$ un dcpo. Montrer que la fonction $\fonction{Y}{(D\to D)}{D}{f}{\displaystyle{\bigvee_{n\in\nat}f^n(\bot)}}$ est continue.
+\end{exo}
+
+\begin{exo}
+    Soient $D$ et $D'$ deux dcpo. Montrer que les fonctions $\pi_1 : D\times D' \to D$ et $\pi_2 : D\times D' \to D'$, les deux projections, sont continues. Montrer aussi que la fonction $\langle -,-\rangle : D\to D'\to D\times D'$, $x\mapsto (y\mapsto \langle x,y\rangle)$ est continue.
+\end{exo}
+
+\begin{exo}
+    Soient $D$, $D'$ et $E$ trois dcpo. Montrer que la fonction $\ev : (D\to D')\times D \to D'$ donnée par $\ev (f,x)=f(x)$ est continue. Soit la fonction $\Lambda : ((D\times D')\to E)\to (D\to D'\to E)$ qui à $f$ associe $\Lambda(f) : x \mapsto (y\mapsto f(x,y))$, montrer que $\Lambda$ est continue.
+\end{exo}
+
+Un souci arrive alors : si $D$ et $D'$ sont algébriques, $D\to D'$ ne l'est pas forcément. Pour autant, on peut dire plusieurs choses.
+
+\begin{prop}[Fonction en escalier]
+    Soient $D$ et $D'$ deux cpo, et $(d,d')\in\compact{D}\times\compact{D'}$ alors :
+    \begin{itemize}[label=$\bullet$]
+        \item La fonction $d\to d'$ est compact, avec la définition suivante :
+        $$(d\to d')(x)=\left\{\begin{array}{cl}
+            d' & \mathrm{si}\; d\leq x \\
+            \bot & \mathrm{sinon}
+        \end{array}\right.$$
+        \item Si $D$ et $D'$ sont algébrique, alors $$f=\bigvee\compre{d\to d'}{(d\to d')\leq f}$$
+    \end{itemize}
+\end{prop}
+
+\begin{proof}
+    Remarquons d'abord que la compacité de $d$ permet de déduire que $d\to d'$ est continue. De plus, pour tout $f : D \to D'$, $d\to d' \leq f$ si et seulement si $d'\leq f(d)$.
+    
+    \begin{itemize}[label=$\bullet$]
+        \item Si $d\to d'\leq \bigvee\Delta$, alors $d'=(d\to d')(d)\leq\bigvee\compre{f(d)}{d\in\Delta}$ d'où la conclusion par compacté de $d'$.
+        \item On remarque que $\compre{d\to d'}{(d\to d')\leq f}\leq g$ si et seulement si pour tout $d,d'$, $(d'\leq f(d)\implies d'\leq g(d))$ et si et seulement si $f\leq g$.
+    \end{itemize}
+\end{proof}
+
+Le souci maintenant est que cet ensemble n'est pas filtrant. En effet, nous voulons donc pouvoir définir la borne supérieure d'un nombre fini de ces fonctions en escalier. Pour cela, nous ajoutons une condition.
+
+\begin{defi}[Domaine de Scott]
+    On dit qu'un dcpo est borné complet si pour toute paire $(x,y)$ telle qu'il existe un majorant de $\{x,y\}$, il existe une borne supérieure à $\{x,y\}$.
+    
+    On appelle un domaine de Scott un cpo algébrique borné complet et on note $\scott$ la sous-catégorie pleine de $\acpo$ contenant comme objet les domaines de Scott.
+\end{defi}
+
+Nous admettrons alors un dernier résultat.
+
+\begin{them}
+    Si $D$ et $D'$ sont des domaines de Scott, alors $D\to D'$ est aussi un domaine de Scott, et les éléments algébriques de ce domaines sont exactement de la forme $(d_1\to d'_1)\wedge (d_2\to d'_2)\wedge\ldots\wedge (d_n\to d'_n)$ pour un $n$ fini.
+\end{them}
+
+
+\newpage

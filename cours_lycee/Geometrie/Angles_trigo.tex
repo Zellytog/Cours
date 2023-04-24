@@ -1,0 +1,112 @@
+\section{Angles et trigonométrie}
+
+Nous allons ici traiter des angles et de leur rapport aux longueurs. Nous commencerons par définir ce que nous appellerons un angle, bien qu'une part importante de ces définitions ne peut pas être explicitée (une définition parfaitement rigoureuse des angles demande d'étudier en profondeur les transformations du plan, et une définition rigoureuse de la trigonométrie demande des outils très poussés d'analyse). Cependant, nous mettrons ici l'accent sur l'utilisation de radians plutôt que de degrés pour mesurer les angles. En effet, cette mesure est bien plus efficace en mathématiques, puisqu'elle n'est qu'une mesure de distance.
+
+\begin{defi}[Angle]
+    Soient deux vecteurs $\vecteur u$ et $\vecteur v$. On appelle angle entre $\vecteur u$ et $\vecteur v$, et l'on note $(\vecteur u,\vecteur v)$, l'angle formé en appliquant les deux vecteurs à un point $A$ quelconque et en prolongeant les demi-droites ainsi créées. On appelle mesure de l'angle la longueur de l'arc de cercle de rayon $1$ compris entre ces deux demi-droites, et l'unité de ces angles s'appelle les radians (cf figure $14$).
+\end{defi}
+
+\includefig{Geometrie/Figures/radian.tex}{La figure décrite par la définition}
+
+\subsection{Cercle trigonométrique}
+
+Cette partie se concentrera sur l'étude du cercle trigonométrique, qui est une construction permettant de comprendre visuellement ce que mesure la trigonométrie. Ce cercle est un cercle centré en une origine $O$ fixée (donc de coordonnées $(0,0)$) de rayon $1$ sur lequel s'enroule la droite des réels : à un réel on associe un point du cercle, que l'on assimile avec la mesure de l'angle formé entre l'axe des abscisses et le segment reliant l'origine au point. On oriente l'angle : un angle dans un sens inverse de celui partant de $A$ et allant vers le haut est négatif, et un angle dans le même sens est positif. Dans le dessin, on indique un angle $\theta$ quelconque, le segment en rouge est celui qui relie l'origine au point de la droite réelle (et les deux points rouges sont, de gauche à droite, le point $\theta$ sur le cercle et le point $\theta$ sur la droite des réels).
+
+\includefig{Geometrie/Figures/cercle_trigo.tex}{Cercle trigonométrique}
+
+\begin{defi}[Sinus, cosinus, tangente]
+    Soit $\theta$ un point du cercle trigonométrique (d'angle $\theta$). On définit les coordonnées de $\theta$ par $(\cos(\theta),\sin(\theta))$.
+    
+    De façon équivalente, on définit dans le triangle rectangle en $H$, $(OH\theta)$, les deux valeurs par $\sin(\theta)=\dfrac{H\theta}{O\theta}, \quad \cos(\theta)=\dfrac{OH}{O\theta}$.
+\end{defi}
+\begin{proof}
+    L'idée de la preuve est simplement que puisque $O\theta=1$, les quotients se simplifient.
+\end{proof}
+\begin{rmk}
+    Puisque l'angle correspond à la partie parcourue sur un cercle de rayon $1$, un tour entier correspond à un angle de $2\pi$, un demi-tour à un angle de $\pi$, un quart de tour à un angle de $\dfrac{\pi}{2}$, etc.
+\end{rmk}
+
+Voici un tableau listant des valeurs importantes de $\cos$ et $\sin$ pour $\theta \in \left[0;\dfrac{\pi}{2}\right]$ :
+
+\begin{table}[h]
+            \centering
+            \begin{tabular}{| c | c  c  c  c  c |}
+                \hline
+                &&&&&\\
+                $\theta$ & $0$ & $\dfrac{\pi}{6}$ & $\dfrac{\pi}{4}$ & $\dfrac{\pi}{3}$ & $\dfrac{\pi}{2}$\\
+                &&&&&\\
+                \hline
+                &&&&&\\
+                $\cos(\theta)$ & $1$ & $\dfrac{\sqrt 3}{2}$ & $\dfrac{\sqrt 2}{2}$ & $\dfrac{1}{2}$ & $0$\\
+                &&&&&\\
+                \hline
+                &&&&&\\
+                $\sin(\theta)$ & $0$ & $\dfrac{1}{2}$ & $\dfrac{\sqrt 2}{2}$ & $\dfrac{\sqrt 3}{2}$ & $1$\\
+                &&&&&\\
+                \hline
+            \end{tabular}
+            \caption{Table trigonométrique}
+    \end{table}
+
+\begin{rmk}
+    Soit un triangle $(ABC)$ rectangle en $B$. Notons $\widehat{ABC}=\theta$. Alors $AB=AC\cos(\theta)$ et $BC=AC\sin(\theta)$, cela vient directement de la définition du sinus et du cosinus comme rapports de longueur. Ainsi connaître un angle non droit d'un triangle rectangle nous permet de déduire les longueurs de tous les autres côtés si l'on connait la longueur de l'hypothénuse (le plus long côté).
+\end{rmk}
+
+\subsection{Propriétés des fonctions trigonométriques}
+
+Les fonctions $\sin$ et $\cos$ sont très importantes à étudier, notamment de par leur omniprésence en physique. Nous les étudierons à nouveau quand nous aurons l'outil de la dérivation, mais nous pouvons déjà explorer des éléments importants. Nous allons commencer par l'égalité fondamentale de la trigonométrie.
+
+\begin{prop}
+    Soit $\theta$ un angle. Alors $$\sin^2(\theta)+\cos^2(\theta)=1$$
+\end{prop}
+\begin{proof}
+    Par définition, on a un triangle rectangle d'hypothénuse $1$ et de longueur des côtés $\sin(\theta)$ et $\cos(\theta)$ (c.f. le cercle trigonométrique). En utilisant le théorème de Pythagore, on en déduit directement que \fbox{$\cos^2(\theta)+\sin^2(\theta)=1$.}
+\end{proof}
+
+En regardant le cercle trigonométrique, on remarque les identités suivantes (nous les admettrons ici) :
+\begin{itemize}[label=$\bullet$]
+    \item $\cos(-\theta)=\cos(\theta)$
+    \item $\sin(-\theta)=-\sin(\theta)$
+    \item $\cos(\pi-\theta)=-\cos(\theta)$
+    \item $\sin(\pi-\theta)=\sin(\theta)$
+    \item $\cos(\pi+\theta)=-\cos(\theta)$
+    \item $\sin(\pi+\theta)=-\sin(\theta)$
+\end{itemize}
+
+De plus, comme un angle est le même en ajoutant un multiple de $2\pi$ (faire un tour revient à ne rien faire), on en déduit que $\cos(x+2\pi)=\cos(x)$ et que $\sin(x+2\pi)=\sin(x)$ : on dit que les deux fonctions sont $2\pi$-périodiques.
+
+Enfin, nous allons démontrer une identité essentielle pour étudier les fonctions trigonométriques.
+
+\includefig{Geometrie/Figures/figure_addition.tex}{Figure pour raisonner sur l'addition}
+
+\begin{prop}[Formule d'addition du sinus]
+    Soit $\alpha$ et $\beta$ deux angles. Alors $$\cos(\alpha+\beta)=\cos(\alpha)\cos(\beta)-\sin(\alpha)\sin(\beta)$$ et $$\sin(\alpha+\beta)=\sin(\alpha)\cos(\beta)+\sin(\beta)\cos(\alpha)$$
+\end{prop}
+\begin{proof}
+    Nous allons utiliser la figure $16$. En effet, avec les identités de symétrie données plus haut, on peut vérifier qu'il suffit de traitere le cas d'un angle aigu. Calculons en premier lieu $\cos(\alpha+\beta)$ puis $\sin(\alpha+\beta)$.
+    
+    Par définition, $\cos(\alpha+\beta)=AE=AB-BE$. Calculons donc $AB$ et $BE$. Comme $(DFC)$ est un triangle rectangle en $F$ et que l'angle en $D$ est de mesure $\alpha$, on en déduit que $FC=\sin(\alpha)DC$, or $DC=\sin(\beta)$, donc $FC=\sin(\alpha)\sin(\beta)$. De plus, comme $(FCBE)$ est un parallélogramme, ses côtés opposés sont de longueurs égales, donc $FC=EB$, d'où $EB=\sin(\alpha)\sin(\beta)$. Pour calculer $AB$, on remarque que le triangle $(ABC)$ est rectangle en $B$, et d'hypothénuse $\cos(\beta)$, donc $AB=\cos(\alpha)\cos(\beta)$. On en déduit donc que \fbox{$\cos(\alpha+\beta)=\cos(\alpha)\cos(\beta)-\sin(\alpha)\sin(\beta)$.}
+    
+    Par définition, $\sin(\alpha+\beta)=ED$, or $ED=EF+FD$ et par construction $FE=BC$. Par trigonométrie dans le triangle $(ABC)$, $BC=\cos(\beta)\sin(\alpha)$ et par trigonométrie dans $(DFC)$, $FD=\sin(\beta)\cos(\alpha)$, d'où \fbox{$\sin(\alpha+\beta)=\cos(\alpha)\sin(\beta)+\sin(\alpha)\cos(\beta)$.}
+\end{proof}
+
+A partir des identités précédentes et des formules liées à la symétries dans le cercle trigonométrique, on peut déduire de nouvelles identités :
+\begin{itemize}[label=$\bullet$]
+    \item $\underline{\cos(\alpha-\beta)}=\cos(\alpha)\cos(-\beta)-\sin(\alpha)\sin(\beta)=\underline{\cos(\alpha)\cos(\beta)+\sin(\alpha)\sin(\beta)}$
+    \item $\underline{\sin(\alpha-\beta)}=\cos(\alpha)\sin(-\beta)+\sin(\alpha)\cos(-\beta)=\underline{\sin(\alpha)\cos(\beta)-\cos(\alpha)\sin(\beta)}$
+\end{itemize}
+
+Enfin, en considérant $\alpha=\beta$, on trouve les formules $$\cos(2\alpha)=\cos^2(\alpha)-\sin^2(\alpha)$$ \begin{center} et \end{center} $$\sin(2\alpha)=2\sin(\alpha)\cos(\alpha)$$
+
+\begin{exo}[D'autres égalités]
+    Cet exercice vise à démontrer d'autres égalités sur les fonctions trigonométriques. Certaines égalités sont plus faciles à obtenir en utilisant celles déjà démontrées dans l'exercice.
+    \begin{itemize}[label=$\bullet$]
+        \item En utilisant l'égalité fondamentale, réécrire $\cos(2\alpha)$ en une formule n'utilisant pas $\sin^2(\alpha)$, puis en une formule n'utilisant pas $\cos^2(\alpha)$.
+        \item En additionnant $\cos(\alpha+\beta)$ et $\cos(\alpha-\beta)$, trouver une formule exprimant $\cos(\alpha)\cos(\beta)$.
+        \item De même, exprimer $\sin(\alpha)\sin(\beta)$.
+        \item De même, exprimer $\sin(\alpha)\cos(\beta)$ et $\cos(\alpha)\sin(\beta)$.
+        \item En additionnant ou soustrayant les identités précédentes, déduire une formule exprimant $\cos(a)+\cos(b)$, $\cos(a)-\cos(b)$, $\sin(a)+\sin(b)$ et $\sin(a)-\sin(b)$. Indice : On posera le changement de variable $a=\alpha+\beta$, $b=\alpha-\beta$, ce qui équivaut à $\alpha=\dfrac{a+b}{2}$ et $\beta=\dfrac{a-b}{2}$.
+    \end{itemize}
+\end{exo}
+
+\newpage

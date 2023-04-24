@@ -1,0 +1,194 @@
+\section{Approfondissement : Polynômes à une indéterminée}
+
+Cette section s'intéresse aux polynômes à coefficients dans $\reel$ et dans $\mathbb C$. C'est un approfondissement, et à ce titre peut être évité en première lecture : nous traiterons ici de problématiques hors du cadre du lycée. Dans la suite, $\mathbb K$ désignera $\reel$ ou $\mathbb C$ (au sens où ce que nous dirons pourra fonctionner pour les deux).
+
+Un polynôme correspondra moralement à une fonction de la forme $$x \mapsto a_0 + a_1x+a_2x^2+\ldots+a_n x^n$$ dont les zéros forment donc une équation de degré $n$.
+
+La première partie définira les polynômes formels sur $\mathbb K$, la deuxième partie s'occupera de la structure de $\mathbb K [X]$, l'ensemble des polynômes, comme un anneau euclidien (ces termes seront expliqués). Enfin, la troisième partie utilisera cette structure pour prouver que la notion de polynôme que nous avons définie est la bonne, pour ensuite parler du théorème fondamental de l'algèbre.
+
+\subsection{Construction de l'ensemble des polynômes}
+
+Nous allons définir les polynômes non pas comme des fonctions, comme on pourrait s'y attendre, mais comme une suite. Cette suite sera la suite de coefficients $a_0,a_1,\ldots$ et contiendra un nombre fini de coefficients non nuls.
+
+\begin{defi}
+    On appelle polynôme à coefficients dans $\mathbb K$ un élément de $(\mathbb K)^\mathbb N$ avec un nombre fini de coefficients non nuls. Puisque pour $(a_n)\in\mathbb K[X]$, $\compre{a_n}{a_n\neq 0}$ est fini, on peut trouver un $i$ maximal tel que $a_i\neq 0$ : on appelle ce nombre le degré du polynôme $(a_n)$ et on le note $\deg(a)$. On note $\mathbb K[X]$ l'ensemble des polynômes à coefficients dans $\mathbb K$.
+\end{defi}
+
+Nous pouvons maintenant définir les opérations sur les polynômes.
+
+\begin{defi}
+    Soit $(a)$ et $(b)$ deux polynômes à coefficients dans $\mathbb K$. Alors on définit les deux suites $(a+b)$ et $(a\times b)$ par :
+    $$[a+b]_n = a_n + b_n$$
+    \begin{center} et \end{center}
+    $$[a\times b]_n = \sum_{i=0}^n a_i b_{n-i}$$
+\end{defi}
+\begin{proof}
+    Nous devons vérifier que ces opérations donnent bien des polynômes en retour. 
+    
+    Pour $(a+b)$, on remarque directement qu'à partir du terme $\max(\deg(a),\deg(b))$, les termes de l'addition sont tous nuls, donc $(a+b)$ possède seulement des coefficients nuls à partir de ce terme. On en déduit de plus que $\deg(a+b)\leq \max(\deg(a),\deg(b))$.
+    
+    Pour $(a\times b)$, à partir du terme $\deg(a)+\deg(b)$, tous les termes sont nuls. En effet, $a_ib_{n-i}=0$ car tous les termes non nuls de $a_i$ sont inférieurs à $\deg(a)$, mais alors $b_{n-i}$ est nul car d'indice supérieur strictement à $\deg(b)$. De plus, comme $a_{\deg(a)}b_{\deg(b)}\neq 0$, on en déduit que $\deg(a\times b)=\deg(a) + \deg (b)$.
+\end{proof}
+
+Les lois ainsi définies sont commutatives et associatives.
+
+\begin{exo}
+    Montrer que $(a+b)=(b+a)$, que $(a+(b+c))=((a+b)+c)$ et que ces identités sont aussi valables pour la multiplication.
+\end{exo}
+
+Les lois de distributivité habituelles fonctionnent encore ici.
+
+\begin{prop}
+    Soient $(a),(b),(c)\in\mathbb K[X]$, alors $(a+b)\times c = a\times c + b \times c$ et $a\times (b+c)=a\times b + a \times c$.
+\end{prop}
+\begin{proof}
+    Nous regardons à un indice $n$ fixé ces suites :
+    \begin{align*}
+        [(a+b)\times c]_n &= \sum_{i=0}^n [a+b]_i c_{n-i}\\
+        &= \sum_{i=0}^n (a_i+b_i) c_{n-i}\\
+        &= \sum_{i=0}^n (a_i c_{n-i}+b_i c_{n-i})\\
+        &= \sum_{i=0}^n a_i c_{n-i}+\sum_{i=0}^n b_i c_{n-i}\\
+        &= [a\times c]_n + [b\times c]_n\\
+        [(a+b)\times c]_n &= [a\times c + b\times c]_n\\
+        \\
+        [a\times (b+c)]_n &= \sum_{i=0}^n a_i [b+c]_{n-i}\\
+        &= \sum_{i=0}^n a_i (b_{n-i}+c_{n-i})\\
+        &= \sum_{i=0}^n (a_i b_{n-i}+a_i c_{n-i})\\
+        &= \sum_{i=0}^n a_i b_{n-i}+\sum_{i=0}^n a_i c_{n-i}\\
+        [a\times (b+c)]_n&=[a\times b + a \times c]_n
+    \end{align*}
+    
+    Donc, puisque les suites coïncident sur chaque $n\in\nat$, on en déduit les égalités.
+\end{proof}
+
+Nous avons aussi des éléments neutres.
+
+\begin{prop}
+    $0$ est neutre pour l'addition et $1$ pour la multiplication, où $0=(0,0,\ldots)$ et $1=(1,0,0,\ldots)$.
+\end{prop}
+
+\begin{proof}
+    Pour tout $n\in\mathbb N$, $a_n=a_n+0$ et $a_n=a_n\times 1 + 0$, d'où le résultat.
+\end{proof}
+
+Les éléments ont, de plus, un opposé.
+
+\begin{prop}
+    Soit $(a)\in\mathbb K[X]$. Alors on définit $(-a)$ par $[-a]_n=a_n$. Cet élément a la propriété que $(a+(-a))=(0)$.
+\end{prop}
+\begin{proof}
+    Le résultat est direct.
+\end{proof}
+
+Enfin, on définit la multiplication d'un polynôme par un élément de $\mathbb K$ de la façon suivante :
+
+\begin{defi}
+    Soit $(a)\in\mathbb K[X]$ et $b\in\mathbb K$, on définit $b\cdot a$ par $[b\cdot a]_n=b\times a_n$.
+\end{defi}
+
+On va désormais noter $X=(0,1,0,0,0,0,\ldots)$ la suite valant $1$ seulement à l'indice $1$ et $0$ ailleurs.
+
+\begin{prop}\label{decompos}
+    Soit $(a)$ un polynôme de degré $n$. Alors $(a)$ s'écrit comme $$a = \sum_{k=0}^n a_k X^k$$
+\end{prop}
+
+\begin{proof}
+    En effet, on prouve par récurrence que $X^k$ est la suite valant $1$ à l'indice $k$ et $0$ ailleurs (récurrence laissée au lecteur). Alors on remarque de plus que $a_k X^k$ vaut exactement $a_k$ à l'indice $k$ et $0$ ailleurs, d'où en calculant toute la somme, le résultat.
+\end{proof}
+
+Nous noterons désormais $P$, $Q$, $P(X)$ ou $Q(X)$ les polynômes et respectivement $(p_n)$ et $(q_n)$ leurs coefficients. De plus, nous allons définir la composition et l'évaluation.
+
+\begin{defi}
+    Soient $P$ et $Q$ deux polynômes, où $P$ est de degré $n$. La composition de $Q$ par $P$, notée $P\circ Q$ ou $P(Q)$, est définie par $$P(Q(X))=\sum_{k=0}^n p_k (Q(X))^k$$
+\end{defi}
+
+\begin{prop}
+    Le polynôme $X$ est neutre pour la composition.
+\end{prop}
+
+\begin{proof}
+    Ce résultat se déduit directement de la décomposition de la proposition \ref{decompos}.
+\end{proof}
+
+\begin{defi}
+    Soit $\alpha\in\mathbb K$ et $P\in\mathbb K[X]$, on définit l'évaluation $P(\alpha)\in\mathbb K$ de $P$ en $\alpha$ par $$P(\alpha)=\sum_{k=0}^n p_k \alpha^k$$
+\end{defi}
+
+\subsection{Les polynômes forment un anneau euclidien}
+
+Nous avons vu que $\mathbb K [X]$ est un ensemble muni d'une addition, d'une multiplication, d'un neutre $0$ pour l'addition, d'un neutre $1$ pour la multiplication et pour tout élément, d'un opposé pour l'addition. On appelle cette structure un anneau. Remarquons que $\reel,\mathbb C$ et même $\mathbb Z$ sont des anneaux.
+
+Cette structure est large et la structure des polynômes est plus particulière. En effet, c'est ce qu'on appelle un anneau euclidien, car on peut y définir une division euclidienne.
+
+\begin{them}
+    Soient $P$ et $S$ deux polynômes, $P$ non nul. Alors il existe un unique couple de deux polynômes $(Q,R)$ tels que $$P=S\times Q + R \land \deg(R) < \deg(S)$$ On appelle cette décomposition la division euclidienne de $P$ par $S$.
+\end{them}
+
+\begin{proof}
+    Ce théorème sera admis dans ce document.
+\end{proof}
+
+Ce résultat nous permet directement d'en déduire un résultat fondamental dans l'étude des polynômes : le lien entre une racine et la factorisation d'un polynôme.
+
+\begin{prop}
+    Soit $P$ un polynôme non nul et $\alpha\in\mathbb K$ tel que $P(\alpha)=0$. Alors il existe $Q\in\mathbb K[X]$ tel que $P=(X-\alpha)\times Q$.
+\end{prop}
+\begin{proof}
+    Nous allons faire la division euclidienne de $P$ par $(X-\alpha)$. On trouve donc $(Q,R)$ tels que $P=(X-\alpha)Q+R$. Or en évaluant cette égalité en $\alpha$, on en déduit, comme $P(\alpha)=0$ et que $(\alpha-\alpha)\times (Q(\alpha))=0$, que $R(\alpha)=0$. Or on sait que le degré de $R$ est strictement inférieur à $1$ : il est donc constant et vaut $0$. Donc $P=(X-\alpha)Q$.
+\end{proof}
+
+\subsection{Polynôme scindé}
+
+Nous pouvons maintenant déduire une propriété importante pour exprimer un polynôme de façon unique.
+
+\begin{prop}
+    Soit $P$ un polynôme de degré inférieur $n$. Si $P$ s'annule au moins $n-1$ fois, alors celui-ci est nul.
+\end{prop}
+
+\begin{proof}
+    En effet, D'après le théorème précédent, si $P$ est non nul, on trouve $n+1$ monômes de la forme $(X-\alpha_i)$, donnant un polynôme de degré strictement supérieur à $n$. On en déduit par l'absurde que $P$ est nul.
+\end{proof}
+
+\begin{prop}
+    Soient $P$ et $Q$ des polynômes de degré inférieur à $n$ coïncidant sur au moins $n+1$ points. Alors $P=Q$.
+\end{prop}
+\begin{proof}
+    On remarque que $P-Q$ a plus de $n$ points d'annulation, donc est nul par la propriété précédente. D'où $P=Q$.
+\end{proof}
+
+On en déduit alors qu'il y a une bijection entre les fonctions polynômiales et les polynômes ainsi construits.
+
+\begin{them}
+    L'ensemble $\mathbb K[X]$ est en bijection avec l'ensemble $\mathcal F_{\mathbb K[X]}$ des fonctions polynômiales.
+\end{them}
+\begin{proof}
+    La surjectivité est évidente puisqu'une fonction polynômiale est exactement une fonction de la forme $x\mapsto P(x)$.
+    
+    L'injectivité provient du fait que $\mathbb K$ est infini, et donc que deux fonctions identiques ont une infinité de points communs. Les polynômes associés coïncident donc sur un nombre de points supérieur à leur degré : ils sont donc égaux.
+    
+    Il y a donc bijectivité entre les deux ensembles.
+\end{proof}
+
+Nous avons donc prouvé que notre définition de polynôme est cohérente pour travailler sur les fonctions polynômiales.
+
+Nous allons enfin développer la définition de polynôme scindé.
+
+\begin{defi}
+    Soit $P\in\mathbb K[X]$. On dit que $P$ est scindé s'il existe un nombre fini de $\alpha_i$ tels que $P(X)=a\prod_{i=1}^n(X-\alpha_i)$ où $a$ est le coefficient de $X^n$ dans $P$.
+\end{defi}
+
+\begin{rmk}
+    Un polynôme est scindé si et seulement s'il a autant de racines que son degré.
+\end{rmk}
+
+Tout polynôme n'est pas scindé, par exemple dans $\mathbb R[X]$, le polynôme $X^2+1$ est toujours strictement positif. Pourtant, il existe un théorème important, appelé théorème fondamental de l'algèbre, et démontré par d'Alembert et Gauss, disant que tout polynôme dans $\mathbb C$ est scindé.
+
+\begin{them}[D'Alembert-Gauss]
+    Soit $P\in\mathbb C[X]$ de degré supérieur à $1$. Alors il existe une racine à $P$.
+\end{them}
+
+\begin{exo}
+    Montrer l'équivalence entre cet énoncé et celui expliqué plus haut : \og tout polynôme dans $\mathbb C[X]$ est scindé.\fg{}
+\end{exo}
+
+\newpage

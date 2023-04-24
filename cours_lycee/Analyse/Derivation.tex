@@ -1,0 +1,328 @@
+\section{Dérivabilité}
+
+Cette section va développer la théorie de la dérivation, essentielle en analyse. L'idée a été amenée par Newton et Leibnitz, mais si l'histoire des mathématiques est passionnante, elle n'est pas l'objet de ce document : nous allons donc faire une présentation résolument moderniste de la dérivation (comme nous l'avons fait pour toutes les notions jusqu'ici, d'ailleurs). Nous allons introduire les nombres dérivés, puis nous parlerons de fonction dérivée. Nous donnerons ensuite plusieurs méthodes de calcul de dérivées, puis des théorèmes essentiels sur les dérivées : théorème de Rolle, théorème et inégalité des accroissements finis, relation entre la monotonie d'une fonction et le signe de sa dérivée.
+
+\subsection{Nombre dérivé}
+
+La première étape pour définir la dérivation est de s'intéresser à la notion de taux d'accroissement. Graphiquement, le taux d'accroissement d'une courbe $\mathcal C_f$ (représentative de la fonction $f$) entre deux points $x$ et $y$ est la pente de la corde entre les points d'abscisse $x$ et d'abscisse $y$.
+
+\includefig{Analyse/Figures/pente.tex}{Corde entre deux points d'une courbe}
+
+ En prenant comme exemple la Figure 23, où $x = 1$ et $y = 3$, la corde est tracée en rouge (plus précisément la droite contenant la corde, la corde n'étant que le segment entre les deux points bleus). La pente correspond au coefficient directeur de la droite, et on peut donc le calculer par la formule $$\frac{f(y)-f(x)}{y-x}$$ (remarquons que choisir de mettre $x$ avant $y$ dans la formule n'a pas d'importance, puisqu'échanger l'un avec l'autre donnerait deux changements de signes). Le taux d'accroissement mesure donc la position relative de deux points, en normalisant leur écart horizontal. Cependant, on remarque que la corde dessinée précédemment est totalement différente de la courbe, et nous allons essayer au contraire de rendre notre corde la plus proche possible de la courbe. Plus précisément, nous allons fixer un point $x$ et essayer de rapprocher $y$ de $x$. Ce faisant, notre corde sera très proche de la courbe autour de $x$, et l'on se rapprochera de ce qu'on appelle la tangente à la courbe au point $x$.
+
+ \includefig{Analyse/Figures/nb_derive.tex}{Corde très proche de la tangente}
+
+ La Figure 24 donne une idée d'une meilleure approximation. Maintenant, on peut se demander ce qu'il se passe \textit{à la limite} : la corde devient la tangente à la courbe au point $x$. C'est exactement cette donnée qui nous intéressera, car elle a l'avantage premier de ne dépendre que du point $x$ considéré, et de donner une donnée purement locale. Cependant, la tangente en elle-même a assez peu d'importance, et seule sa pente compte vraiment. Celle-ci donne en effet l'information essentielle de comment évolue la courbe localement. On va donc définir le nombre dérivé d'une fonction comme la pente de sa tangente.
+
+ \begin{defi}[Nombre dérivé]
+    Soit $f : F \to \reel$ une fonction, $a\in F$. On appelle nombre dérivé de $f$ au point $a$, et l'on note $\mathrm{d}f_a$, la valeur $$\dd f_a = \lim_{y\to a}\frac{f(y)-f(a)}{y-a}$$ (qui n'existe pas forcément). Si $\dd f_a$ existe, on dit que $f$ est dérivable en $a$. Une formulation équivalente du nombre dérivé est $$\dd f_a = \lim{h\to 0}\frac{f(a+h)-f(a)}{h}$$ par un simple changement de variable.
+ \end{defi}
+
+ \begin{rmk}
+    La fonction $y\mapsto \displaystyle{\frac{f(y)-f(a)}{y-a}}$ est définie seulement pour $y\neq a$. Cela n'empêche pas de pouvoir considérer la limite de la fonction au point $a$.
+ \end{rmk}
+
+ Une propriété importante : cette limite indique est plus forte que la continuité au point considéré.
+
+ \begin{prop}
+     Si $\dd f_a$ existe alors $f$ est continue en $a$.
+ \end{prop}
+
+ \begin{prop}
+     Par définition, $(y-a)\dd f_a = f(y)-f(a)$ or $\displaystyle{\lim_{y\to a} y- a = 0}$ donc par produit de limite et égalité, $\displaystyle{\lim_{y\to a} f(y)-f(a) = 0}$ ce qui revient à $\displaystyle{\lim_{\to a} f(y) = f(a)}$ d'où le fait que $f$ est continue en $a$.
+ \end{prop}
+
+ \begin{exo}
+    Soit $f : x \mapsto x^2$, calculer $\dd f_1$.
+ \end{exo}
+
+ Ceci étant, donnons l'équation de la tangente à une courbe donnée par une fonction. Commençons par définir ce qu'est une tangente :
+
+ \begin{defi}[Tangente à une courbe]
+     Soit $f : F \to \reel$ et $a\in F$. On dit que la droite $\Delta$ (vue comme une fonction, qui à $x$ associe $y$ tel que $(x,y)\in \Delta$) est tangente à $f$ en $a$ si $f(a)=\Delta(a)$ et si pour toute droite $\Delta'$ telle que $f(a)=\Delta'(a)$ alors il existe un voisinage $V$ de $a$ tel que $$\forall x\in V, |f(x)-\Delta(x)| \leq |f(x)-\Delta'(x)|$$
+ \end{defi}
+
+ Un premier résultat assez direct est qu'une tangente, pour une fonction et un point fixés, est unique.
+
+ \begin{prop}
+     En reprenant les notations précédente, si $\Delta$ est tangente à $f$ en $a$ et $\Delta'$ aussi, alors $\Delta = \Delta'$.
+ \end{prop}
+
+ \begin{proof}
+     On remarque qu'il existe un voisinage $V$ tel que $|f(x)-\Delta(x)| \leq |f(x)-\Delta'(x)|$ et un voisinage $W$ tel que $|f(x)-\Delta(x)| \geq |f(x)-\Delta'(x)|$, donc sur le voisinage $V\cap W$ on a $|f(x) -\Delta(x)| = |f(x)-\Delta'(x)|$ ce qui revient à $\Delta(x) = \Delta'(x)$ ou $\Delta(x) = 2f(x)-\Delta'(x)$. Dans le premier cas, on peut prendre deux points de ce voisinage et en déduire que $\Delta$ et $\Delta'$ coïncident sur deux points donc sont égales. Dans le deuxième cas, on peut construire $\Delta''(x) = \displaystyle{\frac{\Delta(x)+\Delta'(x)}{2}}$ mais alors $\Delta''(x) = f(x)$ donc, comme $\Delta'(x)$ est tangente, on en déduit que $|f(x)-\Delta'| \leq |f(x)-\Delta''(x)|=0$ donc $\Delta'$ et $f$ coïncident sur $V\cap W$, et on en déduit que $\Delta = \Delta'$ sur $V\cap W$, donc que \fbox{$\Delta=\Delta'$.}
+ \end{proof}
+
+ La tangente est donc la droite qui approche le mieux $f$ localement. Nous pouvons alors déduire l'équation de la tangente à la courbe au point considéré (et en déduire alors que notre définition de nombre dérivé est la bonne).
+
+ \begin{prop}
+    En reprenant les notations précédentes, $f$ admet une tangente en $a$ si et seulement si $\dd f_a$ existe, et dans ce cas son équation est $$y = \dd f_a\times (x-a) + f(a)$$
+ \end{prop}
+
+ \begin{proof}
+    Supposons que $f$ est dérivable en $a$. Montrons alors que $\Delta : y = \dd f_a \times (x-a) + f(a)$ est tangente à la courbe au point $a$ (cela suffit étant donné que la tangente est unique). Soit $\Delta'$ une autre droite telle que $\Delta'(a)=f(a)$, en notant le coefficient directeur $m$ on remarque qu'on peut mettre $\Delta'$ sous la forme $\Delta'(x) = m\times (x+a) + f(a)$ car l'expression de droite a le même coefficient directeur et vaut la même valeur en un point (donc a la même ordonnée à l'origine). On veut maintenant trouver $\delta > 0$ tel que pour $|x-a| < \delta$ on ait \begin{equation}\label{eq:ineg_tan}|f(x) - \Delta(x)| \leq |f(x)-\Delta'(x)|\end{equation} qui est vraie pour $x = a$ (de façon évidente). On cherche donc une condition pour avoir cette inégalité dans le cas $x\neq a$ : réécrivons cette inégalité et divisons-là par $|x - a|$ pour faire apparaître un taux d'accroissement :
+    \begin{align*}
+        |f(x) - \Delta(x)| \leq |f(x)-\Delta'(x)| &\iff |f(x)-f(a) - \dd f_a\times(x-a)| \leq |f(x)-f(a) - m\times (x-a)|\\
+        &\iff \left|\frac{f(x)-f(a)}{x-a}-\dd f_a\right||x-a| \leq \left|\frac{f(x)-f(a)}{x-a} - m\right||x-a|\\
+        &\iff \left|\frac{f(x)-f(a)}{x-a}-\dd f_a\right| \leq \left|\frac{f(x)-f(a)}{x-a} - m\right|
+    \end{align*}
+    Or comme le taux d'accroissement entre $x$ et $a$ tend vers $\dd f_a$ quand $x$ tend vers $a$, on en déduit l'existence d'un $\delta > 0$ tel que l'inégalité est vraie : si $m = \dd f_a$ l'inégalité est vraie par égalité (prenons par exemple $\delta = 1$), sinon on a une valeur strictement positive à droite donc on peut utiliser la définition de limite en prenant le terme de droite pour $\varepsilon$ et on en déduit l'existence de $\delta$ tel que $|x-a| < \delta \implies (\ref{eq:ineg_tan})$. On en déduit donc que \fbox{$\Delta$ est la tangente à $f$ en $a$.}
+
+    \vspace{0.5cm}
+
+    Pour le sens réciproque, nous allons raisonner par contraposition. On suppose donc que $\dd f_a$ n'a pas de limite en $a$, ce qui signifie qu'il existe une suite $x_n$ telle que $\lim x_n = a$, la suite $ y_n = \displaystyle{\lim \frac{f(x_n)-f(a)}{x_n-a}}$ diverge (et $x_n \neq a$ à partir d'un certain rang, car sinon la suite $y_n$ n'est pas définie, donc on pourra diviser par $x_n-a$), et on veut montrer qu'alors $f$ n'admet pas de tangente en $a$. \underline{Raisonnons alors par cas, suivant si la suite $(y_n)$ est bornée.}
+
+    \begin{itemize}[label=$\bullet$]
+        \item Si $(y_n)$ n'est pas bornée, alors on peut trouver une suite extraite $y_{\varphi(n)}$ telle que $\lim y_{\varphi(n)} = +\infty$ ou $\lim y_{\varphi(n)} = -\infty$. Supposons qu'il existe une tangente $\Delta$ à $f$ en $a$ et notons $m$ son coefficient directeur. Dans le cas où $\lim y_{\varphi(n)} = +\infty$, posons $m' = m + 1$ et $\Delta' : y = (m+1)(x-a) + f(a)$, par propriété de la tangente de $\Delta$ à $f$ en $a$ on trouve $V$ voisinage de $a$ tel que pour tout $x\in V$ l'inégalité (\ref{eq:ineg_tan}) soit vérifiée. Comme on $\lim x_n = a$, on trouve un rang $n_0$ tel que pour tout $p > n_0, u_p \in V$. Ainsi pour tout $p > n_0$ on a l'inégalité $$|y_n - m| \leq |y_n-(m+1)|$$ mais comme $\lim y_{\varphi(n)} = +\infty$, on trouve $n_1$ tel que $\forall p > n_1, y_{\varphi(p)} > m+1$. Ainsi pour $p > \max(n_0,n_1)$ on trouve $|y_{\varphi(p)}-(m+1)| = y_{\varphi(p)}-m - 1$ et $|y_{\varphi(n)} - m| = y_{\varphi(n)} - m$ donc l'inégalité (\ref{eq:ineg_tan}) devient $0 \leq -1$ : c'est absurde. De la même façon, si $\lim y_{\varphi(n+1)} = -\infty$ on refait la même construction mais avec $m' = m-1$, et on aboutit à $0 \geq 1$, qui est absurde aussi. Ainsi \fbox{si $(y_n)$ est non bornée alors $f$ n'admet pas de tangente en $a$.}
+
+        \item Si $(y_n)$ est bornée, alors par un résultat précédent sur les suites extraites, on sait qu'il existe au moins deux suites extraites qui convergent vers des valeurs différentes, notons $\varphi$ et $\psi$ les fonctions d'extraction et $m$ et $m'$ les limite associées. On construit alors $\Delta : y = m\times (x-a)+f(a)$ et $\Delta' : y = m'\times (x-a) + f(a)$. Soit $\Delta'' : y = m''\times (x-a)+f(a)$ une droite quelconque différente de $\Delta$ qui passe par le point $(a,f(a))$, montrons que pour tout voisinage $V$ de $a$ il existe un $x\in V$ tel que $|f(x)-\Delta(x)| < |f(x)-\Delta''(x)|$.
+
+        Soit $V$ un voisinage de $A$. Comme $\lim x_n = a$, on trouve un rang $n_0$ tel que pour tout $p > n_0, x_p \in V$. On a alors, pour $p > n_0$ : $$|f(x_{\varphi(p)}) - \Delta(x_{\varphi(p)})| < |f(x_{\varphi(p)})-\Delta''(x_{\varphi(p)})| \iff |y_{\varphi(p)} - m| < |y_{\varphi(p)} - m'|$$ or on sait que $\lim y_{\varphi(n)} = m$ donc en fixant $\varepsilon_n = 0.5\times|m-m'| > 0$ dans la définition de limite de $(y_{\varphi(n)})$ on trouve $n_1 > n_0$ tel que pour tout $p > n_1, |y_{\varphi(p)} - m| < 0.5\times|m - m'|$ d'où \begin{align*}
+            |y_{\varphi(p)}-m'| &= |y_{\varphi(p)} - m + m - m'|\\
+            &\geq ||y_{\varphi(p)} - m| - |m-m'||\\
+            &> ||y_{\varphi(p)} - m| - 2\times |y_{\varphi(p)} - m||\\
+            &> |y_{\varphi(p)} - m|
+        \end{align*}
+        Donc en prenant $x = x_{\varphi(n_1 + 1)}$ on trouve $x\in V$ tel que $|f(x)-\Delta(x)| < |f(x)-\Delta''(x)|$.
+
+        Ainsi pour $\Delta'' \neq \Delta$, $\Delta''$ ne peut être une tangente à $f$ en $a$. Mais notre raisonnement peut être mené de l'exacte même manière pour prouver que $\Delta''$ ne peut être une tangente à $f$ en $a$ si $\Delta''\neq \Delta'$, et comme $\Delta \neq \Delta'$ par hypothèse, on en déduit \fbox{qu'il n'existe pas de tangente à $f$ en $a$.}
+    \end{itemize}
+
+    Ainsi, par contraposée, si $f$ admet une tangente en $a$, alors elle est dérivable en $a$.
+ \end{proof}
+
+ \subsection{Fonction dérivée}
+
+ De façon analogue à l'extension de fonction continue en un point à fonction continue sur une partie, on peut considérer naturellement pour une fonction le fait d'admettre une dérivée sur chaque point de son ensemble.
+
+ \begin{defi}[Dérivabilité]
+     Soit $f : F\to\reel,F\subseteq \reel$. On dit que $f$ est dérivable si pour tout $x\in F$, $f$ est dérivable en $x$. On dit que $f$ est dérivable sur $I\subseteq F$ si $f_{|I}$ est dérivable.
+ \end{defi}
+
+ \begin{rmk}
+     Comme la dérivabilité en un point implique la continuité en ce point, une fonction dérivable est continue.
+ \end{rmk}
+
+ De plus, on remarque un point important qui différencie la continuité et la dérivabilité : être continu est une condition (la limite de $f(x)$ en $a$ ne peut qu'être $f(a)$) mais être dérivable est l'information d'une valeur (la limite du taux d'accroissement). On peut donc associer à une fonction dérivable et un point, le nombre dérivé en ce point. Cela nous pousse à la définition suivante :
+
+ \begin{defi}[Fonction dérivée]
+     Soit $f : F \to\reel$ une fonction dérivable. On appelle fonction dérivée, et l'on note $\dd f$, ou $f'$, ou $\displaystyle{\frac{\dd}{\dd x}}f$, la fonction $$\fonction{f'}{F}{\reel}{x}{\dd f_x}$$ 
+
+     On utilisera principalement la notation $f'$ pour définir la fonction dérivée, pour sa concision.
+ \end{defi}
+
+ \subsubsection{Opérations sur les dérivées}
+
+Nous allons maintenant donner des outils pour calculer efficacement des fonctions dérivées. Le premier point est la stabilité par combinaison linéaire, qui permet donc de sommer des fonctions et de les multiplier par un réel.
+
+\begin{prop}[Stabilité par combinaison linéaire]
+    Soient $f,g : F\to \reel$ deux fonctions dérivables, et $k,l\in\reel$. Alors $kf+lg$ est dérivable et de plus $$\dd (kf+lg)_x = k f'(x) + l g'(x)$$
+\end{prop}
+
+\begin{proof}
+    Calculons le taux d'accroissement de la fonction entre un point $a\in F$ et un point $a+h$ :
+    \begin{align*}
+        \displaystyle{\frac{(kf+lg)(a+h)-(kf+lg)(a)}{h}} &= \displaystyle{\frac{(k f(a+h)+ lg(a+h)-kf(a) - lg(a)}{h}}\\
+        &= \displaystyle{\frac{(k(f(a+h)-f(a)) + l(g(a+h)-g(a))}{h}}\\
+        &= \displaystyle{k\frac{f(a+h)-f(a)}{h} + l\frac{g(a+h)-g(a)}{h}}
+    \end{align*}
+    Or le terme de gauche tend vers $kf'(a)$ et celui de droite vers $lg'(a)$ par opérations sur les limites finies. On en déduit que $$\boxed{\lim_{x\to 0} \frac{(kf+lg)(a+h)-(kf+lg)(a)}{h} = kf'(a)+lg'(a)}$$
+\end{proof}
+
+Calculons maintenant notre première classe de fonctions dont la dérivée est facile à calculer :
+
+\begin{prop}[Dérivée de polynôme]
+    Soit $P\in\reel[X]$, $P(X) = \sum_{k=0}^n p_k X^k$. Alors la fonction $f_P$ associée à $P$ est dérivable, et sa dérivée est $$\fonction{f_{P}'}{\reel}{\reel}{x}{\displaystyle\sum_{k=0}^{n-1}((k+1)\times p_{k+1})x^k}$$ et correspond donc à la fonction polynômiale associée à $$P'(X) = \sum_{k=0}^{n-1}((k+1)\times p_{k+1})X^k$$
+\end{prop}
+
+\begin{proof}
+    La preuve se fera en deux temps : nous allons prouver notre résultat sur les monômes, puis l'étendre aux polynômes.
+
+    Montrons qu'une fonction $f : x \mapsto x^n$ avec $n\in\nat$ est dérivable et que sa dérivée est $f' : x \mapsto n x^{n-1}$ en calculant le taux d'accroissement entre $a\in \reel$ et $a+h$ :
+    \begin{align*}
+        \displaystyle{\frac{f(a+h)-f(a)}{h}} &= \frac{1}{h} ((a+h)^n - ma^n)\\
+        &= \frac{1}{h} \left(\sum_{i = 0}^n \binom{n}{i} a^i h^{n-i} - a^n\right)\\
+        &= \frac{1}{h} \left(\sum_{i = 0}^{n-1} \binom{n}{i} a^i h^{n-i}\right)\\
+        &= \sum_{i=0}^{n-1} \binom{n}{i} a^i h^{n-i-1}\\
+        &= \binom{n}{1} a^{n-1} + \sum_{i=0}^{n-2} a^i h^{n-i-1}
+    \end{align*}
+    mais pour $i\in\{0,\ldots,n-2\}$, $n-i-1 > 0$ donc $ \displaystyle{\lim_{h\to 0}h^{n-i-1} = 0}$ d'où par somme, sachant que $\displaystyle{\binom{n}{1}=n}$, $$\lim_{h\to 0} n a^{n-1} \sum_{i=0}^{n-2} a^i h^{n-i-1} = n a^{n-1}$$ donc \fbox{$f$ est dérivable et sa dérivée est $x\mapsto n x^{n-1}$.}
+
+    Comme chaque monôme est dérivable, la combinaison linéaire $x\mapsto \displaystyle\sum_{k=0}^n p_k x^k$ est aussi dérivable, donc $f_P$ est dérivable. De plus, d'après la propriété précédente, on sait que $$\dd(x\mapsto \sum_{k=0}^n p_k x^k) = \sum_{k=0}^n p_k \dd(x\mapsto x^k)$$ d'où, comme la dérivée de la fonction $x\mapsto 1$ est nulle, et en changeant l'indice avec $i \leftarrow i+1$, le résultat : $$\boxed{\dd (f_P)_x = \sum_{k= 0}^{n-1} ((k+1)p_{k+1})x^k}$$
+\end{proof}
+
+Intéressons-nous maintenant à la stabilité par produit.
+
+\begin{prop}[Dérivée d'un produit]
+    Soient $f,g : F \to \reel$ deux fonctions dérivables. Alors la fonction $f\times g$ est dérivable et de plus on a $$\dd (f\times g)_x = f(x)g'(x) + f'(x)g(x)$$
+\end{prop}
+
+\begin{proof}
+    Calculons le taux d'accroissement de $f\times g$ entre un point $a\in F$ et $a+h$ :
+    \begin{align*}
+        \displaystyle{\frac{(f\times g)(a+h)-(f\times g)(a)}{h}} &= \displaystyle{\frac{(f(a+h)\times g(a+h))-(f(a)\times g(a))}{h}}\\
+        &= \displaystyle{\frac{1}{h}}(f(a+h)\times g(a+h) - f(a+h)\times g(a) + (f(a+h) - f(a))\times g(a))\\
+        &= \displaystyle{\frac{1}{h}}(f(a+h)(g(a+h)-g(a)) + g(a)(f(a+h)-f(a)))\\
+        &= f(a+h)\displaystyle{\frac{g(a+h)-g(a)}{h}} + g(a)\displaystyle{\frac{f(a+h)-f(a)}{h}}
+    \end{align*}
+    Analysons maintenant les deux termes. Pour celui de gauche, par continuité de $f$ (car $f$ est dérivable) on déduit que $\displaystyle\lim_{h\to 0}f(a+h) = f(a)$, pour les deux quotients, on reconnaît directement $g'(a)$ et $f'(a)$ respectivement, ce qui nous donne la dérivabilité de $f\times g$ et la formule : $$\boxed{\dd(f\times g)_x = f'(x)g(x)+f(x)g'(x)}$$
+\end{proof}
+
+Nous allons montrer que la composition de fonctions dérivables reste dérivable.
+
+\begin{prop}
+    Soit $f : F\to \reel$, $g : G \to \reel$ avec $F,G\subseteq\reel$ et $f(F)\subseteq G$. Alors la fonction $g\circ f$ est dérivable et on a, pour $x\in F$ : $$\dd (g\circ f)_x = f'(x)\times g'\circ f(x)$$
+\end{prop}
+
+\begin{proof}
+    Montrons ce résultat en calculant le taux d'accroissement entre un point $a\in F$ et $a+h$. Si $f$ s'annule au voisinage de $a$, alors $g\circ f$ aussi et la formule est vérifiée. Sinon alors on peut (en prenant $h$ assez petit) considérer que $f(a+h)-f(a)$ ne s'annule pas, d'où :
+    \begin{align*}
+        \displaystyle\frac{(g\circ f)(a+h) - (g\circ f)(a)}{h} &= \displaystyle\frac{g(f(a+h))-g(f(a))}{f(a+h)-f(a)}\frac{f(a+h)-f(a)}{h}
+    \end{align*}
+    Or comme $f$ est continue, $\displaystyle\lim_{h\to 0}f(a+h)=f(a)$ donc le terme de gauche tend vers $f'(a)g(f(a))$. Le terme de droite tend vers $f'(a)$. D'où la dérivabilité de $g\circ f$ et la formule : $$\boxed{\dd (g\circ f)_x = g'\circ f(x)\times f'(x)}$$
+\end{proof}
+
+Une fonction dont la déviée est importante est la fonction inverse :
+
+\begin{prop}
+    La fonction $$\fonction{i}{\reel^*}{\reel}{x}{\displaystyle\frac{1}{x}}$$ est dérivable.
+\end{prop}
+
+\begin{proof}
+    Calculons la limite de son taux d'accroissement entre $a$ et $a+h$ :
+    \begin{align*}
+        \dfrac{\dfrac{1}{a+h}-\dfrac{1}{a}}{h} &= \dfrac{\dfrac{a-(a+h)}{a(a+h)}}{h}\\
+        &= \dfrac{-h}{ha(a+h)}\\
+        &= \dfrac{-1}{a(a+h)}
+    \end{align*}
+    Or $\displaystyle\lim_{h\to 0}a+h = h$ d'où $$\boxed{\lim_{h\to 0} \dfrac{\dfrac{1}{a+h}-\dfrac{1}{a}}{h} =\dfrac{-1}{a^2}}$$ donc la fonction inverse est dérivable et sa dérivée est $$\fonction{i'}{\reel^*}{\reel}{x}{\dfrac{-1}{x^2}}$$
+\end{proof}
+
+\begin{exo}
+    On rappelle que pour $x\neq 0$, $x^{-k}=\dfrac{1}{x^k}$. En utilisant les résultats précédents, montrer que pour $k\in\mathbb Z$, la fonction $x\mapsto x^k$ est dérivable, sur $\reel$ si $k\geq 0$ et  sur $\reel^*$ sinon, et que la dérivée de cette fonction est la fonction $x\mapsto k x^{k-1}$.
+\end{exo}
+
+\begin{exo}
+    Déduire des résultats précédents que si une fonction $f : \reel\to\reel$ dérivable ne s'annule pas, alors son inverse $\dfrac{1}{f} : \reel\to\reel,x\mapsto \dfrac{1}{f(x)}$ est aussi dérivable, et que la dérivée de cette fonction en $x$ est $$\dfrac{-f'(x)}{f(x)^2}$$
+\end{exo}
+
+\begin{exo}
+    A partir de l'exercice précédent, en déduire que si $u$ et $v$ sont deux fonctions dérivables et $v$ ne s'annule pas, alors la fonction $x\mapsto \dfrac{u(x)}{v(x)}$ est dérivable et sa fonction dérivée est $$x\mapsto \dfrac{u'(x)v(x)-u(x)v'(x)}{(v(x))^2}$$
+\end{exo}
+
+\subsubsection{Fonction réciproque}
+
+Nous allons donner un autre théorème important de dérivation, qui permet de dériver une fonction bijection par rapport à sa réciproque. Nous l'utiliserons pour montrer que les fonctions racines $n$ièmes sont dérivables et calculer leur dérivée.
+
+\begin{them}[Dérivée d'une fonction réciproque]
+    Soit $f : F\to G,$ où $ F,G\subseteq\reel$ une fonction dérivable bijective dont la dérivée ne s'annule pas. Alors la fonction $f^{-1} : G \to F$ est aussi dérivable, et sa dérivée est donnée par : $$f^{-1} {}'(x) = \dfrac{1}{f'(f^{-1}(x))}$$
+\end{them}
+
+\begin{proof}
+    Nous allons calculer le taux d'accroissement de $f^{-1}$ entre $a$ et $b$ deux éléments de $G$, en remarquant que par bijectivité de $f$, on peut réécrire $a = f(f^{-1}(a))$ : $$\dfrac{f^{-1}(b)-f^{-1}(a)}{b-a} = \dfrac{f^{-1}(b)-f^{-1}(a)}{f^{-1}(f(b)-f^{-1}(a)}$$
+    Comme $f'$ ne s'annule pas, on en déduit que $$\lim_{b\to a} \dfrac{f^{-1}(b)-f^{-1}(a)}{b-a} = \lim_{b\to a} =\dfrac{1}{\dfrac{f^{-1}(b)-f^{-1}(a)}{f^{-1}(f(b)-f^{-1}(a)}} = \dfrac{1}{f'(f^{-1}(x)}$$ donc $f^{-1}$ est dérivable et sa dérivée est $$\boxed{\fonction{f^{-1}{}'}{G}{\reel}{x}{\dfrac{1}{f'(f^{-1}(x))}}}$$
+\end{proof}
+
+Déduisons-en que la fonction $x\mapsto \sqrt[n]x$ est dérivable sur $\reel_+^*$.
+
+\begin{prop}
+    Pour tout $n\in \nat^*$, la fonction $x\mapsto x^n$ est bijective de $\reel_+$ dans $\reel_+$, et en notant $\sqrt[n]x$ sa réciproque alors la fonction $x\mapsto \sqrt[n]x$ est dérivable sur $\reel_+^*$, de dérivée $$x\mapsto \dfrac{\sqrt[n]x}{nx}$$
+\end{prop}
+
+\begin{proof}
+    Soit $x\in \nat^*$. Montrons d'abord que $f := x\mapsto x^n$ est une bijection de $\reel_+$ dans $\reel_+$ :
+    
+    Elle est d'abord strictement croissante : si $x > y$ alors $x^n > y^n$ pour $x$ et $y$ positifs. De plus, on a montré qu'elle était dérivable de dérivée $x\mapsto nx^{n-1}$, donc elle est continue. Enfin, elle vaut $0$ en $0$ et diverge vers $+\infty$ en $+\infty$ var pour tout $M > 0$, $M^n > 0$. La fonction $x\mapsto x^n$ est donc une fonction dérivable bijective.
+
+    Enfin, la dérivée de cette fonction est non nulle pour $x\neq 0$ : si $x\neq 0$ alors $\dd f_x = nx^{n-1} \neq 0$. La fonction induite de $\reel_+^*$ vers $\reel_+^*$ est évidemment toujours bijective.
+
+    En utilisant le théorème précédent, on en déduit que la fonction réciproque, que nous noterons $x\mapsto \sqrt[n]x$ (ou $g$ ici pour des facilités de notation) et appelons racine $n$ième, est dérivable sur $\reel_+^*$ et on a $g'(x) = \dfrac{1}{f'(\sqrt[n]x)}$, or $f'(\sqrt[n]x) = n(\sqrt[n]x)^{n-1} = n\dfrac{x}{\sqrt[n]x}$, donc $$\boxed{g'(x) = \dfrac{\sqrt[n]x}{nx}}$$
+\end{proof}
+
+\begin{exo}
+    On considère maintenant que pour $n > 0$ et $x\in\reel_+^*$, $x^{1/n} = \sqrt[n]x$. Montrer tout d'abord que pour $p \in \mathbb Z,q\in\nat^*$ et $x\in\reel_+^*$, $x^{p/q} = \sqrt[q]{x^p} = (\sqrt[q]x)^n$. Montrer alors que la formule de dérivation des puissances fonctionne aussi dans le cas rationnel, c'est-à-dire montrer que pour $a\in \reel_+^*$ et $r\in\mathbb Q$ : $$\dd (x\mapsto x^r)_a = ra^{r-1}$$
+\end{exo}
+
+\subsection{Théorèmes sur la dérivation}
+
+Dans cette partie, nous allons démontrer les théorèmes essentiels à propos des fonctions dérivées, permettant par exemple de lier l'étude du signe d'une fonction dérivée et l'étude des variations de la fonction initiale.
+
+Commençons par un lemme important :
+
+\begin{lem}
+    Soit $f : I \to\reel$ une fonction dérivable et $I$ un intervalle ouvert. Soit $x\in I$ tel que $\forall y\in I, f(y) \leq f(x)$, alors $$f'(x) = 0$$
+\end{lem}
+
+\begin{proof}
+    Le taux d'accroissement de $f$ entre $x$ et $x+h$ est du signe opposé à celui de $h$ car $f(x+h)-f(x) \leq 0$ par hypothèse. Cela signifie donc que lorsque $h$ tend vers $0$ par valeurs supérieures, le taux d'accroissement tend vers une valeur négative. De même lorsque $h$ tend vers $0$ par valeurs inférieures, le taux d'accroissement limite est positif. Comme la limite existe, elle est égale à la limite à gauche et à droite, donc $f'(x) \leq 0$ et $f'(x)\geq 0$, donc $f'(x) = 0$.
+\end{proof}
+
+\begin{exo}
+    Montrer que la version du lemme où $x$ est un minimum est vraie aussi. Montrer de même que le lemme reste vrai si l'on suppose que $x$ est extrema local, c'est-à-dire qu'il existe un voisinage $V\in\mathcal V_x$ tel que pour tout $y\in V, f(y)\leq f(x)$ (respectivement $f(y)\geq f(x)$ pour un minimum local).
+\end{exo}
+
+Nous allons en déduire le théorème de Rolle :
+
+\begin{them}[Rolle]
+    Soit $f : I \to\reel$ une fonction dérivable, où $I$ est un intervalle. S'il existe deux éléments $a,b\in I$ tels que $a < b$ et $f(a) = f(b)$ alors il existe $c\in ]a,b[$ tel que $f'(c) = 0$.
+\end{them}
+
+\begin{proof}
+    Puisque $f$ est dérivable, elle est continue, donc elle est continue sur $[a,b]$. Par le théorème des bornes atteintes, il existe donc un maximum de $f$ sur $[a,b]$, dont nous noterons $c$ l'antécédent et $d$ l'image et un minimum dont nous noterons $\gamma$ l'antécédent et $\delta$ l'image. Si $\delta = d =  f(a)$ alors tout élément de $[a,b]$ vaut $f(a)$ et on trouve aisément un élément de dérivée nulle. Sinon, alors au choix $c\neq a\land c\neq b$ ou $\gamma\neq a\land \gamma\neq b$, et comme la fonction $f$ est dérivable sur l'intervalle ouvert $]a,b[$ on en déduit qu'en $c$ (respectivement $\gamma$) la dérivée est nulle. Ainsi dans tous les cas \fbox{il existe $c$ tel que $f'(c)=0$.}
+\end{proof}
+
+\begin{rmk}
+    Les hypothèses minimales pour appliquer ce théorème sont simplement que $f$ est continue sur $[a,b]$ et dérivable sur $]a,b[$.
+\end{rmk}
+
+Ce théorème permet lui-même de démontrer un autre théorème :
+
+\begin{them}[Accroissements finis]
+    Soit $f : I\to \reel$, $I$ un intervalle. Soient $a,b\in I$ deux éléments distincts, $a < b$, alors il existe $c\in]a,b[$ tel que $f'(c) = \dfrac{f(b)-f(a)}{b-a}$.
+\end{them}
+
+\begin{proof}
+    On pose la fonction $g : x \mapsto f(x)-\dfrac{f(b)-f(a)}{b-a}x$, qui est dérivable comme combinaison linéaire de fonctions dérivables. Sa fonction dérivée est $g' : x \longmapsto f'(x) - \dfrac{f(b)-f(a)}{b-a}$ et de plus : 
+    \begin{align*}
+        g(a) &= f(a)-\dfrac{f(b)-f(a)}{b-a}a\\
+        &= \dfrac{1}{b-a}(bf(a)-af(a)-af(b)+af(a))\\
+        &= \dfrac{bf(a)-af(b)}{b-a}\\
+        g(b) &= f(b)-\dfrac{f(b)-f(a)}{b-a}b\\
+        &= \dfrac{1}{b-a}(bf(b)-af(b)-bf(b)+bf(a))\\
+        &= \dfrac{bf(a)-af(b)}{b-a}
+    \end{align*}
+
+    Donc $g(a)=g(b)$, donc en appliquant le théorème de Rolle on trouve $c\in]a,b[$ tel que $g'(c) = 0$, c'est-à-dire tel que $f'(c) - \dfrac{f(b)-f(a)}{b-a} = 0$, donc $$\boxed{f'(c) = \dfrac{f(b)-f(a)}{b-a}}$$
+\end{proof}
+
+\begin{rmk}
+    Là encore, il nous suffit que $f$ soit continue sur $[a,b]$ et dérivable sur $]a,b[$ puisque nous utilisons directement le théorème de Rolle.
+\end{rmk}
+
+Donnons ensuite le cas des inégalités :
+
+\begin{prop}[Inégalité des accroissements finis]
+    Soit $f : I \to\reel$ une fonction dérivable, où $I$ est un intervalle. Soient $a < b$ deux réels et $M \in\reel$ tels que $\forall x \in ]a,b[, |f'(x)| \leq M$, alors $\left|\dfrac{f(b)-f(a)}{b-a}\right|\leq M$.
+\end{prop}
+
+Démontrons alors le lien croissance / signe de la dérivée :
+
+\begin{prop}[Lien croissance / signe de la dérivée]
+    Soit $f : I \to\reel$ une fonction dérivable, $I$ un intervalle. Alors :
+    \begin{itemize}[label=$\bullet$]
+        \item si $\forall x \in I, f'(x) \geq 0$ alors $f$ est croissante.
+        \item si $\forall x \in I, f'(x) \leq 0$ alors $f$ est décroissante.
+        \item si $\forall x \in I, f'(x) > 0$ alors $f$ est strictement croissante.
+        \item si $\forall x \in I, f'(x) < 0$ alors $f$ est strictement décroissante.
+    \end{itemize}
+\end{prop}
+
+\begin{proof}
+    Nous allons traiter le premier cas uniquement, tous les autres étant identiques en changeant le signe intervenant dans la démonstration.
+    Supposons que $\forall x \in I, f'(x) \geq 0$. Soient $x,y\in I$, $x\geq y$. Le théorème des accroissements finis nous indique qu'il existe $z\in]x,y[$ tel que $f'(z) = \dfrac{f(y)-f(x)}{y-x}$ or $f'(x) \geq 0$ donc $\dfrac{f(y)-f(x)}{y-x}\geq 0$. Comme par hypothèse, $y-x \geq 0$, on en déduit que $f(y)-f(x) \geq 0$. Donc \fbox{$f$ est croissante.}
+\end{proof}
+
+\begin{rmk}
+    A partir de ces résultats, on peut établir les variations d'une fonction en étudiant simplement le signe de sa dérivée : sur chaque intervalle où le signe de $f'$ est constant, $f$ est monotone.
+\end{rmk}
+
+\newpage

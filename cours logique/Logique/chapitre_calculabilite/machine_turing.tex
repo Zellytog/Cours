@@ -1,0 +1,240 @@
+\section{Les machines de Turing}
+
+L'idée des machines de Turing est assez similaire à celle d'automate à pile : simplement, au lieu d'utiliser une pile, nous utiliserons un ruban de mémoire, qui est une succession infinie de case, chacune contenant une lettre. La machine, au lieu de simplement prendre la lettre en haut de la pile, peut se déplacer librement sur le ruban pour lire et écrire sur le ruban de mémoire. Cette section sera dédiée à la présentation des machines de Turing, mais comportera peu de preuves : celles-ci, à cause du formmalisme lourd d'un système si complexe, sont trop techniques pour être présentées dans ce cours. Certaines idées de preuves seront données, tout de même.
+
+\subsection{Des définitions équivalentes}
+
+\begin{defi}[Machine de Turing]
+    Une machine de Turing sur un alphabet $\Sigma$ est un tuple $(Q,\Gamma,q_0,\delta,q_a,q_r)$ où :
+    \begin{itemize}[label=$\bullet$]
+        \item $Q$ est l'ensemble des états de la machine.
+        \item $\Gamma$ est l'alphabet de travail : c'est l'alphabet dans lequel seront les lettres du ruban de travail. On impose que $\Sigma\subseteq \Gamma$ et que $B\in\Gamma$ où $B$ est un symbole particulier, appelé symbole blanc, représentant l'absence d'écriture sur une case. On ajoute aussi le symbole $\rhd$ qui sera en début de ruban pour marquer qu'on est au début.
+        \item $q_0$ est l'état initial de la machine.
+        \item $\delta : Q\times \Gamma\to Q\times \Gamma \times \{\leftarrow,\rightarrow\}$ est la fonction de transition : elle considère l'état de la machine, la lettre lue et réécrit sur la case une nouvelle lettre, change d'état et fait bouger la tête de lecture vers la gauche ou la droite d'une case.
+        \item $q_a\in Q$ est l'état acceptant : si la machine arrive dans cet état, le calcul s'arrête et le mot est accepté.
+        \item $q_r\in Q$ est l'état de rejet : si la machine arrive dans cet état, le calcul s'arrête et le mot est rejeté.
+    \end{itemize}
+\end{defi}
+
+Ces définitions ont peu de sens si l'on ne donne pas la définition de configuration et de ruban :
+
+\begin{defi}[Ruban, configuration, transition]
+    Le ruban de travail est un mot infini $r\in \Gamma^\omega$ sur l'alphabet de travail. On appelle configuration un tuple $(q,i,r)$ où $q$ est l'état de la machine de Turing, $r$ est le ruban et $i$ est l'indice de la case sur laquelle se trouve la tête de lecture. Plutôt que de noter cela comme un tuple, on note en général une configuration par un mot de la forme $r_{<i}qr_{\geq i}$, c'est-à-dire que l'on écrit les symboles qui sont à gauche de la tête de lecture, puis l'état dans lequel est la machine, puis le reste du mot. La tête de lecture se trouve donc sur la lettre juste à droite de l'état $q$ dans cette représentation.
+
+    On appelle transition la fonction entre configurations définie de façon naturelle par la fonction de transition, en partant de la configuration $u\alpha q\beta r$ :
+    \begin{itemize}
+        \item si $\delta(q,\beta) = (q',a,\leftarrow)$ alors la transition sera $u\alpha q\beta r \to uq'\alpha a r$
+        \item si $\delta(q,\beta) = (q',a,\rightarrow)$ alors la transition sera $u\alpha q\beta r \to u\alpha a q r$
+    \end{itemize}
+
+    On appelle calcul la suite de transitions depuis une configuration donnée (comme la machine est déterministe, la suite est unique, potentiellement infinie).
+\end{defi}
+
+De plus, on note $B^\infty$ la fin du ruban (remplie forcément de $B$ à l'infini).
+
+\begin{defi}[Acceptation, rejet]
+    Soit $x$ un mot sur un alphabet $\Sigma$ et $\MM$ une machine de Turing sur $\Sigma$. On dit que $\MM$ accepte $x$ si le calcul sur la configuration $q_0\rhd x B^\infty$ finit par $\MM$ entrant dans l'état $q_a$. On dit que $\MM$ rejette $x$ si le calcul sur la même configuration finit par $\MM$ entrant dans l'état $q_r$.
+\end{defi}
+
+\begin{rmk}
+    Un mot $x$ peut n'être ni accepté, ni rejeté.
+\end{rmk}
+
+Donnons un exemple imagé d'une machine $\MM$ agissant sur la configuration $\rhd 0q1B^\infty$ en supposant que $\delta(q,1)=(0,q',\leftarrow)$ :
+
+\begin{figure}[htb]
+    \centering
+    \rule{17cm}{0.5pt}\\
+    \vspace{0.5cm}
+    \begin{tikzpicture}
+        \draw (-5,1) -- (5,1) -- (5,-1) -- (-5,-1) -- (-5,1);
+        \draw (-3,1) -- (-3,-1);
+        \draw (-1,1) -- (-1,-1);
+        \draw (1,1) -- (1,-1);
+        \draw (3,1) -- (3,-1);
+        \draw[dashed] (5,1) -- (5.5,1);
+        \draw[dashed] (5,-1) -- (5.5,-1);
+        \draw (-4,0) node {\Huge $\rhd$};
+        \draw (-2,0) node {\Huge $0$};
+        \draw (0,0) node {\Huge $1$};
+        \draw (2,0) node {\Huge $B$};
+        \draw (4,0) node {\Huge $B$};
+        \draw[<-] (0,-1) -- (0,-2);
+        \draw (0,-1.5) node [right] {\Large $q$};
+
+        \draw (-2,-2) -- (2,-2) -- (2,-4) -- (-2,-4) -- (-2,-2);
+        \draw (0,-3) node {\Huge $\MM$};
+        \draw[<-] (-2,-5) -- (-2,-4.5) -- (0,-4.5) -- (0,-4);
+        \draw (0,-4.5) node [right] {\Large $q'$};
+        
+        \draw (-5,-5) -- (5,-5) -- (5,-7) -- (-5,-7) -- (-5,-5);
+        \draw (-3,-5) -- (-3,-7);
+        \draw (-1,-5) -- (-1,-7);
+        \draw (1,-5) -- (1,-7);
+        \draw (3,-5) -- (3,-7);
+        \draw[dashed] (5,-5) -- (5.5,-5);
+        \draw[dashed] (5,-7) -- (5.5,-7);
+        \draw (-4,-6) node {\Huge $\rhd$};
+        \draw (-2,-6) node {\Huge $0$};
+        \draw (0,-6) node {\Huge $0$};
+        \draw (2,-6) node {\Huge $B$};
+        \draw (4,-6) node {\Huge $B$};
+    \end{tikzpicture}
+    \rule{17cm}{0.5pt}\\
+    \vspace{0.5cm}
+    \caption{Illustration de l'exécution d'une machine de Turing}
+\end{figure}
+
+Plusieurs versions équivalentes des machines de Turing existent, nous allons donner une liste et une façon de les simuler avec une machine à un ruban telle que décrite ici :
+\begin{itemize}[label=$\bullet$]
+    \item La machine peut se retrouver sur un ruban infini des deux côtés. Dans ce cas, comme on a une bijection entre $\nat$ et $\mathbb Z$ qui envoie $-n$ sur $2n+1$ et $n$ sur $2n$, il nous suffit de créer des états qui permettent de gérer des transitions de deux cases à chaque fois qu'il faut faire une transition d'une case, sauf sur la case d'indice $0$ où un changement d'état indiquera comment se comporter.
+    \item On peut changer l'alphabet, et coder par exemple n'importe quel alphabet fini $\Sigma$ avec $\{0,1\}$ en considérant les cases par paquets (suffisamment gros pour pouvoir coder chaque élément de $\Sigma$ par un nombre binaire), ce qui augmentera largement le nombre d'états mais fonctionne. C'est d'ailleurs ce qu'il se passe dans les ordinateurs, où l'on code les données par paquets de $32$ ou $64$ bits.
+    \item On peut considérer plusieurs rubans, et chaque tête de lecture se déplacera indépendamment. On peut simuler cela sur un ruban en considérant un alphabet plus gros : chaque case consistera en le $n$-uplet de cases de la machine à plusieurs rubans. Il faut néanmoins gérer le fait de bouger dans des sens différents : on peut pour cela considérer un alphabet encore plus gros qui serait constitué de parties de l'ancien alphabet et permettrait de faire une machine non déterministe.
+    \item Une machine non déterministe peut se simuler avec une machine déterministe : chaque fois que plusieurs transitions sont possibles, on effectue une transition, puis on \og backtrack\fg{} (fait la transition inverse) pour faire l'autre transition. On effectue cette démarche pour chaque suite de transitions possibles de longueur $k$ et par $k$ croissant.
+\end{itemize}
+
+En bref, notre modèle est très expressif, mais malheureusement très peu manipulable dans le sens où se donner une machine de Turing concrète est très fastidieux. Nous n'en donnerons d'ailleurs pas ici : nous n'en donnerons que des codes, c'est-à-dire des suites de symboles qui peuvent être traduites en une machine de Turing. Plus précisément, tout algorithme écrit en pseudo-code correspondra à une machine de Turing (on l'admet ici).
+
+Enfin, on peut construire une version équivalente des machine de Turing où, au lieu d'avoir des états acceptant et rejetant, on a un simple état d'arrêt, et la machine retourne le mot écrit sur le ruban lorsqu'elle s'arrête (puisque le mot infini contient une infinité de $B$, il le mot retourné est bien un mot fini). On appelle ces fonctions $\Sigma^*\to \Sigma^*$ des fonctions partielles calculables. On dit qu'une fonction est calculable quand elle est totale calculable.
+
+\subsection{Les principaux théorèmes}
+
+Un premier théorème fondamental dans la théorie de la calculabilité est celui qu'il existe une machine universelle :
+
+\begin{them}
+    Il existe une machine de Turing dite universelle, $\mathcal U$ sur un alphabet $\Sigma$ telle que, pour toute machine de Turing $\MM$ codée dans $\Sigma$ (le codage $\encode{\;}$ dépend de $\mathcal U$) et toute entrée $x$ codée dans $\Sigma$, $\mathcal U$ accepte $\langle \encode M,x\rangle$ si et seulement si $M$ accepte $x$, et refuse $\langle \encode M,x\rangle$ si et seulement si $M$ refuse $x$.
+\end{them}
+
+Comme dit plus tôt, nous ne donnerons pas de preuves pour ce genre de théorèmes, nous nous convaincrons seulement que l'on arrive en effet à coder un interpréteur pour un langage informatique donné, ce qui est l'analogue informatique d'une machine de Turing universelle.
+
+La notation $\langle x,y\rangle$ sert à parler du codage d'un couple. Un codage simple dans l'alphabet $\{0,1\}$ est $1^{|x|}0 x y$ : l'information nous est donnée en comptant le nombre de $1$ de quelle taille fait $x$.
+
+Le théorème suivant dit qu'on peut exécuter une machine sur elle-même :
+
+\begin{them}[Récursion de Kleene]
+    Soit $t$ une fonction calculable, il existe alors une machine de Turing $F$ telle que $t\encode F$ est une machine équivalente à $F$.
+
+    Une version équivalente est qu'une machine $\MM$ a accès à son code source $\encode\MM$.
+\end{them}
+
+\subsection{Langage récursif, récursivement énumérable}
+
+Naturellement, nous pouvons associer à une machine $\MM$ le langage $L(\MM)$ des mots reconnus par $\MM$. Cependant, on peut remarquer une différence importante : là où dans les anciens automates la lecture était linéaire et donc terminait forcément, ici nous n'avons aucune garantie que l'exécution d'une entrée $x$ sur $\MM$ va arriver à un état acceptant ou refusant. Ceci signifie qu'il existe deux classes de langages bien différentes :
+\begin{itemize}[label=$\bullet$]
+    \item les langages dits décidables, ou récursifs, qui sont ceux de la forme $L(\MM)$ pour une machine de Turing donnée qui, sur toute entrée, termine (i.e. tout calcul sur une entrée $x$ mène à un des deux états $q_a$ ou $q_r$).
+    \item les langages dits récursivement énumérables, qui sont ceux de la forme $L(\MM)$ pour une machine de Turing $\MM$ (qui peut donc ne pas terminer).
+\end{itemize}
+
+De même, on différencie comme on l'a dit plus tôt les fonctions calculables des fonctions calculables partielles. Pour montrer l'importance de cette distinction, nous allons montrer qu'il existe des langages récursivement énumérables non récursifs.
+
+\begin{rmk}
+    Le nom de \og récursivement énumérable\fg{} vient du fait qu'une condition équivalente est qu'il existe une machine $\MM$ donnant la liste de tous les éléments du langage : une machine qui les énumère, donc. (\'Evidemment, ça ne suffit pas à décider si une entrée $x$ est dans le langage, puisqu'il faudrait avoir accèd à l'entièreté de la liste, en général infinie.)
+\end{rmk}
+
+\begin{defi}[Problème de l'arrêt]
+    Soit $\mathrm{HALT} = \{\langle \encode \MM,x\rangle\mid \MM \text{ s'arrête sur l'entrée } x\}$. HALT est récursivement énumérable mais pas récursif.
+\end{defi}
+
+\begin{proof}
+    L'existence d'une machine de Turing universelle suffit à montrer que le langage est récursivement énumérable : on exécute $\MM$ sur $x$ avec une machine universelle, et si elle termine on entre dans l'état acceptant. Maintenant, supposons que HALT soit récursif. On a donc une machine $\MM$ qui peut dit si une machine s'arrête sur une entrée donnée. On définit alors le programme $f$ suivant, prenant en entrée $x$ :
+    \begin{itemize}[label=$\bullet$]
+        \item si $\langle \encode x,x\rangle\in\mathrm{HALT}$ alors on crée une boucle infinie.
+        \item sinon, on entre dans l'état $q_a$.
+    \end{itemize}
+    On remarque alors que, d'après le théorème de Kleene, on peut exécuter le programme $f$ en prenant son code en entrée : alors si $\langle \encode f,f\rangle \in\mathrm{HALT}$ on en déduit que $f(f)$ entre dans une boucle infinie, donc $\langle \encode f,f\rangle \notin\mathrm{HALT}$ et de même si $\langle \encode f,f\rangle\notin\mathrm{HALT}$ on en déduit que $\langle\encode f,f\rangle\in\mathrm{HALT}$.
+\end{proof}
+
+Un problème dont on sait qu'il n'est pas récursif est dit indécidable : c'est le cas du problème de l'arrêt, mais plus généralement d'une très large classe de langages. En effet, le prochain théorème montre que tout langage défini par une propriété non triviale (c'est-à-dire autre que toujours vraie ou toujours fausse) sur un langage récursivement énumérable est indécidable. On appelle une telle propriété une propriété sémantique : elle porte sur un langage récursivement énumérable, par contraste avec une propriété syntaxique qui porte sur les machines elles-mêmes (on peut par exemple compter le nombre de boucle \textit{While} d'un programme : les propriétés syntaxiques décrivent souvent des ensembles récursifs.
+
+\begin{them}[Rice]
+    Soit RE la classe des langages récursivement énumérables sur un alphabet $\Sigma$. Soit une partie $E$ de RE (donc une classe de langage), et $P$ l'ensemble des machines qui reconnaissent un ensemble $A\in E$ (donc les machines $\MM$ telles que $L(\MM)\in E$). $P$ est récursif si et seulement si $E=\varnothing$ ou $E=\mathrm{RE}$. 
+\end{them}
+
+\begin{exo}
+    Montrer ce théorème en montrant que si $P$ est non trivial alors il peut se réduire au problème de l'arrêt, c'est-à-dire construire à partir d'un $P$ fixé une entrée du problème de l'arrêt, que l'on sait indécidable.
+\end{exo}
+
+\subsection{Fonctions récursives}
+
+Le formalisme des machines de Turing permet d'avoir une approche qui fait un lien fort avec l'informatique, puisqu'il est le formalisme à la base même des ordinateurs et de la notion de programme et de code. Cependant, pour l'étude logique, un autre formalisme équivalent va être privilégié : celui des fonctions récursives. Nous allons donc voir les fonctions récursives, d'abord par les fonctions récursives primitives, et nous verrons ensuite l'équivalence entre fonction récursive et fonction calculable par une machine de Turing.
+
+\subsubsection{Fonctions récursives primitives}
+
+\begin{defi}[Classe RP]
+On définit la classe des fonctions récursives primitives RP comme le plus petit sous-ensemble de fonctions $\nat^k\to\nat$, $k$ parcourant $\nat$, tel que :
+\begin{itemize}[label=$\bullet$]
+    \item pour chaque $n\in\nat$ et $k\in\nat$, la fonction $n : \nat^k\to\nat, x \mapsto n$ est dans RP.
+    \item $S : \nat \to \nat, x \mapsto x+1$ est dans RP.
+    \item les fonctions $\pi_i^k : \nat^k\to\nat, (x_1,\ldots,x_k)\mapsto x_i$ sont dans RP.
+    \item si $f_1,\ldots,f_k : \nat^n \to \nat$ sont des fonctions de RP et $h : \nat^k\to\nat$, alors la fonction $h\langle f_1,\ldots,f_k\rangle : \nat^n \to\nat, x \mapsto h(f_1(x),\ldots,f_k(x))$ est aussi dans RP.
+    \item si $f : \nat^k\to\nat$ et $g : \nat^{k+2}\to\nat$ sont des fonctions de RP, alors la fonction $\rec(f,g) : \nat^{k+1} \to\nat$ est dans RP, où \begin{align*}
+        \rec(f,g)(x,0) &= f(x)\\
+        \rec(f,g)(x,S(n)) &= g(x,n,\rec(f,g)(x,n))
+    \end{align*}
+\end{itemize}
+\end{defi}
+
+Le point important pour l'expressivité de cette classe de fonction est évidemment le fait d'autoriser les appels récursifs. On peut construire de nombreuses fonctions usuelles par cette classe.
+
+\begin{exo}
+    Montrer que les fonctions suivantes sont dans RP :
+    \begin{itemize}[label=$\bullet$]
+        \item La fonction identité $x \mapsto x$
+        \item La fonction somme : $\nat^2\to\nat, (x,y)\mapsto x+y$
+        \item La fonction produit : $\nat^2\to\nat, (x,y)\mapsto x\times y$
+        \item La fonction puissance : $\nat^2\to\nat, (x,y)\mapsto x^y$
+        \item La fonction prédécesseur : $\nat\to\nat, x \mapsto \max(0,x-1)$
+        \item La fonction différence : $\nat^2\to\nat, (x,y)\mapsto \max(0,x-y)$
+        \item La fonction moitié : $\nat\to\nat,x \mapsto \lfloor x/2\rfloor$
+        \item La fonction division : $\nat^2\to\nat, (x,y)\mapsto \lfloor x/y\rfloor$ et $0$ si $y=0$
+        \item La fonction reste : $\nat^2\to\nat, (x,y)\mapsto x\%y$ le reste de $x$ par la division par $y$, et $0$ si $y=0$
+        \item Pour tout polynôme de $\nat[X]$, la fonction $\nat\to\nat$ associée.
+        \item Pour $f,g,h$ trois fonctions de RP, la fonction $\texttt{if}(f,g,h) : x \mapsto g(x)$ si $f(x)=0$ et $h(x)$ sinon.
+    \end{itemize}
+\end{exo}
+
+\begin{exo}\label{exo:bij}
+    Montrer que la fonction $b : \nat^2\to\nat, (x,y)\mapsto \frac{1}{2}(x+y)(1+x+y)+y$ établit une bijection entre $\nat^2$ et $\nat$. Construire aussi les fonction $\pi_1$ et $\pi_2$ telles que $\pi_1(b(x,y))=x$ et $\pi_2(b(x,y))=y$.
+\end{exo}
+
+On peut aussi analyser des ensembles grâce à leur fonction caractéristique.
+
+\begin{exo}
+    Construire les fonctions caractéristiques des ensembles suivants :
+    \begin{itemize}[label=$\bullet$]
+        \item $\nat_{>k}$ pour $k\in\nat$
+        \item $\{0\}$
+        \item $n\nat$
+        \item $\{(x,x)\mid x\in\nat\}$
+        \item $\{(x,y)\mid x < y\}$
+        \item $\{(x,y)\mid y=P(x)\}$ où $P\in\nat[X]$ est fixé.
+    \end{itemize}
+\end{exo}
+
+\subsubsection{Opérateur mu}
+
+Cependant, toutes les fonctions calculables par des machines de Turing ne sont pas forcément dans RP : certaines croissent trop vite. En effet, une remarque assez directe est que les fonctions récursives primitives ne peuvent pas appliquer une fonction un nombre non borné de fois : il faut calculer au préalable une borne supérieure du nombre d'application de notre fonction. De plus, toutes les fonctions dans RP sont des fonctions totales, alors que nous voulons pouvoir écrire des fonctions partielles. Nous allons donc définir Rec, la classe des fonctions récursives, en ajoutant un constructeur :
+
+\begin{defi}[Classe Rec]
+    La classe Rec est la classe RP à laquelle on ajoute le constructeur $\mu$ : si $f : \nat^{k+1}\to\nat$ est dans Rec, alors $g(x_1,\ldots,x_k)=\mu(y,f)$ renvoie le plus petit $y$ tel que $f(x_1,\ldots,x_k,y) = 0$ et pour tout $x<y$, $f(x_1,\ldots,x_k,x)$ est définie, et n'est pas définie sinon.
+\end{defi}
+
+Il se trouve que Rec est exactement la classe des fonctions calculables partielles.
+
+\begin{them}[Simulation des machines de Turing]
+    Soit $\MM$ une machine de Turing sur $\{0,1\}$ définissant une fonction $f : \nat \to \nat$ à partir de son comportement sur $\{0,1\}^*\to\{0,1\}^*$. Alors $f\in\mathrm{Rec}$.
+\end{them}
+
+\begin{proof}
+    Nous allons pour cela construire par étape une fonction $f$ récursive qui simule $\MM$ :
+    \begin{itemize}[label=$\bullet$]
+        \item Nous allons coder les états de $\MM$ par des entiers.
+        \item Une configuration peut être vue comme un élément de $\nat^3$ avec ce codage : nous allons donc construire une fonction qui effectue une transition, ou plus précisément trois fonctions, l'une retournant le nouvel indice de la tête de lecture, la deuxième retournant le code de l'état et la troisième retournant la forme nouvelle du ruban.
+        \item Cette fonction peut se faire par disjonction de cas : on sait coder la fonction caractéristique de chaque entier, et faire des branchements if/then/else. Il ne reste qu'à effectuer cette disjonction de cas sur chaque état en entrée, puis une disjonction de cas suivant si le symbole lu est $0$ ou $1$. La fonction d'indice décrémente ou incrémente l'indice directement, ce que l'on peut faire, la fonction d'état associe une constante, et la fonction de ruban n'a qu'à effectuer de l'arithmétique pour ajouter ou soustraire $2^i$ avec $i$ l'indice de la tête de lecture.
+        \item Si l'on nomme $g$ cette fonction, on peut alors l'appliquer en boucle jusqu'à obtenir un résultat. C'est ici que l'on a besoin de $\mu$, qui s'appliquera à la fonction caractéristique de l'état d'arrêt composée avec la fonction qui pour $i$ effectue $i$ itérations de $g$.
+    \end{itemize}
+\end{proof}
+
+\begin{rmk}
+    La construction d'une fonction récursive simulant une machine de Turing ne nécessite l'opérateur $\mu$ que pour pouvoir appliquer l'opération de transition un nombre non borné de fois : cela signifie que pour une machine $\MM$ où l'on peut borner son temps de calcul en fonction de son entrée, il suffit d'une fonction primitive récursive pour coder la machine $\MM$.
+\end{rmk}

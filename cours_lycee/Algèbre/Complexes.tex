@@ -1,0 +1,266 @@
+\section{Nombres complexes}
+
+Cette section se concentrera sur l'étude des nombres complexes. Ceux-ci sont définis comme des nombres de la forme $x+iy$ où $x,y\in\reel$ et $$i^2=-1$$
+
+Si l'introduction d'un nombre de carré négatif peut sembler illicite ou étrange (en effet, un carré est toujours positif), nous allons commencer par construire cet ensemble, noté $\mathbb C$, pour montrer qu'il existe bien un ensemble se comportant comme décrit. Nous verrons ensuite le plan complexe et les interprétations géométriques qui vont avec cette notion. Enfin, nous étendront notre résolution d'équations du second degré à la résolution dans $\mathbb C$ de ces équations.
+
+\subsection{Construction des nombres complexes}
+
+Nous allons munir $\reel^2$ d'une loi d'addition et d'une loi de multiplication.
+
+\begin{defi}
+    Soit $(x,y),(x',y')\in\reel^2$, on définit $$(x,y)+(x',y')=(x+x',y+y')$$ \begin{center} et\end{center} $$(x,y)\times (x',y')=(x\times x'-y\times y',x\times y'+x'\times y)$$ On appelle nombre complexe un élément de $\reel^2$ en utilisant les opérations ainsi définies. Ainsi, $\reel^2=\mathbb C$.
+\end{defi}
+
+Nous allons maintenant montrer que les opérations ainsi construites conservent les même propriétés que les opérations de $\reel$.
+
+\begin{prop}[Commutativité]
+    Soient $(x,y),(x',y')\in\mathbb C$, alors $(x,y)+(x',y')=(x',y')+(x,y)$ et $(x,y)(x',y')=(x',y')(x,y)$.
+\end{prop}
+\begin{proof}
+    Ce sont de simples vérifications de calculs :
+    \begin{align*}
+        (x,y)+(x',y') &= (x+x',y+y')\\
+        &= (x'+x,y'+y) \qquad (x,y,x',y'\in\reel)\\
+        (x,y)+(x',y') &= (x',y')+(x,y)\\
+        \\
+        (x,y)\times (x',y') &= (xx'-yy',xy'+x'y)\\
+        &= (x'x-y'y,y'x+yx') \qquad (x,y,x',y'\in\reel)\\
+        (x,y)\times (x',y') &= (x',y')\times (x,y)
+    \end{align*}
+\end{proof}
+
+\begin{exo}
+    Vérifier que pour tous $x,y,z\in\mathbb C$, $x+(y+z)=(x+y)+z$ et que $x\times (y\times z)=(x\times y)\times z$. Cette propriété s'appelle l'associativité de l'addition.
+\end{exo}
+
+\begin{prop}[Neutre pour l'addition]
+    Pour tout $(x,y)\in\mathbb C$, $(x,y)+(0,0)=(x,y)$
+\end{prop}
+\begin{proof}
+    Cela est direct en revenant à la définition de l'addition dans $\mathbb C$.
+\end{proof}
+
+\begin{prop}[Neutre pour le produit]
+    Pour tout $(x,y)\in\mathbb C$, $(x,y)\times (1,0)=(x,y)$.
+\end{prop}
+\begin{proof}
+    En effet, \begin{align*}
+        (x,y)\times (1,0) &= (1x+0y,1y+0x)\\
+        (x,y)\times (1,0) &= (x,y)
+    \end{align*}
+\end{proof}
+
+Nous allons maintenant définir $i$.
+
+\begin{defi}
+    Le nombre imaginaire $i$ est défini comme $i=(0,1)$.
+\end{defi}
+\begin{proof}
+    On vérifie que $i^2=-1$ : $i\times i = (0-1,0+0)=(-1,0)$.
+\end{proof}
+
+Enfin, soit la fonction $f : (x,0) \mapsto x$, cette fonction est une bijection, de réciproque évidente $g : x\mapsto (x,0)$ et on remarque que $f(x+y)=f(x)+f(y)$ et $f(x\times y)=f(x)\times f(y)$. C'est ce que l'on appelle un morphisme d'anneau, mais cette notion est hors du programme. Ceci étant, nous voyons que l'on peut identifier $\mathbb R$ à un sous-ensemble de $\mathbb C$.
+
+\begin{them}
+    Soit $(x,y)\in\mathbb C$. On peut écrire $(x,y)$ de façon unique comme la somme d'un nombre réel (identifié à un nombre complexe) et du produit d'un nombre réel par $i$, et cette décomposition est $$(x,y)=x+iy$$
+\end{them}
+\begin{proof}
+    L'existence est une simple vérification que $(x,y)=x+y\times i$. 
+    
+    Pour l'unicité, supposons deux décompositions $(x,y)=a+b\times i = a'+b'\times i$. Alors on vérifie que $a+b\times i=(a,b)$ et $a'+b'\times i=(a',b')$. Donc par égalité avec $(x,y)$ on en déduit que $a=a'$ et $b=b'$.
+\end{proof}
+
+Nous retrouvons donc la forme que nous souhaitions au début.
+
+Si cet exercice de construction peut sembler inutile, il est essentiel pour s'assurer que l'ensemble $\mathbb C$ existe bel et bien, ce qui ne semble pas chose aisée quand l'on voit qu'il contient un élément dont le carré est négatif.
+
+\subsection{Le plan complexe}
+
+En assimilant les nombres complexes à $\reel^2$, on remarque que $\mathbb C$ est naturellement similaire au plan dans lequel, si l'on fixe une origine, on obtient un système de coordonnées qui est un ensemble de couple de réels. De plus, l'addition de vecteurs est, au niveau des coordonnées, une addition coordonnée par coordonnée, exactement comme l'addition complexe. On décide donc de représenter les nombres complexe comme des vecteurs du plan en fixant une origine $O$. On dit qu'un point est d'affixe $x+iy$ lorsqu'il correspond au nombre $x+iy$.
+
+\includefig{Algèbre/Figures/plan_complexe.tex}{Plan complexe avec un point d'affixe $4+3i$}
+
+Nous allons maintenant voir une nouvelle façon de déterminer la position d'un vecteur, qui est un système de coordonnées appelé coordonnées polaires. Pour cela, nous allons avoir besoin d'un théorème préalable.
+
+\begin{them}
+    Soit $\vecteur u$ un vecteur non nul et $\vecteur e$ un vecteur du plan fixé. Alors $\vecteur u$ est déterminé de façon unique par sa norme et son angle principal (c'est-à-dire l'angle qui fait moins d'un tour) avec $\vecteur e$.
+\end{them}
+\begin{proof}
+    Nous admettrons ce théorème dans ce document.
+\end{proof}
+
+Nous allons donc relier cette notion au plan complexe en considérant l'opération donnant la norme du vecteur associé à un complexe.
+
+\begin{defi}[Module]
+    Soit $z\in\mathbb C$, on appelle module de $z$, et l'on note $|z|$, le nombre $$z=\|\vecteur {u_z}\|$$ où $\vecteur {u_z}$ est le vecteur d'affixe $z$.
+\end{defi}
+
+De par la formule du calcul de la norme d'un vecteur dans un système de coordonnées fixé, on en déduit que si $z=x+iy$ alors $|z|=\sqrt{x^2+y^2}$.
+
+De plus, nous nommons argument d'un nombre complexe l'angle que fait son vecteur représentatif avec l'axe des origines.
+
+\begin{prop}
+    Soit un nombre complexe $z$ de module $r$ et d'argument $\theta$. Alors $z=r\cos(\theta)+ir\sin(\theta)$.
+\end{prop}
+\begin{proof}
+    On remarque que $\dfrac{z}{r}$ est de module $1$ : il appartient donc au cercle trigonométrique et correspond au même angle que $z$. On en déduit donc que les coordonnées de $\dfrac{z}{r}$ sont $(\cos(\theta),\sin(\theta))$. Il en découle que les coordonnées de $z$ sont $(r\cos(\theta),r\sin(\theta))$, donc par unicité de $z=x+iy$ \fbox{on en déduit que $z=r\cos(\theta)+ir\sin(\theta)$.}
+\end{proof}
+
+\subsubsection{La conjugaison complexe}
+
+Cette partie va s'intéresser à une fonction appelée conjugaison, que l'on note $\barre z$ pour un nombre complexe $z$, et qui est définie par $\fonction{\barre{-}}{\mathbb C}{\mathbb C}{x+iy}{x-iy}$.
+
+Nous allons montrer que cette fonction est un morphisme d'anneau.
+
+\begin{prop}
+    Soient $z$ et $z'$ deux complexes. Alors $\barre{z+z'}=\barre z + \barre{z'}$ et de plus $\barre{-z}=-\barre z$.
+\end{prop}
+\begin{proof}
+    On pose $z=x+iy$ et $z'=x'+iy'$. Alors $\barre{z+z'}=x+x'-iy-iy'=(x-iy)+(x'-iy')=\barre{z}+\barre{z'}$.
+    
+    Pour la deuxième partie, on remarque que $\barre{z+(-z)}=0=\barre{z}+\barre{-z}$ donc, en passant $\barre{z}$ de l'autre côté, on trouve bien que $\barre{-z}=-\barre{z}$.
+\end{proof}
+
+\begin{exo}
+    Montrer que $\barre{z\times z'}=\barre z \times \barre{z'}$. En déduire que $\barre{\dfrac{1}{z}}=\dfrac{1}{\barre z}$ pour $z\neq 0$.
+\end{exo}
+
+Cette fonction nous permet d'exprimer autrement le module d'un nombre complexe.
+
+\begin{prop}
+    Soit $z\in\mathbb C$. Alors $$|z|=\sqrt{z\barre z}$$
+\end{prop}
+\begin{proof}
+    Il suffit de vérifier que pour $z=x+iy$, $z\barre z = x^2+y^2$. Un calcul nous donne cette égalité :
+    \begin{align*}
+        z\barre z &= (x+iy)(x-iy)\\
+        &= x^2-ixy+ixy-i^2y^2\\
+        z\barre z &= x^2+y^2
+    \end{align*}
+\end{proof}
+
+Enfin, il existe un lien entre l'argument d'un nombre complexe et son conjugué.
+
+\begin{prop}\label{argument}
+    Soit $z$ un nombre complexe de module $r$ et d'argument $\theta$. Alors $\barre z$ a le même module et son argument est $-\theta$.
+\end{prop}
+\begin{proof}
+    Il suffit de vérifier que $\cos(-\theta)+i\sin(-\theta)=\cos(\theta)-i\sin(\theta)$. Ce calcul est laissé au lecteur.
+\end{proof}
+
+\subsubsection{Partie réelle et imaginaire}
+
+Nous avons jusque là décomposé les nombres complexes sous la forme $z=x+iy$. Nous pouvons systématiser cette décomposition en formant les deux fonctions $$\fonction{\Re}{\mathbb C}{\reel}{x+iy}{x}$$\begin{center} et \end{center} $$\fonction{\Im}{\mathbb C}{\reel}{x+iy}{y}$$ Pour $z\in\mathbb C$, on appelle $\Re(z)$ sa partie réelle et $\Im(z)$ sa partie imaginaire. On remarque que $z\in\reel$ si et seulement si $z=\Re(z)$ et que $z\in i\reel$ si et seulement si $z=\Im(z)$ (l'ensemble $i\reel$ est l'ensemble des multiples réels que $i$, qu'on appelle l'ensemble des imaginaires purs).
+
+\begin{prop}
+    Soit $z\in\mathbb C$, alors $\Re(z)=\dfrac{1}{2}(z+\barre z)$ et $\Im(z)=\dfrac{1}{2i}(z-\barre z)$.
+\end{prop}
+\begin{proof}
+    Là encore, un calcul suffit :
+    \begin{align*}
+        \dfrac{1}{2}(z+\barre z)&= \dfrac{1}{2}(x+iy+x-iy)\\
+        &= \dfrac{1}{2}(2x)\\
+        \dfrac{1}{2}(z+\barre z) &= x\\
+        \\
+        \dfrac{1}{2i}(z-\barre z) &= \dfrac{1}{2i}(x+iz-x-(-iy))\\
+        &= \dfrac{1}{2i}2iy\\
+        \dfrac{1}{2i}(z-\barre z) &= y
+    \end{align*}
+\end{proof}
+
+On peut exprimer, par trigonométrie, un lien entre l'argument d'un nombre complexe, ses parties réelle et imaginaire et son module.
+
+\begin{prop}
+    Soit $z\in\mathbb C$, de module $r$ et d'argument $\theta$, alors $$\cos(\theta)=\dfrac{\Re(z)}{r}$$ \begin{center} et \end{center} $$\sin(\theta)=\dfrac{\Im(z)}{r}$$
+\end{prop}
+\begin{proof}
+    La démonstration est laissée au lecteur.
+\end{proof}
+
+\subsubsection{Notation exponentielle}
+
+Nous allons désormais utiliser une nouvelle notation pour désigner $\cos(\theta)+i\sin(\theta)$, qu'on appelle notation exponentielle.
+
+\begin{defi}
+    On appelle exponentielle de $i\theta$, et l'on note $e^{i\theta}$, le nombre $$e^{i\theta}=\cos(\theta)+i\sin(\theta)$$
+\end{defi}
+
+\begin{rmk}\label{remarquent}
+    Un nombre complexe $z$ d'argument $r$ et de module $\theta$ s'exprime alors directement $z = re^{i\theta}$.
+\end{rmk}
+
+Une propriété importante de la notation exponentielle est qu'elle permet d'écrire plus facilement les multiplications complexes.
+
+\begin{prop}
+    Soient $z$ et $z'$ deux nombres complexes d'arguments respectifs $\theta$ et $\theta'$ et de modules respectifs $r$ et $r'$. Alors on a l'égalité suivante : $$z\times z' = rr'e^{i(\theta+\theta')}$$
+\end{prop}
+\begin{proof}
+    Nous décomposons ce produit en un module et un argument. Il est évident que le module du produit est le produit des modules (de par la formule du produit elle-même). Nous allons donc prouver que $e^{i\theta}e^{i\theta'}=e^{i(\theta+\theta')}$ :
+    \begin{align*}
+        e^{i\theta}e^{i\theta'}&= (\cos(\theta)+i\sin(\theta))(\cos(\theta')+i\sin(\theta'))\\
+        &= \left[\cos(\theta)\cos(\theta')-\sin(\theta)\sin(\theta')\right]+i\left[\cos(\theta)\sin(\theta')+\sin(\theta)\cos(\theta')\right]\\
+        &= \cos(\theta+\theta')+i\sin(\theta+\theta')\\
+        e^{i\theta}e^{i\theta'}&=e^{i(\theta+\theta')}
+    \end{align*}
+\end{proof}
+
+En reprenant les éléments précédents, on remarque que l'inverse d'un complexe de norme $1$ est son conjugué.
+
+\begin{prop}
+    Soit $z\in\mathbb C$ tel que $|z|=1$, et soit $\theta$ son argument. Alors $z^{-1}=\barre z$.
+\end{prop}
+\begin{proof}
+    Tout d'abord, $z=e^{i\theta}$ d'après la remarque \ref{remarquent}. Or on sait que $z^{-1}z=1$, donc en écrivant $z^{-1}=e^{i\theta'}$, on en déduit que $e^{i(\theta+\theta')}=e^{0\times i}$ donc $\theta+\theta'=0$ (nous considérons les angles principaux, d'où l'absence de multiple de $2\pi$). De cette égalité on en déduit que $\theta'=-\theta$, donc par la proposition \ref{argument} on en déduit que $z^{-1}=\barre z$.
+\end{proof}
+
+Cette propriété nous permet de déduire l'identité d'Euler.
+
+\begin{them}[Identité d'Euler]
+    Soit $\theta\in]-\pi;\pi]$, alors $$\cos(\theta)=\dfrac{e^{i\theta}+e^{-i\theta}}{2}$$ \begin{center} et \end{center} $$\sin(\theta)=\dfrac{e^{i\theta}-e^{-i\theta}}{2i}$$
+\end{them}
+\begin{proof}
+    Cette identité vient directement de la définition de parties réelle et imaginaire d'un complexe de module $1$, en utilisant la propriété précédente et la formule donnant les parties réelle et imaginaire d'un complexe en fonction de son conjugué.
+\end{proof}
+
+Nous allons enfin voir l'identité de Moivre.
+
+\begin{prop}
+    Soit $z\in\mathbb C$, d'argument $\theta$. Alors $z^n$ a comme argument $n\theta$.
+\end{prop}
+\begin{proof}
+    La preuve est simplement une induction utilisant le fait que l'argument d'un produit est la somme des arguments.
+\end{proof}
+
+\begin{them}[Formule de Moivre]
+    Soit $\theta\in]-\pi;\pi]$, alors $$(\cos(\theta)+i\sin(\theta))^n = \cos(n\theta)+i\sin(n\theta)$$
+\end{them}
+\begin{proof}
+    Il suffit de développer l'identité d'Euler et d'utiliser la propriété précédente.
+\end{proof}
+
+\subsection{Les équations de degré 2}
+
+Si nous revenons sur les équations de degré $2$ traitées plus tôt, nous remarquons que la forme factorisée fonctionne encore parfaitement dans le cadre des complexes. Simplement, nous pouvons maintenant trouver une racine carrée pour tout nombre complexe.
+
+\begin{defi}[Racine carrée]
+    Soit $z\in\mathbb C$, on appelle racine carrée principale de $z$ le complexe de module $\sqrt{|z|}$ et d'argument $\dfrac{1}{2}\theta$ où $\theta$ est l'argument de $z$. La racine carrée, mise au carré, de $z$, vaut $z$.
+\end{defi}
+\begin{proof}
+    On remarque que le module de la racine mise au carré vaut $\sqrt{|z|}^2=|z|$ et l'argument vaut $2\times \dfrac{1}{2}\theta = \theta$, donc la racine mise au carré vaut bien $z$.
+\end{proof}
+
+La résolution d'une équation de degré $2$ peut alors se généraliser de la façon suivante.
+
+\begin{them}
+    Soit une équation de la forme $$az^2+bz+c=0$$ où $a\neq 0$ et de coefficients complexes. Soit $\Delta = b^2-4ac$ et soit $\delta$ la racine carrée principale de $\Delta$. Alors
+    \begin{itemize}[label=$\bullet$]
+        \item Si $\delta = 0$ alors il n'y a qu'une solution : $x=\dfrac{-b}{2a}$.
+        \item Si $\delta \neq 0$ alors il y a deux solutions : $x=\dfrac{-b+\delta}{2a}\lor x = \dfrac{-b-\delta}{2a}$.
+    \end{itemize}
+\end{them}
+\begin{proof}
+    Il suffit de reprendre la preuve du cas réel et de l'adapter en posant une racine carrée dans tous les cas à $\Delta$.
+\end{proof}
+
+\newpage

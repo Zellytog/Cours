@@ -1,0 +1,204 @@
+\section{Généralités sur les fonctions}
+
+Ce dernier chapitre aura pour but de réinvestir les différents outils des chapitres précédents pour donner des propriétés basiques sur les fonctions usuelles. Nous introduirons le logarithme, l'exponentielle ainsi que les fonctions trigonométriques réciproques.
+
+\subsection{Logarithme}
+
+Le logarithme népérien (ou naturel) est une fonction dont l'intérêt premier est de transformer les produits en somme. Cela servait avant à faciliter des calculs, et sert aussi pour la notion d'échelle logarithmique, dont le principe est de représenter plusieurs ordres de grandeur en une seule échelle.
+
+\begin{defi}[Logarithme népérien]
+    On appelle logarithme népérien, et on note $\ln$, la fonction $$\fonction{\ln}{\reel_+^*}{\reel}{x}{\displaystyle\int_1^x\dfrac{1}{t}\dd t}$$
+\end{defi}
+
+On déduit de cette définition que la fonction $\ln$ est dérivable, et donc aussi continue. De plus sa dérivée étant strictement positive, cette fonction est strictement croissante. Enfin, $\ln(1)=0$ puisque $\ln$ est la primitive de la fonction inverse qui s'annule en $1$.
+
+\begin{prop}
+    Soient $a,b\in\reel_+^-$, alors $$\ln(a\times b) = \ln(a)+\ln(b)$$
+\end{prop}
+
+\begin{proof}
+    Développons le terme de gauche :
+    \begin{align*}
+        \ln(a\times b) &= \displaystyle\int_1^{a\times b} \dfrac{1}{t}\dd t\\
+        &= \displaystyle\int_{1/a}^b \dfrac{1}{t}\dd t\\
+        &= \displaystyle\int_{1/a}^1 \dfrac{1}{t}\dd t + \int_1^b \dfrac{1}{t}\dd t\\
+        &= \displaystyle\int_a^1 \dfrac{-1}{t^2}\times t\dd t + \int_1^b \dfrac{1}{t}\dd t\\
+        &= \displaystyle\int_1^a \dfrac{1}{t} \dd t + \int_1^b \dfrac{1}{t}\dd t\\
+        \ln(a\times b) &= \ln(a) + \ln(b)
+    \end{align*}
+    En effectuant le changement de variable $\varphi(t) = a\times t$ puis le changement de variable $\varphi(t) = \dfrac{1}{t}$ dans l'intégrale de gauche.
+\end{proof}
+
+\begin{prop}
+    Soit $a\in\reel_+^*$, alors $$\ln\left(\dfrac{1}{a}\right) = -\ln(a)$$
+\end{prop}
+
+\begin{proof}
+    Puisque $\ln\left(a\times \dfrac{1}{a}\right) = \ln(1) = 0$ et que $\ln\left(a\times \dfrac{1}{a}\right) = \ln(a) + \ln\left(\dfrac{1}{a}\right)$, on en déduit que $$\boxed{\ln\left(\dfrac{1}{a}\right) = -\ln(a)}$$
+\end{proof}
+
+\begin{exo}
+    Soit $n\in\mathbb Z$ et $a\in\reel_+^*$, montrer que $\ln(a^n) = n\ln(a)$. \textit{Indication : on raisonnera par récurrence pour $\nat$ puis on utilisera le passage à l'inverse pour calculer $\ln(a^{-n})$.}
+\end{exo}
+
+On définit de plus le logarithme en base quelconque :
+
+\begin{defi}[Logarithme en base quelconque]
+    Soit $a\in\reel_+^*$, on définit la fonction $$\fonction{\log_a}{\reel_+^*}{\reel}{x}{\dfrac{\ln(x)}{\ln(a)}}$$
+\end{defi}
+
+\begin{prop}
+    On a $$\lim_{x\to+\infty}\ln(x) = +\infty$$
+\end{prop}
+
+\begin{proof}
+    Pour prouver cela, nous allons procéder par minoration. D'abord, par décroissance de la fonction inverse, on sait que $$\int_{n}^{n+1}\frac{1}{t}\dd t \geq \frac{1}{n+1}$$ donc cela signifie que $$\int_{1}^n \frac{1}{t}\dd t \geq \sum_{k = 1}^{n-1}\frac{1}{k}$$ Si l'on montre que la somme de droite, que l'on va noter $H_n$, diverge vers $\infty$ pour $n\to\infty$, on en déduira que l'intégrale de gauche diverge, et cela permettra de déduire que $\displaystyle\lim_{x\to+\infty}\ln(x) = +\infty$ car cela signifie que la fonction est croissante non majorée.
+
+    Montrons que la somme $H_n$ diverge. Pour cela, on remarque que pour tout $p\in \nat$, $i \in\{2^p,\ldots,2^{p+1}\}$, $\dfrac{1}{i}\geq 2^{p+1}$, donc $$\sum_{i = 2^p}^{2^{p-1}} \frac{1}{i} \geq \frac{1}{2}$$ ce qui signifie que $H_{2^n} \geq \dfrac{n}{2}$ mais la suite de droite diverge, donc $H_{2^n}$ diverge. De plus, $H_n$ est croissante, donc comme elle est non majorée, elle diverge. Donc $\lim H_n = +\infty$, donc $$\boxed{\lim_{x\to+\infty}\ln(x) = +\infty}$$
+\end{proof}
+
+\begin{cor}
+    On a aussi $$\lim_{x\to 0}\ln(x) = -\infty$$
+\end{cor}
+
+\begin{proof}
+    Cela se déduit directement d'un changement de variable en $x = \dfrac{1}{h}$ avec $h\to\infty$ et du fait que $\ln\left(\dfrac{1}{h}\right) = -\ln(h)$.
+\end{proof}
+
+\begin{prop}[Croissance comparée]
+    On a $$\lim_{x\to +\infty} \frac{\ln(x)}{x} = 0$$
+\end{prop}
+
+\begin{proof}
+    \'Etudions la fonction $f : x\longmapsto \dfrac{\ln(x)}{x}$. Elle est dérivable sur $\reel_+^*$ et sa dérivée est $f' : x\longmapsto \dfrac{1-\ln(x)}{x^2}$ qui est strictement négative pour $x$ assez grand. On en déduit qu'au voisinage de $+\infty$, $f$ est strictement décroissante. De plus, $f$ est positive pour $x > 1$, donc on en déduit que $f$ a une limite en $+\infty$. On pose $l$ la limite de $f$. Comme $x\mapsto f(2x)$ a la même limite que $f$, on en déduit que $\displaystyle\lim_{x\to+\infty} \dfrac{\ln(2x)}{2x} = l$ or l'expression de gauche est égale à $\dfrac{1}{2}\dfrac{\ln(x)}{x} + \dfrac{1}{x}$ qui tend vers $\dfrac{l}{2}$, donc par unicité de la limite on en déduit que $\dfrac{l}{2} = l$ soit $$\boxed{l=0}$$
+\end{proof}
+
+\begin{cor}
+    Il s'en déduit $$\lim_{x\to0}x\ln(x) = 0$$
+\end{cor}
+
+\begin{proof}
+    Cette limité est équivalente à $\displaystyle\lim_{x\to\infty}\dfrac{1}{x}\ln\left(\dfrac{1}{x}\right) = \displaystyle\lim_{x\to\infty}-\dfrac{\ln(x)}{x}$ par changement de variable, d'où le résultat.
+\end{proof}
+
+\subsection{Exponentielle}
+
+La fonction exponentielle est définie en générale comme solution d'une équation différentielle. Ici, nous la construisons comme réciproque de la fonction logarithme népérien, et nous montrons qu'elle vérifie l'équation différentielle caractéristique de l'exponentielle.
+
+\begin{defi}[Exponentielle]
+    On définit la fonction exponentielle $$\fonction{\exp}{\reel}{\reel_+^*}{x}{\exp(x)}$$ comme la réciproque de la fonction $\ln$.
+\end{defi}
+
+\begin{proof}
+    Par stricte croissance et étude des limites de $\ln$, $\ln$ est bien bijective de $\reel_+^*$ dans $\reel$, donc cette fonction admet une réciproque $\exp : \reel\to\reel_+^*$. Comme $x\mapsto\dfrac{1}{x}$ ne s'annule pas, la fonction $\exp$ est dérivable sur $\reel$ (donc continue).
+\end{proof}
+
+\begin{prop}[\'Equation différentielle]
+    La fonction $\exp$ vérifie les propriétés suivantes :
+    \begin{center}
+        $\left\{\begin{array}{cc}
+            \exp' &= \exp  \\
+            \exp(0) &= 1
+        \end{array}\right.$
+    \end{center}
+
+    De plus, elle est l'unique fonction qui vérifie ces propriétés.
+\end{prop}
+
+\begin{proof}
+    En utilisant le théorème de dérivée d'une fonction réciproque, on sait que $$\exp'(x) = \dfrac{1}{\ln'(\exp(x))}$$ mais $\ln'(t) = \dfrac{1}{t}$ donc l'expression est équivalente à $$\boxed{\exp'(x) = \exp(x)}$$
+
+    Comme $\ln(1) = 0$ et $\exp$ est la réciproque de $\ln$, il en vient que $\exp(\ln(1)) = 1$ donc $$\boxed{\exp(0) = 1}$$
+
+    Si une autre fonction vérifiait ces propriétés, disons $g$, alors $\exp-g$ serait de dérivée nulle sur $\reel$ : elle serait donc constante. Comme $g$ et $\exp$ coïncident en $0$, cela signifie que $g = \exp + 0$ donc que $$\boxed{g=\exp}$$
+\end{proof}
+
+\begin{prop}
+    Soient $a$ et $b$ deux réels, alors $$\exp(a+b) = \exp(a)\times \exp(b)$$
+\end{prop}
+
+\begin{proof}
+    Puisque $\exp$ est la réciproque de $\ln$, on va écrire $a$ et $b$ sous forme d'images de logarithmes :
+    \begin{align*}
+        \exp(a)\times \exp(b) &= \exp(\ln(\exp(a)\times \exp(b)))\\
+        &= \exp(\ln(\exp(a))+\ln(\exp(b)))\\
+        &= \exp(a+b)
+    \end{align*}
+    D'où le résultat.
+\end{proof}
+
+\begin{exo}
+    Montrer que pour tout $n\in\nat,a\in\reel$, $\exp(na)=(\exp(a))^n$.
+\end{exo}
+
+\begin{prop}
+    Pour tout $a\in\reel, \exp(-a) = \dfrac{1}{\exp(a)}$
+\end{prop}
+
+\begin{proof}
+    On utilise simplement le fait que $\exp(a+(-a)) = 1$ et $\exp(a+(-a)) = \exp(a)\times \exp(-a)$.
+\end{proof}
+
+\begin{defi}[Notation puissance]
+    On note $e = \exp(1)$. Comme pour tout $n\in\nat, \exp(n) = e^n$, on étend cette notation pour tout $x\in\reel$ : $\exp(x) = e^x$.
+\end{defi}
+
+\begin{defi}[Exponentielle en base quelconque]
+    Soit $a\in\reel_+^*$, on définit l'exponentielle en base $a$, notée $a^x$ en un $x\in\reel$ donné, par $$a^x = e^{x\ln(a)}$$
+\end{defi}
+
+\begin{prop}[Limites de l'exponentielle]
+    L'exponentielle a comme limites $$\lim_{x\to -\infty} e^x = 0\qquad \lim_{x\to+\infty}e^x = +\infty$$
+\end{prop}
+
+\begin{proof}
+    Comme l'exponentielle est la réciproque de $\ln$ et que $\displaystyle\lim_{x\to0}\ln(x)=-\infty$ et $\displaystyle\lim_{x\to+\infty}\ln(x) = +\infty$, on déduit les limites voulues en remplaçant $x$ tendant vers $-\infty$ (respectivement $+\infty$) par $\ln(x)$ pour $x$ tendant vers $0$ (respectivement $+\infty$) et la limite à calculer est alors simplement la limite de la fonction identité.
+\end{proof}
+
+\begin{prop}[Croissance comparée]
+    On a $$\lim_{x\to\infty}\dfrac{x}{\exp(x)} = 0$$
+\end{prop}
+
+\begin{proof}
+    Là encore, on effectue un changement de variable pour changer $x$ en $\ln(x)$, où $x\to+\infty$. On a alors la limite de $\dfrac{\ln(x)}{x}$ que nous avons déjà calculé au préalable.
+\end{proof}
+
+\begin{cor}
+    On a aussi $$\lim_{x\to-\infty}xe^x = 0$$
+\end{cor}
+
+\begin{proof}
+    Cela se déduit encore par un changement de variable.
+\end{proof}
+
+\subsection{Cosinus et sinus}
+
+Les fonctions $\cos$ et $\sin$ sont importantes en analyse aussi, nous allons donner leurs dérivées en admettant qu'elles sont continues.
+
+\begin{prop}
+    La fonction $\sin$ est dérivable et sa dérivée est $\cos$.
+\end{prop}
+
+\includefig{Analyse/Figures/sinus.tex}{Figure pour encadrer le sinus}
+
+\begin{proof}
+    En utilisant la figure précédente, on peut calculer l'aire de $(OB\theta)$, l'aire du secteur angulaire $S$ entre $[OB]$ et $[O\theta]$ et celle de $(OBA)$, qui par inclusions successives sont l'une inférieure à la suivante. La hauteur $[H\theta]$ mesure $\sin(\theta)$ et la base $[OB]$ mesure $1$, donc l'aire de $(OB\theta)$ vaut $\mathcal A_{OB\theta} = \dfrac{1}{2}\sin(\theta)$. La longuer du secteur angulaire est directement $\mathcal A_S = \dfrac{1}{2}\theta$. En utilisant le théorème de Thalès, la longueur de $[AB]$ vaut $\tan(\theta)$ donc l'aire de $(OBA)$ vaut $\mathcal A_{OBA}\dfrac{1}{2}\tan(\theta)$. On en déduit l'encadrement suivante : $$\frac{1}{2}\sin(\theta)\leq \frac{1}{x}\theta\leq \frac{1}{2}\tan(\theta)$$ qui, si l'on divise par $\dfrac{1}{2}\sin(\theta)$ et qu'on applique la fonction inverse (strictement décroissante), donne $$\cos(\theta) \leq \frac{\sin(\theta)}{\theta}\leq 1$$ et on sait que $\displaystyle\lim_{\theta\to 0} \cos(\theta) = 1$ par continuité. Par encadrement, on en déduit donc que $$\boxed{\lim_{\theta\to0^+}\frac{\sin(\theta)}{\theta} = 1}$$ La limite n'a été prouvée que pour les valeurs supérieures, comme $\theta$ était positif, mais par imparité de $\sin$ on en déduit que la limite à gauche est la même, donc $\sin$ est dérivable en $0$ et sa dérivée vaut $1$.
+
+    Nous allons maintenant en déduire la dérivabilité sur $\reel$ de $\sin$ en calculant son taux d'accroissement entre un $a\in\reel$ et $a+h$ :
+    \begin{align*}
+        \dfrac{\sin(a+h)-\sin(a)}{h} &= \dfrac{\sin(a)\cos(h)+\sin(h)\cos(a)-\sin(a)}{h}\\
+        &= \dfrac{\sin(a)(\cos(h)-1)}{h} + \dfrac{\sin(h)}{h}\cos(a)\\
+        &= \sin(a)\dfrac{-2\sin^2\left(\dfrac{h}{2}\right)}{h} + \dfrac{\sin(h)}{h}\cos(a)\\
+        &= -\sin(a)\sin\left(\dfrac{h}{2}\right)\dfrac{\sin\left(\dfrac{h}{2}\right)}{\dfrac{h}{2}} + \dfrac{\sin(h)}{h}\cos(a)\\
+    \end{align*}
+
+    Le terme de gauche tend vers $0$ car le sinus tend vers $0$ et le quotient avec le sinus tend vers $1$ d'après la dérivée de $\sin$ en $0$. Ainsi il ne reste que le terme de droite, qui tend vers $\cos(a)$. Donc $$\boxed{\forall a\in\reel,\sin'(a) = \cos(a)}$$
+\end{proof}
+
+\begin{prop}
+    La fonction $\cos$ est dérivable, de dérivée $-\sin$.
+\end{prop}
+
+\begin{proof}
+    On sait que $\cos(x) = \sin\left(\dfrac{\pi}{2}-x\right)$ donc en dérivant, cela nous donne $\cos'(x) = -\cos\left(\dfrac{\pi}{2}-x\right) = -\sin(x)$, donc \fbox{$\cos'=-\sin$.}
+\end{proof}

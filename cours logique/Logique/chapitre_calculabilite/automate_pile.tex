@@ -1,0 +1,26 @@
+\subsection{Automates à pile}
+
+Pour palier l'absence de mémoire de nos automates finis, l'idée naturelle est d'ajouter de la mémoire (jusque là, la solution paraît évidente). Il existe de nombreuses structures de données permettant de jouer la mémoire, mais comme l'indique le nom de nos automates, nous allons stocker les informations dans une pile, c'est-à-dire une structure linéaire de type \textit{last in first out}, où l'information extraite est la dernière information qui a été mise dans la pile. Le formalisme que nous utiliserons pour la pile est directement celui des mots : on peut représenter une pile par un mot $u$ sur lequel on ajoute ou enlève une lettre à gauche.
+
+\begin{defi}[Automate à pile]
+    Un automate à pile $\aA$ (non déterministe) est la donnée d'un tuple $(\Sigma,\Gamma,Q,q_0,\delta,F,\bot)$ où :
+    \begin{itemize}[label=$\bullet$]
+        \item $\Sigma$ est l'alphabet de lecture : c'est des mots de $\Sigma$ que l'on va reconnaître.
+        \item $\Gamma$ est l'alphabet de pile : c'est avec cet alphabet que l'on écrira le mot qui nous servira de mémoire.
+        \item $Q$ est l'ensemble des états.
+        \item $q_0\in Q$ est toujours l'état initial.
+        \item la fonction de transition est désormais $\delta : \Sigma^+\times \Gamma\times Q \to \mathcal P(\Gamma^*\times Q)$ où $A^+ = A \cup \{\varepsilon\}$
+        \item $F\subseteq Q$ est l'ensemble des états finaux.
+        \item $\bot\in \Gamma$ est le symbole de fond de pile : il indique que la pile est vide lorsqu'il est lu.
+    \end{itemize}
+
+    On appelle configuration interne une paire $(q,\gamma)\in Q \times \Gamma^*$ : cela représente l'état de l'automate à un instant donné. Une configuration est définie comme un triplet $(q,\gamma,u)\in Q\times \Gamma^*\times \Sigma^*$. On appelle transition entre deux configurations $(q,\alpha\cdot\gamma,\beta\cdot u)$ et $(q',\gamma'\cdot\gamma,u)$ la relation $(\gamma',q')\in\delta(\beta,\alpha,q)$, et on la note $(q,\alpha\cdot\gamma,\beta\cdot u) \vdash (q',\gamma'\cdot\gamma,u)$.
+
+    On dit que le mot $u$ est accepté par $\aA$ s'il existe une suite de transitions depuis la configuration $(q_0,\bot,u)$ vers une configuration de la forme $(q_f,\gamma,\varepsilon)$ avec $q_f\in F$.
+\end{defi}
+
+Cette définition d'automate permet de définir la classe des langages algébriques, qui est une classe strictement plus large que les langages rationnels (elle contient par exemple le langage $\{0^n1^n\mid n\in\nat\}$)
+
+Ceux-ci possèdent des propriétés de clôture différentes : ils sont clos par union, concaténation, et passage à l'étoile, mais aussi par passage au miroir. Enfin, l'intersection d'un langage rationnel et d'un langage algébrique est un langage algébrique.
+
+Il existe une théorie parallèle, celle des grammaires, qui permet de donner une autre description équivalente des langages algébriques, mais nous ne nous attarderons pas dessus, car l'exemple des automates à pile nous sert surtout à introduire la notion de mémoire et de configuration. Remarquons simplement que la pile est un format de mémoire très limité : on peut y stocker des informations mais n'accéder qu'à une information à la fois. Nous allons donc voir un système plus expressif, avec une mémoire plus manipulable : les machines de Turing.

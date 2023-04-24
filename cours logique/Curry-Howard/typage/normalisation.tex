@@ -1,0 +1,528 @@
+\section{Normalisation des termes typables}
+
+Nous allons voir la propriété essentielle du lambda-calcul simplement typé : tout lambda-terme bien typé est normalisable, faiblement mais aussi fortement. Nous allons dans un premier temps montrer la propriété de la disjonction pour illustrer la technique de preuve qui nous servira ensuite pour la normalisation faible, puis la normalisation forte. Nous nous plaçons dans $\Lambda^{\to\times 1+0}$ mais les résultats fonctionnent aussi en se restreignant respectivement à $\Lambda^{\to\times 1}$ et $\Lambda^\to$. Pour la normalisation faible, nous allons introduire la notion de réduction de tête, qui est une réduction plus faible que $\reduc$ mais nous détaillons dans le passage à la normalisation forte comment adapter la normalisation faible pour la réduction de tête à celle pour la $\beta$-réduction classique.
+
+\subsection{Préliminaires}
+
+Commençons par donner quelques définitions préliminaires pour faciliter la lecture de nos résultats.
+
+\begin{defi}[Substitution simultanée]
+    Soit $\sigma : \VV\to\Lambda^{\to\times1+0}$ une fonction partielle. Pour un terme $M$ on donne la définition de la substitution simultanée $M\;\sigma$ par induction sur $M$, où nous noterons $\varlib{\sigma} = \displaystyle{\bigcup_{x\in\mathrm{dom}(\sigma)}\varlib{\sigma(x)}}$ :
+    \begin{itemize}[label=$\bullet$]
+        \item Si $M = x \in\mathrm{dom}(\sigma)$ alors $M\;\sigma = \sigma(x)$.
+        \item Si $M = x \notin\mathrm{dom}(\sigma)$ alors $M\;\sigma = M$.
+        \item Si $M = \lambda x.N$ où $x\notin\mathrm{dom}(\sigma)\cup\varlib\sigma$ alors $M\;\sigma = \lambda x.(N\;\sigma)$.
+        \item Si $M = N\;P$ alors $M\;\sigma = (N\;\sigma)\;(P\;\sigma)$.
+        \item Si $M = \langle\rangle$ alors $M\;\sigma = \langle\rangle$.
+        \item Si $M = \langle N,P\rangle$ alors $M\;\sigma = \langle N\;\sigma,P\;\sigma\rangle$.
+        \item Si $M = \pi_i\;N$ où $i\in\{1,2\}$ alors $M\;\sigma = \pi_i\;(N\;\sigma)$.
+        \item Si $M = \kappa_i\;N$ où $i\in\{1,2\}$ alors $M\;\sigma = \kappa_i\;(N\;\sigma)$.
+        \item Si $M = \delta\;(x\mapsto N\mid y\mapsto P)\;Q$ où $x,y\notin\mathrm{dom}(\sigma)\cup\varlib\sigma$ alors $$M\;\sigma = \delta\;(x\mapsto N\;\sigma\mid y\mapsto P\;\sigma)\;(Q\;\sigma)$$
+    \end{itemize}
+
+    On appelle par abus de langage substitution une fonction partielle $\sigma : \VV\to\Lambda^{\to\times1+0}$.
+\end{defi}
+
+On notera aussi, par convention, $\sigma[N/x]$ pour désigner la substitution $y\mapsto\sigma(y)$ si $y\neq x$ et $x\mapsto u$, avec $x\notin\mathrm{dom}(\sigma)$. On définit aussi pour des variables $x_1,\ldots,x_n$ et des termes $M,M_1,\ldots,M_n$, la substitution $M[M_1/x_1,\ldots,M_n/x_n]$ associée à $\sigma : x_i\mapsto M_i$.
+
+Enfin on note, pour $\mathcal B$ un ensemble de types de base fixé, $\types$ l'ensemble $T_{\to\times 1+0}$ associé.
+
+\subsubsection{Réduction de tête}
+
+L'idée de la réduction de tête est de ne considérer que le sous-terme le plus à gauche du lambda-terme et de le réduire autant que possible, puis s'arrêter. Supposons par exemple que l'on ait un lambda-terme $M = P\;Q$ où $P$ est une fonction, le but sera principalement de réduire $P$ jusqu'à avoir une abstraction $\lambda x.P'$ pour pouvoir ensuite réduire $(\lambda x.P')\;Q\reduc_0 P'[Q/x]$. Notre réduction de tête va suivre cette idée.
+
+\begin{defi}[Réduction de tête]
+    On définit la relation $\whr$ sur $\Lambda^{\to\times 1+0}$ par les règles suivantes :
+    \begin{center}
+        \begin{prooftree}
+            \infer0{(\lambda x^{\tau}.M)\;N\whr M[N/x]}
+        \end{prooftree}
+        \qquad
+        \begin{prooftree}
+            \infer0{\pi_1\;\langle M,N\rangle\whr M}
+        \end{prooftree}
+        \qquad
+        \begin{prooftree}
+            \infer0{\pi_2\;\langle M,N\rangle\whr N}
+        \end{prooftree}
+
+        \vspace{0.5cm}
+        
+        \begin{prooftree}
+            \infer0{\delta\;(x\mapsto M\mid y\mapsto N)\;(\kappa_1\;P)\whr M[P/x]}
+        \end{prooftree}
+        \qquad
+        \begin{prooftree}
+            \infer0{\delta\;(x\mapsto M\mid y\mapsto N)\;(\kappa_2\;P)\whr N[P/y]}
+        \end{prooftree}
+
+        \vspace{0.5cm}
+
+        \begin{prooftree}
+            \hypo{M\whr M'}
+            \infer1{M\;N\whr M'\;N}
+        \end{prooftree}
+        \qquad
+        \begin{prooftree}
+            \hypo{M\whr M'}
+            \infer1[$i\in\{1,2\}$]{\pi_i\;M\whr\pi_i\;M'}
+        \end{prooftree}
+        \qquad
+        \begin{prooftree}
+            \hypo{M\whr M'}
+            \infer1{\delta_\bot M\whr \delta_\bot M'}
+        \end{prooftree}
+
+        \vspace{0.5cm}
+
+        \begin{prooftree}
+            \hypo{P\whr P'}
+            \infer1{\delta\;(x\mapsto M\mid y\mapsto N)\;P\whr \delta\;(x\mapsto M\mid y\mapsto N)\;P'}
+        \end{prooftree}
+    \end{center}
+\end{defi}
+
+Nous utiliserons cependant une définition équivalente utilisant la notion de contexte d'élimination.
+
+\begin{defi}[Contexte d'élimination]
+    On définit l'ensemble $\Elim$ des contextes d'élimination de la façon suivante :
+    $$E[\;] ::= [\;]\;\Big|\; E[\;]\;M\;\Big|\; \pi_1\;E[\;]\;\Big|\; \pi_2\;E[\;]\;\Big|\; \delta\;(x\mapsto M\mid y\mapsto N)\;E[\;]\;\Big|\; \delta_\bot\;E[\;]$$ où $[\;]$, appelé un trou, est un caractère spécial. On définit $E[M]$ de façon naturelle en remplaçant dans l'expression de $E[\;]$ le caractère $[\;]$ par $M$.
+\end{defi}
+
+\begin{rmk}
+    Si $E[\;]\in\Elim$ et $F[\;]\in\Elim$ alors $E[F[\;]]\in\Elim$, ce qui nous donne une composition des contextes.
+\end{rmk}
+
+\begin{prop}
+    Pour $M,N$ deux lambda-termes, on a $M\whr N$ si et seulement s'il existe un contexte $E[\;]\in\Elim$ tel que $M = E[P],N = E[P']$ et $P\reduc_0 P'$.
+\end{prop}
+
+\begin{proof}
+    Montrons la première implication par induction sur $M\whr N$ :
+    \begin{itemize}[label=$\bullet$]
+        \item Si $M\whr N$ est obtenu par l'une des cinq première règles alors $M\reduc_0 N$ donc avec le contexte $E[\;] = [\;]$ le résultat est direct.
+        \item Si $M = E[M']\;Q$ et $N = E[N']\;Q$ avec $E[\;]\in\Elim$ et $M'\reduc_0 N'$ alors $M = E'[M']$, $N = E'[N']$ avec $E' = E[\;]\;Q$ d'où le résultat.
+        \item Si $M = \pi_i\;E[M']$, $N = \pi_i\;E[N']$ où $i\in\{1,2\}$, $E[\;]\in\Elim$ et $M'\reduc_0 N'$ alors $M = E'[M']$ et $N = E'[N']$ avec $E' = \pi_i\;E[\;]$ d'où le résultat.
+        \item Si $M = \delta_\bot E[M']$, $N = \delta_\bot E[N']$ avec $E[\;]\in\Elim$ et $M'\reduc_0 N'$ alors $M = E'[M']$ et $N = E'[N']$ pour $E' = \delta_\bot\;E[\;]$.
+        \item Si $M = \delta\;(x\mapsto P\mid y\mapsto Q)\;E[M']$ et $N = \delta\;(x\mapsto P\mid y\mapsto Q)\;E[N']$ avec $M'\reduc_0 N'$ alors en posant $E' = \delta\;(x\mapsto P\mid y\mapsto Q)\;E[\;]$ on a le résultat.
+    \end{itemize}
+
+    Réciproquement, on montre par induction sur $E[\;]$ le résultat :
+    \begin{itemize}[label=$\bullet$]
+        \item Pour $E[\;] = [\;]$ cela signifie que $M\reduc_0 N$ auquel cas $M\whr N$.
+        \item Pour $E[\;] = E[\;]\;P$ on utilise l'hypothèse d'induction et la $6^\mathrm e$ règle d'induction de $\whr$.
+        \item De même pour chaque règle $i$ de construction de $E[\;]$ de notre grammaire il y a une règle correspondante dans $\whr$ qui permet de passer directement de l'hypothèse d'induction au résultat.
+    \end{itemize}
+\end{proof}
+
+\begin{prop}
+    Soit $M$ une forme normale pour $\whr$, typable et close, alors $M$ est de l'une des formes suivantes :
+    $$\lambda x.N\qquad \langle\rangle\qquad \langle N,P\rangle \qquad \kappa_1\;N\qquad\kappa_2\;N$$
+\end{prop}
+
+\begin{proof}
+    On procède par induction sur $M$ :
+    \begin{itemize}[label=$\bullet$]
+        \item $M$ ne peut être une variable car c'est une formule close.
+        \item Si $M = N\;P$ alors comme $M$ est une forme normale, $N$ doit aussi être une forme normale (ou on pourrait réduire à l'intérieur et donc réduire $M$) mais par hypothèse d'induction, $N$ est de l'une des formes citées. Cependant comme $M$ est typable $N$ est de type $\sigma\to\tau$ donc est forcément de la forme $\lambda x.N'$ mais dans ce cas $M \reduc_0 N'[P/x]$ donc $M$ ne peut être de la forme $N\;P$.
+        \item Si $M = \lambda x.N$ alors $M$ est de l'une des formes voulues, donc le résultat est vérifié.
+        \item Si $M = \langle N,P\rangle$ alors $M$ est de l'une des formes voulues.
+        \item Si $M = \pi_i\;N$ pour $i\in\{1,2\}$ alors $N$ est une forme normale donc par hypothèse d'induction $N = \langle P_1,P_2\rangle$ pour des raisons de typages, mais alors $M\reduc_0 P_i$ donc $M$ ne peut être de la forme $\pi_i\;N$.
+        \item Si $M = \langle\rangle$ alors $M$ est de l'une des formes voulues.
+        \item Si $M = \kappa_i\;N$ pour $i\in\{1,2\}$ alors $M$ est de l'une des formes voulues.
+        \item Si $M = \delta\;(x_1\mapsto N_1\mid x_2\mapsto N_2)\;P$ alors par hypothèse $P$ est une forme normale de type $\sigma+\tau$ donc de la forme $\kappa_i\;P'$ donc $M\reduc_0 N_i[P'/x_i]$ donc $M$ ne peut être de cette forme.
+        \item Si $M = \delta_\bot\;M'$ alors $M'$ est une forme normale close de type $\voidt$ ce qui est impossible par hypothèse d'induction.
+    \end{itemize}
+\end{proof}
+
+\begin{exo}
+    Montrer que si $M$ est une forme normale pour $\whr$ typable, alors $M$ est de l'une des formes suivantes : $$E[x]\qquad \lambda x.N\qquad \langle\rangle\qquad \langle N,P\rangle\qquad \kappa_1\;N\quad \kappa_2\;N$$ où $E[\;]\in\Elim$ et $x\in\VV$.
+\end{exo}
+
+\subsection{Interprétation adéquate}
+
+Avec ces outils en tête, nous pouvons démontrer le théorème de faible normalisation. Cette preuve n'est pas directe car les outils d'induction sur les lambda-termes ou le typage sont limités. A la place, on va chercher une façon d'associer à un type $\tau\in\types$ un ensemble de lambda-termes $\trad\tau$ de telle sorte que $\trad\tau\subseteq P$ avec $P$ la propriété que l'on veut montrer sur les lambda-termes typés. En prouvant alors que $\vdash M : \tau\implies M\in\trad\tau$ on prouve notre propriété.
+
+\begin{defi}[Interprétation adéquate]
+    Soit $\trad - : \types\to\mathcal P(\Lambda^{\to\times1+0})$ une interprétation.
+    
+    \'Etant donnés une substitution $\sigma$ et un contexte de typage $\Gamma$ on note $\sigma\models_{\trad -} \Gamma$ si $\mathrm{dom}(\Gamma)\subseteq \mathrm{dom}(\sigma)$ et si pour tout $(x : \tau) \in\Gamma$, $\sigma(x)\in\trad\tau$.
+
+    On dit que $\trad -$ est acceptable si pour tout $M$ et $\sigma\models_{\trad -}\Gamma$ tels que $\Gamma \vdash M : \tau$ on a $M\;\sigma \in\trad\tau$.
+\end{defi}
+
+L'objectif est donc de construire une interprétation adéquate. Pour cela on raisonnera généralement par induction sur la relation de typage. Une première remarque est que si $\sigma\models_{\trad -}\Gamma$ alors pour $M = x$, si $\Gamma\vdash M : \tau$ cela signifie que $M\;\sigma = \sigma(x)\in\trad\tau$. Nous nous concentrons donc sur la définition de $\trad -$ pour les autres constructeurs de type. On ajoutera en plus les interprétations des constantes de types, càd des $\iota\in\mathcal B$, $\unit$ et $\voidt$.
+
+\begin{defi}
+    Soient $A,B\in\mathcal P(\Lambda^{\to\times1+0})$, on définit $$A\oto B := \{ M \mid \forall N\in A, M\;N\in B\}$$ \begin{center} et \end{center} $$A\otimes B := \{ M \mid (\pi_1\;M \in A) \land (\pi_2\;M\in B)\}$$
+\end{defi}
+
+L'objectif de cette définition est bien sûr de considérer $\trad{A\to B} = \trad A \oto \trad B$ et $\trad{A\times B} = \trad A \otimes \trad B$, et on peut donc déjà essayer de démontrer que si l'interprétation est adéquate à une étape, elle l'est en considérant $\oto$ et $\otimes$ pour construire l'étape suivante. On peut vérifier que le comportement vis à vis des règles d'élimination est le bon, mais pour la règle d'introduction de $\lambda$, on trouve un problème.
+
+On considère \begin{center}
+    \begin{prooftree}
+        \hypo{\Gamma,x : \kappa\vdash M : \tau}
+        \infer1{\Gamma\vdash \lambda x.M : \kappa\to\tau}
+    \end{prooftree}
+\end{center}
+Alors, pour $\sigma\models_{\trad -}\Gamma$ et $x\notin\varlib\sigma$ (quitte à renommer $x$), comme $(\lambda x.M)\;\sigma = \lambda x.M\;\sigma$, on doit montrer que si $N\in\trad\kappa$ alors $(\lambda x.M\;\sigma)\;N\in\trad\tau$. Par hypothèse d'induction, on sait que $(M\;\sigma)[N/x] = M\;\sigma[N/x]$ pour $\sigma\models_{\trad -}\Gamma$, et on voudrait donc en déduire que $(\lambda x.M\;\sigma)\;N$ : ce passage étant une application de réduction $\reduc_0$, on va demander une propriété de stabilité (remarquons qu'ici la stabilité est dans l'autre sens). Cependant il serait vain de ne demander que la stabilité par $\reduc_0$ car cela marchera pour une étape, mais ne nous permettra pas de fonctionner lors d'une induction sur les constructeurs de type. On va donc demander une stabilité pour $\whr$ :
+
+\begin{defi}[Stabilité par expansion de tête]
+    On dit qu'un ensemble $A\subseteq \Lambda^{\to\times1+0}$ est stable par expansion de tête si pour tout $N\in A$ et $M$ tel que $M\whr N$, on a $M\in A$. On va noter $\WHE$ cette propriété.
+\end{defi}
+
+\begin{exo}
+    Montrer que si $A$ vérifie $\WHE$ alors pour tout $M$ et $N\in A$ tels que $M\whr^* N$, on a $M\in A$.
+\end{exo}
+
+\subsubsection{Une première interprétation}
+
+Nous allons définir une première interprétation permettant de donner un théorème important : la propriété de la disjonction, qui dit que si $M : \tau+\kappa$ alors $M\whr\kappa_i\;N$ pour un certain $N$ et un certain $i\in\{1,2\}$.
+
+\begin{defi}[Interprétation positive]
+    On définit $\boxplus$, $\boldsymbol 1$ et $\boldsymbol 0$ de la façon suivante :
+    $$A\boxplus B := \{ M\mid (\exists N, (M\whr^* \kappa_1\;N)\land (N\in A))\lor (\exists N, (M\whr^* \kappa_2\;N)\land(N\in B))\}$$
+    $$\boldsymbol 1 := \{ M\mid M\whr^* \langle\rangle\}$$
+    $$\boldsymbol 0 := \varnothing$$
+\end{defi}
+
+Prouvons un lemme avant de prouver le théorème important de cette sous-partie :
+
+\begin{lem}
+    Soient $A,B,C\in\mathcal P(\Lambda^{\to\times1+0})$ où $C$ vérifie $\WHE$. Soient $M,N_1,N_2$ tels que $M\in A\boxplus B, N_1[Q/x_1]\in C$ et $N_2[Q/x_2]\in C$ pour tout $Q\in A\boxplus B$. Alors $$\delta \;(x_1\mapsto N_1\mid x_2\mapsto N_2)\;M\in C$$
+\end{lem}
+
+\begin{proof}
+    Par définition de $M\in A\boxplus B$, on trouve $M'$ tel que $M\whr^* \kappa_i\;M'$ avec $i\in\{1,2\}$. Cela signifie de plus que $\delta\;(x_1\mapsto N_1\mid x_2\mapsto N_2)\;M \whr^* \delta\;(x_1\mapsto N_1\mid x_2\mapsto N_2)\;(\kappa_i\;M')$ donc que $$\delta\;(x\mapsto N\mid y\mapsto P)\;M \whr^* N_i[M'/x_i]$$ or $N_i[M'/x_i]\in C$ donc comme $C$ vérifie $\WHE$, $$\delta \;(x_1\mapsto N_1\mid x_2\mapsto N_2)\;M\in C$$
+\end{proof}
+
+On peut alors donner le résultat menant à la propriété de la disjonction :
+
+\begin{them}
+    Soit $\trad -$ une interprétation. Si :
+    \begin{itemize}[label=$\bullet$]
+        \item $\trad\iota$ vérifie $\WHE$ pour tout $\iota\in\mathcal B$.
+        \item $\trad\voidt = \boldsymbol 0$ et $\trad\unit = \boldsymbol 1$.
+        \item $\trad{\sigma\to\kappa}=\trad\sigma\oto\trad\kappa$.
+        \item $\trad{\sigma\times\kappa}=\trad\sigma\otimes\trad\kappa$.
+        \item $\trad{\sigma+\kappa}=\trad\sigma\boxplus\trad\kappa$.
+    \end{itemize}
+
+    Alors :
+    \begin{itemize}[label=$\bullet$]
+        \item Pour tout type $\tau\in\types$, $\trad\tau$ vérifie $\WHE$.
+        \item $\trad-$ est une interprétation adéquate.
+    \end{itemize}
+\end{them}
+
+\begin{proof}
+    On montre par induction sur $\tau\in\types$ que $\trad\tau$ vérifie $\WHE$ :
+    \begin{itemize}[label=$\bullet$]
+        \item Par hypothèse $\trad\iota$ vérifie $\WHE$ pour $\iota\in\mathcal B$.
+        \item On vérifie que $\boldsymbol 0$ et $\boldsymbol 1$ vérifient $\WHE$ : pour $\boldsymbol 0$ on quantifie sur l'ensemble vide, et pour $\boldsymbol 1$, soit $N$ tel que $N\whr^*\langle\rangle$, alors pour $M$ tel que $M\whr^* N$, on a $M\whr^* \langle\rangle$ d'où le résultat.
+        \item Si $\trad\tau$ et $\trad\kappa$ vérifient $\WHE$, alors $\trad\tau\oto\trad\kappa$ vérifie aussi $\WHE$. En effet, si $N\in\trad\tau\oto\trad\kappa$ et $M\whr N$ alors pour $P\in \trad\tau$, on a $N\;P\in\trad\kappa$ donc, comme $\trad\kappa$ vérifie $\WHE$ et $M\;P\whr N\;P$, on en déduit que $M\;P\in\trad\kappa$, donc $M\in\trad\tau\oto\trad\kappa$.
+        \item Si $\trad{\tau_1}$ et $\trad{\tau_2}$ vérifient $\WHE$, soit $N\in\trad{\tau_1}\otimes\trad{\tau_2}$ et $M\whr N$. Alors $\pi_i\;N\in\trad{\tau_i}$ et comme $\pi_i\;M\whr\pi_i\;N$ on en déduit que $\pi_i\;M\in\trad{\tau_i}$ donc $M\in\trad{\tau_1}\otimes\trad{\tau_2}$.
+        \item Si $\trad{\tau_1}$ et $\trad{\tau_2}$ vérifient $\WHE$, soit $N\in\trad{\tau_1}\boxplus\trad{\tau_2}$ et $M\whr N$. On trouve $i\in\{1,2\}$ tel que $N\whr^* \kappa_i\;P$ avec $P\in\trad{\tau_i}$ mais alors $M\whr^* \kappa_i\;P$ donc $M\in\trad{\tau_1}\boxplus\trad{\tau_2}$.
+    \end{itemize}
+    On en déduit donc que toute interprétation vérifie $\WHE$.
+
+    Montrons maintenant que $\trad -$ est adéquate. On considère $\sigma\models_{\trad -}\Gamma$ et on raisonne par induction sur $\Gamma\vdash M : \tau$ pour montrer que $M\;\sigma\in\trad\tau$ :
+    \begin{itemize}[label=$\bullet$]
+        \item Comme on l'a dit, par hypothèse, la règle pour les variables est vérifiée.
+        \item Si $M\;\sigma\in\trad\tau$ et $y\notin\varlib{\sigma}$ alors la conclusion tient toujours en prenant $\Gamma,y : \kappa\vdash M$.
+        \item Si $\Gamma,x : \kappa\vdash M : \tau$ et $M\;\sigma\in\trad\tau$, alors pour tout $N\in\trad\kappa$ on sait que $M\;\sigma[N/x]\in\trad{\tau}$ donc $M\in\trad{\kappa\to\tau}$.
+        \item Si $M = N\;P$, avec $\Gamma\vdash N : \kappa\to\tau$ et $\Gamma\vdash P : \kappa$, où $N\;\sigma\in\trad{\kappa\to\tau}$ et $P\;\sigma\in\trad\kappa$, alors par hypothèse $M\;\sigma = (N\;\sigma)\;(P\;\sigma)\in\trad{\tau}$.
+        \item Si $M = \langle N_1,N_2\rangle$ avec $\Gamma\vdash N_1 : \kappa_1$, $\Gamma\vdash N_2 : \kappa_2$ et $\tau = \kappa_1\times\kappa_2$, alors $(\pi_i\;M\;)\sigma \whr N_i\;\sigma \in\kappa_i$ donc $M\;\sigma\in\trad{\kappa_1\times\kappa_2}$.
+        \item Si $M = \pi_i\;N$ avec $i\in\{1,2\}$ et $\Gamma\vdash N : \langle \kappa_1,\kappa_2\rangle$ alors par définition de $N\in\trad{\kappa_1\times\kappa_2}$ on en déduit que $M \in\trad{\tau}$ et $\tau = \kappa_i$ pour un certain $i$.
+        \item Si $M = \langle\rangle$ alors $M\;\sigma = \langle\rangle \in\trad\unit$.
+        \item Si $M = \kappa_i\;N$, $i\in\{1,2\}$ avec $\Gamma\vdash N : \kappa$ et $\tau = \kappa+\kappa'$ alors par définition $M\in\trad{\kappa+\kappa'}$.
+        \item Si $M = \delta\;(x_1\mapsto N_1\mid x_2\mapsto N_2)\;P$ alors par le lemme précédent cela signifie que $M\in\trad{\tau}$ pour $\tau$ le type de $N_i[P/x_i]$.
+        \item Si $M = \delta_\bot N$ alors $N\in\varnothing$ donc tout est vrai, la propriété en particulier.
+    \end{itemize}
+    Donc $\trad -$ est adéquate.
+\end{proof}
+
+\begin{cor}[Propriété de la disjonction]
+    On en déduit le corollaire suivant : si $M$ est un terme typable dans l'ensemble vide alors 
+    \begin{itemize}[label=$\bullet$]
+        \item si $\vdash M : \tau_1+\tau_2$ alors il existe $N$ tel que $M\whr \kappa_i\;N$ et $\vdash N : \tau_i$ pour un certain $i\in\{1,2\}$.
+        \item $\vdash M : \voidt$ est impossible.
+    \end{itemize}
+\end{cor}
+
+\begin{proof}
+    On construit l'interprétation comme proposé dans le théorème précédent, en associant à $\iota$ l'ensemble $\trad\iota = \{ M \mid \;\vdash M : \iota\}$. Par préservation du typage, si $N\whr M$ et $M\in\trad\iota$ on en déduit que $N\in\trad\iota$, donc l'interprétation est adéquate. On en déduit directement que $\vdash M : \voidt$ est impossible puisque cela signifie $M\in\varnothing$. Si $\vdash M : \tau+\tau_2$ alors $M\in \trad{\tau_1}\boxplus\trad{\tau_2}$ donc on trouve par définition de $\boxplus$ un $i\in\{1,2\}$ et un $N$ tels que $M\whr^* \kappa_i\;N$ et $N\in\trad{\tau_i}$. De plus $\vdash \kappa_i\;N : \tau_1+\tau_2$ donc $\vdash N : \tau_i$ par inversion sur le typage.
+\end{proof}
+
+\begin{rmk}
+    On n'a pas utilisé de $\sigma$ dans ce cas car $\sigma = \varnothing\models_{\trad -}\varnothing$ et on considère uniquement le typage dans $\varnothing$. 
+\end{rmk}
+
+\subsection{Normalisation faible}
+
+On va considérer la normalisation faible pour $\whr$ dans toute cette partie. On note $\WN$ l'ensemble des termes faiblement normalisables pour $\whr$. Un premier résultat est que si $N\in\WN$ et $M\whr N$ alors $M\in\WN$. Donnons un autre résultat :
+
+\begin{lem}
+    Soit $A\subseteq \WN$, l'ensemble $\{M\mid \exists N \in A, M\whr^* N\}$ est le plus petit ensemble contenant $A$ et vérifiant $\WHE$.
+\end{lem}
+
+\begin{proof}
+    Par définition si $M\in A$ alors $M\whr^* M$ donc $M$ l'ensemble décrit contient $A$. Si pour un certain $N$ il existe $P\in A$ tel que $N\whr^* P$ et que $M\whr N$ alors $M\whr^* P$ donc l'ensemble vérifie $\WHE$. De plus un ensemble contenant $A$ et vérifiant $\WHE$ contient tous les $M$ tels que $M\whr^* N$ pour $N\in A$ d'après un résultat précédent.
+\end{proof}
+
+\begin{lem}
+    Soient $A,B\subseteq\WN$, alors $A\otimes B\subseteq \WN$.
+\end{lem}
+
+\begin{proof}
+    On considère $M\in A\otimes B$. Si $M = \langle N,P\rangle$ alors $M$ est une forme normale et donc $M\in\WN$. Sinon, alors $\pi_1\;M\in A\subseteq\WN$ donc $\pi_1\;M$ est sous forme normale (et donc $M$ aussi) ou on trouve $N\in\WN$ tel que $\pi_1\;M\whr N$ mais par inversion sur $\whr$ on en déduit que $N = \pi_1\;N'$ et $M\whr N'$, donc $N'\in\WN$, donc $M\in\WN$.
+\end{proof}
+
+Cependant un nouveau problème se présente. Supposons qu'on veuille définir $\trad\voidt = \boldsymbol 0$ comme précédemment, alors $\boldsymbol 0 \oto A = \{M\mid \forall N\in\varnothing, M\;N\in A\}$ qui correspond à l'ensemble $\Lambda^{\to\times 1+0}$ tout entier, et est donc trop large pour considérer que $\trad\voidt \subseteq \WN$. On veut donc imposer que tous les ensembles $\trad\tau$ soient non vides. \'Evidemment, cela signifie qu'il nous faut modifier notre traduction de $\voidt$, mais plus généralement cette condition est compatible avec les traductions négatives (qui se basent sur les éliminateurs comme les projections ou les applications) mais pas avec les traductions positives (qui se basent sur les constructeurs comme les injections). On veut donc une traduction de $\unit$, $\voidt$ et $\tau+\tau'$ qui se basent sur les éliminateurs.
+
+Un dernier obstacle à contourner est que si l'on regarde l'élimination de $\voidt$ par exemple, on a un type dont on ne connaît rien qui est mentionné, et de même pour l'élimination de $+$. On voudrait donc quantifier sur tous les $\trad \tau$ mais comme nous cherchons à définir $\trad\tau$, la définition serait circulaire. De plus, considérer juste l'ensemble des parties $A\subseteq\Lambda^{\to\times1+0}$ est truc large, donc nous allons définir des parties plus restreintes vérifiant nos conditions dans lesquelles on veut travailler, que l'on appelle des ensembles saturés.
+
+\begin{defi}[Ensemble saturé]
+    On définit $\SATW\subseteq \mathcal P(\WN)$ l'ensemble des parties dites $\WN$-saturées, qui est tel que $A\in \SATW$ si et seulement \begin{itemize}[label=$\bullet$]\item si $E[x]\in A$ pour tout $E[\;]\in\Elim$ et $x\in\VV$ \item $M\in A$ si $M\whr N$ et $N\in A$\end{itemize}
+\end{defi}
+
+\begin{rmk}
+    La deuxième condition est exactement que $A$ vérifie $\WHE$.
+\end{rmk}
+
+\begin{prop}
+    L'ensemble $\SATW$ est un treillis complet pour l'inclusion dont le majorant est $\top := \WN$ et le minorant est $\bot := \{M\mid \exists E[\;]\in\Elim,\exists x\in\VV, M\whr^* E[x]\}$.
+\end{prop}
+
+\begin{proof}
+    Il est évident que $\WN$ est le majorant pour l'inclusion de $\SATW$. On sait de plus que l'ensemble $\{E[x]\mid E[\;]\in\Elim,x\in\VV\}$ est contenu dans tous les éléments de $\SATW$, donc le plus petit ensemble contenant cet ensemble et vérifiant $\WHE$ est inclus dans tous les éléments de $\SATW$. Cet ensemble est $\{M\mid \exists E[\;]\in\Elim,x\in\VV,M\whr^* E[x]\}$ donc $\bot$ est effectivement le minorant de tous les éléments de $\SATW$ pour l'inclusion. Soit $\mathcal A\subseteq \SATW$ un ensemble de parties $\WN$-saturées, montrons que $\bigcap\mathcal A\in\SATW$. On sait que pour tout $E[\;]\in\Elim,x\in\VV$, $E[x]\in A$ pour $A\in\mathcal A$ et de plus si $N\in\bigcap\mathcal A$ alors pour chaque $A\in\mathcal A$, si $M\whr N$ alors $M\in A$, donc au total $M\in\bigcap\mathcal A$, donc $\bigcap\mathcal A\in\SATW$. Pour $\bigcup\mathcal A$, le fait de contenir les $E[x]$ découle déjà du résultat pour l'intersection, et si $N\in\mathcal A$ et $M\whr N$ alors on trouve $A\in\mathcal A$ tel que $N\in A$ et comme $A$ vérifie $\WHE$, $M\in A$ donc $M\in\bigcup\mathcal A$.
+\end{proof}
+
+On définit alors les interprétations négatives sur $\SATW$.
+
+\begin{prop}
+    Une autre écriture de $\bot$ est $$\bot = \{M\mid \forall A \in\SATW, \delta_\bot\;M\in A\}$$
+\end{prop}
+
+\begin{proof}
+    Si $M\in\bot$ alors on trouve $E[x]$ tel que $M\whr^* E[x]$ et $E[x]\in A$ pour tout $A\in\SATW$ donc $M\in A$ et $\delta_\bot\;M\in A$ en considérant $E'[x] = \delta_\bot\;E[x]$. Réciproquement, si $\delta_\bot\;M\in A$ pour tout $A\in\SATW$, alors en particulier $\delta_\bot\;M\in \bot$ donc on trouve $E[x]$ tel que $\delta_\bot\;M\whr^* E[x]$ et en prenant $E'[x] = \delta_\bot\;E[x]$ on trouve donc $E'[x]$ tel que $M\;\whr^* E'[x]$ par inversion sur $\whr$, donc $M\in\bot$.
+\end{proof}
+
+\begin{defi}
+    Soient $A,B\in\SATW$. On définit pour $C\in\SATW$ l'ensemble intermédiaire $\Lambda_{A,C,x} := \{N\mid \forall P\in A,N[P/x]\in C\}$ puis $$A\oplus_\WN B := \{M\mid \forall C\in\SATW,\forall N_1\in\Lambda_{A,C,x_1},\forall N_2\in\Lambda_{B,C,x_2},\delta\;(x_1\mapsto N_1\mid x_2\mapsto N_2)\;M\in C\}$$
+\end{defi}
+
+On vérifie alors que $\SATW$ est bien stable par les relations attendues.
+
+\begin{lem}
+    Soient $A,B\in\SATW$, alors les ensembles suivants sont dans $\SATW$ : $$A\oto B\qquad A\otimes B\qquad A\oplus_\WN B$$
+\end{lem}
+
+\begin{proof}
+    Pour $E[x]$ avec $E[\;]\in\Elim,x\in\VV$, si l'on prend $M\in A$ alors $E[x]\;M = E'[x]$ avec $E'[\;] = E[\;]\;M$ donc comme $B\in\SATW$, $E[x]\;M\in B$, d'où $E[x]\in A\oto B$. Si $N\in A\oto B$ et $M\whr N$ alors pour $P\in A$, $M\;P\whr N\;P$ et $N\;P\in B$ donc par $\WHE$ on en déduit que $M\;P\in B$, donc $M\in A\oto B$, donc $A\oto B$ vérifie $\WHE$.
+
+    Soit $E[\;]\in\Elim,x\in\VV$, on définit $E' := \pi_i\;E[\;]$ et comme $A$ et $B$ contiennent tous les $E'[x]$, cela signifie que $E[x]\in A\otimes B$. Si $N\in A\otimes B$ et $M\whr N$ alors comme $\pi_1\; N\in A$ et $\pi_2\;N\in B$, cela signifie que $\pi_1\;M\in A$ et $\pi_2\;M\in B$ par $\WHE$, donc $M\in A\otimes B$. Donc $A\otimes B$ vérifie $\WHE$.
+
+    Pour $E[\;]\in\Elim,x\in\VV$, $C\in\SATW$ et $N_1\in \Lambda_{A,C,x_1},N_2\in\Lambda_{B,C,x_2}$, en posant comme nouveau contexte $E'[\;] = \delta\;(x_1\mapsto N_1\mid x_2\mapsto N_2)\;E[\;]$ on trouve que $E'[x]\in C$ car $C\in\SATW$. Si $N\in A\oplus_\WN B$ et $M\whr N$ alors soient $C,N_1,N_2$ définis comme précédemment. On sait de plus que $\delta\;(x_1\mapsto N_1\mid x_2\mapsto N_2)\; N\in C$ donc par $\WHE$ on en déduit que $\delta\;(x_1\mapsto N_1\mid x_2\mapsto N_2)\; M\in C$, donc $M\in A\oplus_{\WN} B$. Donc $A\oplus_\WN B$ vérifie $\WHE$.
+\end{proof}
+
+On en vient maintenant au théorème analogue à celui de la section précédente.
+
+\begin{them}
+    Soit $\trad -$ une interprétation telle que
+    \begin{itemize}[label=$\bullet$]
+        \item Pour tout $\iota\in\mathcal B$, $\trad\iota \in\SATW$.
+        \item $\trad\voidt = \bot$ et $\trad\unit = \top$.
+        \item Pour tout type $\tau,\tau'$, $$\trad{\tau\to\tau'} = \trad\tau\oto\trad{\tau'}\qquad \trad{\tau\times\tau'} = \trad\tau\otimes\trad{\tau'}\qquad \trad{\tau +\tau'} = \trad\tau\oplus_\WN \trad{\tau'}$$
+    \end{itemize}
+    Alors 
+    \begin{itemize}[label=$\bullet$]
+        \item Pour tout $\tau\in\types$, $\trad\tau\in\SATW$.
+        \item $\trad -$ est adéquate.
+    \end{itemize}
+\end{them}
+
+\begin{proof}
+    Le fait que $\trad\tau\in\SATW$ se déduit directement des lemmes précédents en effectuant une induction sur $\types$.
+
+    Soit $\sigma\models_{\trad -} \Gamma$ pour une substitution $\sigma$ et un environnement $\Gamma$, on va montrer par induction sur $\Gamma\vdash M : \tau$ que pour tout $M\in\Lambda^{\to\times 1+0}, \tau\in\types$ on a $\Gamma\vdash M : \tau \implies M \in\trad\tau$ :
+    \begin{itemize}[label=$\bullet$]
+        \item Les $6$ premières règles d'induction se traitent strictement de la même façon puisque les définitions sont identiques.
+        \item Si $M = \langle\rangle$ alors $M\;\sigma = \langle\rangle\in\WN = \trad\unit$.
+        \item Si $M = \kappa_i\;N, i\in\{1,2\}$ et $\Gamma\vdash M : \tau_1+\tau_2$ alors pour $C\in\SATW$, $N_1\in\Lambda_{\trad{\tau_1},C,x}$ et $N_2\in\Lambda_{\trad{\tau_2},C,x}$ on a $$\delta\;(x_1\mapsto N_1\mid x_2\mapsto N_2)\;M\whr N_i[N/x_i]\in C$$ donc par $\WHE$ on en déduit que $\delta\;(x_1\mapsto N_1\mid x_2\mapsto N_2)\;M\in C$, d'où $M\in \trad{\tau_1}\oplus_\WN \trad{\tau_2}$.
+        \item Si $M = \delta_\bot N$, $\Gamma\vdash M : \tau$ avec $N\in\trad\voidt$ alors par notre définition équivalente de $\bot = \trad\voidt$ on en déduit que $M\in \trad{\tau}$.
+    \end{itemize}
+    Donc $\trad -$ est adéquate.
+\end{proof}
+
+\begin{cor}
+    Si on trouve $\Gamma$ tel que $\Gamma\vdash M : \tau$ pour un lambda-terme $M$ et un type $\tau$, alors $M\in \WN$.
+\end{cor}
+
+\begin{proof}
+    Comme $\trad\tau\subseteq\WN$ et que $\trad -$ est adéquate, cela signifie que $M\;\sigma \in \trad\tau$ pour $\sigma\models_{\trad -}\Gamma$, donc $M\;\sigma$ est normalisable. En prenant la fonction $\sigma$ qui à $x$ associe $x^\tau$ avec $\tau$ tel que $(x : \tau)\in \Gamma$, on en déduit que $M\;\sigma = M$ et donc que $M$ est normalisable.
+\end{proof}
+
+\subsection{Normalisation forte}
+
+\subsubsection{Notion de terme fortement normalisant}
+
+Commençons par nous placer dans le cas d'un système de réécriture $(E,\to)$. On va commencer par montrer la validité d'une définition inductive pour traduire ce qu'est un terme fortement normalisable.
+
+\begin{defi}[Ensemble $\SN$]
+    Soit $(E,\to)$, on définit $\SN$ par la partie de $E$ constituée des éléments $x\in E$ tels qu'il n'existe pas de suite infinie $(x_i)_{i\in\nat}$ telle que $x_0 = x$ et $x_i\reduc x_{i+1}$ pour tout $i\in\nat$.
+\end{defi}
+
+\begin{prop}
+    L'ensemble $\SN'$ défini par induction comme la plus petite partie de $E$ stable par la règle suivante :
+    \begin{center}
+        \begin{prooftree}
+            \hypo{\forall y\in E,x\to y\implies y\in \SN'}
+            \infer1{x\in \SN'}
+        \end{prooftree}
+    \end{center}
+    Et $\SN'=\SN$.
+\end{prop}
+
+\begin{proof}
+    On raisonne par induction sur $\SN'$. Soit $x\in E$, on suppose que pour tout $y\in E$ tel que $x\to y$, il n'existe pas de $(y_i)_{i\in\nat}$ avec $y_0 = y$ et $\forall i\in\nat, y_i \to y_{i+1}$. Supposons qu'il existe une suite $(x_i)_{i\in\nat}$ telle que $x_0 = x$ et $\forall i\in\nat, x_i \to x_{i+1}$. En définissant $y_i = x_{i+1}$ on trouve une contradiction, donc une telle suite $(x_i)$ n'existe pas. Donc $\SN'\subseteq \SN$.
+
+    Par contraposée, si $x\notin\SN'$ alors on peut trouver un élément $y\notin\SN'$. Dans ce cas on peut trouver par l'axiome du choix dépendant une suite $(x_i)$ telle que $\forall i\in\nat, x_i\notin\SN'$. Donc $\SN\subseteq\SN'$. D'où le résultat.
+\end{proof}
+
+L'ensemble $\SN$ désignera maintenant l'ensemble $\SN$ correspondant au système de réécriture $(\Lambda^{\to\times1+0},\reduc)$.
+
+\subsubsection{Passer de la réduction de tête à la $\beta$-réduction}
+
+Encore une fois, nous allons adapter notre interprétation adéquate en changeant l'invariant qui définira nos ensembles saturés. Pour adapter le fait de contenir $E[x]$, il nous suffit de considérer $E[\;]\in\Elim\cap\SN$. Cependant, pour l'expansion de tête, s'assurer d'avoir $(\lambda x.M\;\sigma)\;N\in A$ si $M\;\sigma[N/x]\in A$, est moins direct. En effet, en imaginant par exemple $(\lambda x.\lambda y.y)\;\Omega$ on voit qu'un terme non normalisable peut disparaître lors de la réduction. Cependant, si $N$ est lui-même dans $\SN$, alors $(\lambda x.M\;\sigma)\;N$ sera bien dans $\SN$.
+
+Pour faciliter les notations, nous allons définir la notion de réduction de tuples.
+
+\begin{defi}[Réduction de tuples]
+    Soient $M_1,\ldots,M_n$ des termes. On note $(M_1,\ldots,M_n)\reduc (N_1,\ldots,N_n)$ s'il existe $i\in\{1,\ldots,n\}$ tel que $M_i\reduc N_i$ et pour $j\neq i$ on a $M_j=N_j$.
+\end{defi}
+
+Nous allons maintenant montrer un résultat intermédiaire pour montrer ensuite la propriété $\WHE$ dans les cas qui nous intéressent.
+
+\begin{lem}[Standardisation faible]
+    Soit $E[\;]\in\Elim$. Alors :
+    \begin{itemize}[label=$\bullet$]
+        \item Si $E[(\lambda x.M)\;N]\reduc P$, alors soit $P = E[M[N/x]]$, soit $P = E'[(\lambda x.M')\;N']$ où $(E[\;],M,N)\reduc (E'[\;],M',N')$.
+        \item Pour $i\in\{1,2\}$, si $E[\pi_i\;\langle M_1,M_2\rangle]\reduc N$, alors soit $N = E[M_i]$ soit $N = E'[\pi_i\;\langle M_1',M_2'\rangle]$ où $(E[\;],M_1,M_2)\reduc (E'[\;],M_1',M_2)$.
+        \item Soit $i\in\{1,2\}$, si $E[\delta\;(x_1\mapsto M_1\mid x_2\mapsto M_2)\;(\kappa_i\;N)]\reduc P$ alors on a deux possibilités : $P = E[M_i[N/x_i]]$ ou $P = E'[\delta\;(x_1\mapsto M_1'\mid x_2\mapsto M_2')\;(\kappa_i\;N')]$ avec $(E[\;],M_1,M_2,N)\reduc (E'[\;],M_1',M_2',N')$.
+    \end{itemize}
+\end{lem}
+
+\begin{proof}
+    On montre d'abord le cas sans $E[\;]$ :
+    \begin{itemize}[label=$\bullet$]
+        \item Si $(\lambda x.M)\;N\reduc P$ alors par inversion soit $P = M[N/x]$, soit $P = (\lambda x.M')\;N'$ avec $(M,N)\reduc (M',N')$.
+        \item Si $\pi_i\;\langle M_1,M_2\rangle\reduc N$ alors par inversion soit $N = M_i$ soit $N = \pi_i\;\langle M_1',M_2'\rangle$ avec $(M_1,M_2)\reduc (M_1',M_2')$.
+        \item Si $\delta\;(x_1\mapsto M_1\mid x_2\mapsto M_2)\;(\kappa_i\;N)\reduc P$ alors par inversion, soit $P = M_i[P/x_i]$ soit $P = \delta\;(x_1\mapsto M'_1\mid x_2\mapsto M'_2)\;(\kappa_i\;N')$ avec $(M_1,M_2,N)\reduc (M'_1,M'_2,N')$.
+    \end{itemize}
+    
+    On raisonne maintenant par induction sur $E[\;]$ :
+    \begin{itemize}[label=$\bullet$]
+        \item Si $E = [\;]$ alors le résultat découle de ce qu'on a prouvé juste avant.
+        \item Supposons que la propriété soit vraie pour $E[\;]$. On considère alors $E'[\;] = E[\;]\;M$ et un $N$ entrant dans l'un des cas précédemment traités. Dans chaque cas, si $E'[N]\reduc P$, par inversion sur $\reduc$, on trouve au choix que $E[N] \reduc N'$ et auquel cas par hypothèse d'induction on en déduit le résultat, ou que $M\reduc M'$ ce qui nous donne que $(E'[\;],N)\reduc (E''[\;],N)$ avec $E'' = E[\;]\;M'$.
+    \end{itemize}
+\end{proof}
+
+\begin{exo}
+    Traiter les autres cas d'induction.
+\end{exo}
+
+On en déduit le résultat de stabilité :
+
+\begin{prop}[Stabilité par réduction de tête]
+    Soit $E[\;]\in\Elim$. Alors
+    \begin{itemize}[label=$\bullet$]
+        \item Si $E[M[N/x]]\in \SN$ et $N\in\SN$ alors $E[(\lambda x.M)\;N]\in\SN$.
+        \item Soit $i\in\{1,2\}$. Si $E[M_i]\in\SN$ et $M_{3-i}\in\SN$ alors $E[\pi_i\;\langle M_1,M_2\rangle]\in\SN$.
+        \item Soit $i\in\{1,2\}$. Si $E[M_i[N/x_i]]$ et $N,M_{3-i}\in\SN$ alors $E[\delta\;(x_1\mapsto M_1\mid x_2\mapsto M_2)\;(\kappa_i\;N)]\in\SN$.
+    \end{itemize}
+\end{prop}
+
+\begin{proof}
+    On va montrer par induction sur $(E[\;],M,N)\SN$ que si $E[M[N/x]]\in\SN$ et $N\in\SN$ alors $E[(\lambda x.M)\;N]\in\SN$. Supposons que pour tout $(E'[\;],M',N')$ tel que $(E[\;],M,N)\reduc (E'[\;],M',N')$ alors si $E'[M'[N'/x]]\in\SN$ et $N'\in\SN$ alors $E[(\lambda x.M')\;N']\in\SN$. On suppose de plus que $E[M[N/x]]\in\SN$ et $N\in\SN$. Alors, si $E[(\lambda x.M)\;N]\reduc P$ il y a deux cas possibles : soit $P = M[N/x]$ et dans ce cas $P\in\SN$, soit $(E[\;],M,N)\reduc (E'[\;],M',N')$ et $P = E'[(\lambda x.M')\;N']$. Dans ce cas, on sait que $E'[M'[N/x]]\in\SN$ car $E[M[N/x]]\reduc^* E'[M'[N'/x]]$ et $E[M[N/x]]\in\SN$. De plus $N\reduc^* N'$ donc $N'\in\SN$ d'où $P = E[(\lambda x.M')\;N']\in\SN$. Ainsi par induction pour tout $(E[\;],M,N)\in\SN$, la propriété est vraie. Enfin, on remarque que si $E[M[N/x]]\in\SN$ alors en particulier $(E[\;],M,N)\in\SN$ car une réduction infinie depuis $(E[\;],M,N)$ serait infinie depuis $E[\;]$ ou depuis $M$ (car $N\in\SN$) et pourrait donc se simuler par compatibilité de $\reduc$ depuis $E[M[N/x]]$.
+
+    On traite les deux autres cas de façon analogue.
+\end{proof}
+
+\begin{exo}
+    Rédiger les deux autres cas de la preuve.
+\end{exo}
+
+\subsubsection{Interprétation adéquate}
+
+On peut maintenant adapter notre interprétation. Nous allons donner la notion d'ensemble $\SN$-saturé, qui est une adaptation de $\SATW$ comme attendu.
+
+\begin{defi}
+    On définit $\SATS$ comme la partie de $\mathcal P(\SN)$ contenant tous et uniquement les ensembles $A$ tels que :
+    \begin{itemize}[label=$\bullet$]
+        \item Pour tout $x\in\VV$ et $E[\;]\in\Elim\cap\SN$, $E[x]\in A$.
+        \item Si $N\in\SN$ et $E[M[N/x]]\in A$ alors $E[(\lambda x.M)\;N]\in A$.
+        \item Pour tous $i\in\{1,2\}$, si $E[M_i]\in A$ et $M_{3-i}\in \SN$ alors $E[\pi_i\;\langle M_1,M_2\rangle]\in A$.
+        \item Pour tous $i\in\{1,2\}$, si $E[M_i[N/x_i]]\in A$ et $N,M_{3-i}\in\SN$ alors $$E[\delta\;(x_1\mapsto M_1\mid x_2\mapsto M_2)\;(\kappa_i\;N)]\in A$$
+    \end{itemize}
+\end{defi}
+
+\begin{exo}
+    Montrer que $\SATS$ est un treillis complet pour l'inclusion avec pour bornes supérieure et inférieure respectivement $$\top := \SN$$ \begin{center} et \end{center} $$\bot := \{M\mid \exists E[\;]\in\Elim, \exists x\in\VV, M\reduc^* E[x]\}$$
+\end{exo}
+
+On adapte enfin $\oplus$.
+
+\begin{defi}[Somme dans $\SATS$]
+    On définit l'opération $\oplus_\SN$, pour $A\in\SATS$ et $B\in\SATS$, par : $$A\oplus_\SN B := \{ M \mid \forall C\in\SATS,\forall N_1\in\Lambda_{A,C,x_1},\forall N_2\in\Lambda_{B,C,x_2}, \delta\;(x_1\mapsto M_1\mid x_2\mapsto M_2)\;M\in C\}$$
+\end{defi}
+
+\begin{lem}
+    Soient $A,B\in \SATS$, alors les ensembles suivants sont dans $\SATS$ : $$A\oto B\qquad A\otimes B\qquad A\oplus_\SN B$$
+\end{lem}
+
+\begin{proof}
+    On remarque que si $E[\;]\in\Elim\cap\SN$ et $x\in\VV$, alors pour $N\in A$ on a $E[\;]\;N\in B$, et $\pi_1\;E[x]\in A, \pi_2\;E[x]\in B$ et si $C\in \SATS$ et $N_1,N_2$ définis comme dans la définition de $\oplus_\SN$, alors $\delta\;(x_1\mapsto M_1\mid x_2\mapsto M_2)\;E[x]\in C$ car tous les ensembles dans $\SATS$ contiennent $E[x]$ pour $E[\;]\in\Elim\cap\SN$, et nous n'ajoutons que des termes dans $\SN$ donc on obtient bien un $E'[x]$ pour $E'[\;]\in\Elim\cap\SN$.
+
+    Supposons que $N\in\SN$ et $E[M[N/x]]\in A\oto B$, alors soit $P\in A$. D'après ce qu'on a dit, $E[M[N/x]]\;P\in B$, or $B\in\SATS$ et $N\in\SN$ donc $E[(\lambda x.M)\;N]\;P\in B$. De plus par le lemme précédent, comme $N\in\SN$ et $E[M[N/x]]\;P\in \SN$ on en déduit que $E[M[N/x]]\in\SN$. Donc $E[(\lambda x.M)\;N]\in B$.
+    
+    On traite les autres cas de façon similaire.
+\end{proof}
+
+\begin{exo}
+    Démontrer les cas restants.
+\end{exo}
+
+On peut alors donner le théorème d'adéquation.
+
+\begin{them}
+    Soit $\trad -$ une interprétation telle que :
+    \begin{itemize}[label=$\bullet$]
+        \item Pour tout $\iota\in\mathcal B$, $\trad\iota\in\SATS$.
+        \item $\trad\unit = \top$ et $\trad\voidt = \bot$.
+        \item Pour tout $\tau,\tau'\in\types$, $\trad{\tau\to\tau'}=\trad\tau\oto\trad{\tau'}$.
+        \item Pour tout $\tau,\tau'\in\types$, $\trad{\tau\times\tau'}=\trad\tau\otimes\trad{\tau'}$.
+        \item Pour tout $\tau,\tau'\in\types$, $\trad{\tau + \tau'}=\trad\tau\oplus_\SN\trad{\tau'}$.
+    \end{itemize}
+
+    Alors $\trad -$ est adéquat.
+\end{them}
+
+\begin{exo}
+    Montrer le théorème précédent.
+\end{exo}
+
+\begin{cor}[Forte normalisation]
+    Soit $M\in\Lambda^{\to\times1+0}$ tel qu'il existe $\Gamma,\tau$ tels que $\Gamma\vdash M : \tau$, alors $M\in\SN$.
+\end{cor}
+
+\begin{proof}
+    On construit l'interprétation adéquate respectant les prémisses du théorème précédent. Pour cela, pour $\iota\in\mathcal B$, on associe $\trad\iota = \{M\mid \exists \Gamma, \Gamma\vdash M : \iota\}$. On vérifie que cet ensemble est bien dans $\SATS$ :
+    \begin{itemize}[label=$\bullet$]
+        \item Pour un contexte $E[\;]\in\Elim\cap\SN$ typé dans $\Gamma$, on prend $E[x]$ avec $x\notin \varlib{E[\;]}$ et $(\Gamma,x : \iota)$, donc $E[x]\in\trad\iota$.
+        \item Si $N\in\SN$ et que $\Gamma\vdash E[M[N/x]] : \iota$ alors comme $E[(\lambda x.M)\;N]\reduc E[M[N/x]]$, par préservation du typage, on déduit que $\Gamma\vdash E[(\lambda x.M)\;N] : \iota$.
+        \item De même pour les autres cas, par préservation du typage.
+    \end{itemize}
+
+    On en déduit que si $\sigma\models_{\trad -} \Gamma$ et $\Gamma\vdash M : \tau$ alors $M\;\sigma\in\trad\tau$ donc en particulier pour $\sigma$ la substitution triviale, on a $M\in\trad\tau$ donc $M\in\SN$.
+\end{proof}

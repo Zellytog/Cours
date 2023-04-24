@@ -1,0 +1,246 @@
+\section{Approfondissement : Un peu d'algèbre générale}
+
+Dans cette section, nous allons introduire des notions d'algèbre générale telle qu'on peut en fait dans le supérieur. Nous allons introduire les notions de loi de composition interne puis de groupe, avec les définitions usuelles accompagnant les groupes.
+
+Le but de l'algèbre générale est de s'abstraire des cas particuliers et d'étudier des structures dans leur généralité. Historiquement cette façon d'aborder les mathématiques est née assez tard, puisqu'il a fallu étudier d'abord beaucoup de structures pour trouver quelles abstractions sont pertinentes. Même si nous chercherons à donner des exemples, nous allons procéder de façon plus dogmatique : nous allons introduire des notions dont l'utilité peut sembler nulle. L'élève qui ne sera pas intéressé par ce chapitre pourra donc aisément l'ignorer, mais l'auteur étant un amateur d'algèbre, il considère que la beauté de cette théorie de la généralité peut toucher même des lycéens.
+
+\subsection{Loi de composition interne, monoïde, groupe}
+
+L'étude de l'algèbre est surtout centrée sur l'étude d'ensembles munis d'opérations. Définissons donc ce qu'est une opération, aussi appelée loi de composition interne (abrégée l.c.i.) :
+
+\begin{defi}[Loi de composition interne, magma]
+    Soit $E$ un ensemble. On appelle une loi de composition interne une fonction $\cdot : E \times E \to E$. On notera $x\cdot y$ à la place de $\cdot(x,y)$ (on appelle cette notation la notation infixe).
+
+    Un couple $(E,\cdot)$ où $E$ est un ensemble et $\cdot$ est une loi de composition interne sur $E$ est appelé magma.
+\end{defi}
+
+\begin{exo}
+    Soit $E$ de cardinal $n$, dénombrer le nombre de lci qu'il peut exister sur $E$.
+\end{exo}
+
+\begin{expl}\label{expl:magmas}
+    Voici plusieurs magmas :
+    \begin{itemize}[label=$\bullet$]
+        \item Pour un ensemble $E$, $(\mathcal P(E),\cup)$ est un magma, il en est de même pour les opérations ensemblistes binaires ($\cup$, $\Delta$, $\setminus$ etc.)
+        \item $(\mathbb N,+)$
+        \item $(\mathbb Z,+)$
+        \item $(\mathbb R,+)$
+        \item $(\mathbb N,\times)$ 
+        \item $(\mathbb Z,-)$
+        \item Soit le plan $\mathcal P$ usuel. Si $A$ et $B$ sont deux points, on note $f(A,B)$ le symétrique de $B$ par rapport à $A$. Alors $(\mathcal P,f)$ est un magma.
+    \end{itemize}
+\end{expl}
+
+La notion de magma est cependant très faible : aucune hypothèse n'apparaît dans cette définition, ce qui rend cette structure presque impossible à utiliser. Nous allons donc chercher des propriétés que peuvent avoir les lci.
+
+\begin{defi}[Propriétés d'une lci]
+    Soit $(E,\cdot)$ un magma.
+
+    Nous allons donner ici une liste de propriétés classiques que peut respecter une lci :
+    \begin{itemize}[label = $\bullet$]
+        \item Commutativité : $\forall x\in E, \forall y\in E, x \cdot y = y\cdot x$.
+        \item Associativité : $\forall x\in E, \forall y\in E, \forall z \in E, x\cdot (y\cdot z) = (x\cdot y)\cdot z$
+        \item Existence d'un élément neutre : $\exists e\in E, \forall x \in E, e\cdot x = x \land x\cdot e = x$
+        \item Si $\cdot$ possède un élément neutre, que l'on notera $e$, alors pour $x\in E$ on dit que $x'$ est le symétrique de $x$ si $x\cdot x' = e$ et $x'\cdot x = e$.
+    \end{itemize}
+\end{defi}
+
+\begin{exo}
+    Montrer que si $x\in E$ admet un symétrique, alors ce symétrique est unique.
+\end{exo}
+
+La première structure qui a un peu d'intérêt que nous pouvons introduire est celle de monoïde :
+
+\begin{defi}[Monoïde]
+    Un monoïde $(M,\cdot)$ est un magme $(M,\cdot)$ tel que $\cdot$ est associative et possède un élément neutre, qu'on notera généralement $e_M$ voire $e$ si le contexte n'est pas ambigu.
+
+    On dit que $(M,\cdot)$ est un monoïde commutatif lorsque c'est un monoïde dont la loi est commutative.
+\end{defi}
+
+\begin{exo}
+    Parmi les exemples de \ref{expl:magmas}, y a-t-il des monoïdes ? Si oui, lesquels ? Même question pour les monoïdes commutatifs.
+\end{exo}
+
+\begin{exo}
+    Montrer que dans un monoïde, le neutre est unique.
+\end{exo}
+
+La notion encore plus forte, et qui est celle qui nous intéresse vraiment, est celle de groupe :
+
+\begin{defi}[Groupe]
+    Un groupe $(G,\cdot)$ est un monoïde pour lequel tout élément possède un inverse. Si $x\in G$, on notera l'inverse de $x$ par $x^{-1}$.
+\end{defi}
+
+\begin{exo}
+    Soit $(G,\cdot)$ un groupe et $x\in G$ un élément idempotent, c'est-à-dire tel que $x\cdot x = x$. Montrer que $x$ est le neutre de $G$.
+\end{exo}
+
+\begin{exo}
+    Soit $(G,\cdot)$ un groupe. Montrer que pour tout $x\in G$, $(x^{-1})^{-1} = x$. Montrer que pour tous $x,y\in G$, $(x\cdot y)^{-1} = y^{-1}\cdot x^{-1}$.
+\end{exo}
+
+\subsection{Sous-groupe, morphisme de groupe, noyau et image}
+
+Une notion fondamentale en algèbre est celle de sous-structure. L'idée est que si l'on prend un ensemble muni d'une structure (un magmam, un monoïde, un groupe, ou d'autres structures plus exotiques), on peut considérer des parties de cet ensemble qui restent stables pour la structure, définissant alors une partie structurée à part entière. Nous allons donner une définition rigoureuse dans le cas d'un monoïde et d'un groupe.
+
+\begin{defi}[Sous-monoïde, sous-groupe]
+    Soit $(M,\cdot)$ un monoïde, de neutre $e$. On dit que $M'$ est un sous-monoïde de $M$ si :
+    \begin{itemize}[label=$\bullet$]
+        \item $M'\subseteq M$
+        \item $e\in M'$
+        \item si $m\in M'$ et $m'\in M'$ alors $m\cdot m' \in M'$.
+    \end{itemize}
+    Si $M'$ est un sous-monoïde de $M$, alors $(M',\cdot)$ est un monoïde (où $\cdot$ est la restriction de la loi $\cdot$ de $M$ à $M'$). De plus, si $M$ est un monoïde commutatif alors $M'$ l'est aussi.
+
+    Soit $(G,\cdot)$ un groupe de neutre $e$. On dit que $G'$ est un sous-groupe de $G$ si :
+    \begin{itemize}[label=$\bullet$]
+        \item $G'\subseteq G$
+        \item $e\in G'$
+        \item si $x\in G'$ et $y\in G'$ alors $x\cdot y \in G'$
+        \item si $x \in G'$ alors $x^{-1}\in G'$.
+    \end{itemize}
+    Si $G'$ est un sous-groupe de $G$, alors $(G',\cdot)$ est un groupe (où $\cdot$ est la restriction de la loi $\cdot$ de $G$ à $G'$). De plus, si $G$ est un groupe commutatif alors $G'$ l'est aussi.
+\end{defi}
+
+\begin{proof}
+    Montrons que $(M',\cdot)$ est un monoïde. Tout d'abord, l'opération $\cdot$ restreinte à $M'$ est bien définie (et totale), car si $x\in M'$ et $y\in M'$ alors $x\cdot y \in M'$. De plus, par définition, pour $x,y,z\in M'$, $$(x\cdot_{M'} y)\cdot_{M'} z = (x\cdot_{M} y)\cdot_{M} z = x\cdot_{M} (y\cdot_{M} z) = x\cdot_{M'} (y\cdot_{M'} z)$$ puisque $\cdot$ sur $M$ est associative. De même, on peut vérifier que $e$ est un élément neutre dans $M'$ à partir du fait qu'il l'est dans $M$. Dans le cas où $M$ est commutatif, on remarque que, pour $x,y\in M'$, $x\cdot y$ a la même valeur dans $M$ et $M'$, et donc vaut $y\cdot x$.
+
+    Pour prouver que $(G',\cdot)$ est un groupe, il nous suffit de montrer que chacun de ses éléments est inversible. En effet, on a déjà à partir du résultat précédent le fait que $(G',\cdot)$ est un monoïde. Soit $x\in G'$, on trouve $x^{-1}\in G'$ d'après nos hypothèses. On vérifie alors que $x\cdot x^{-1}=e$ puisque c'est le cas dans $G$.
+\end{proof}
+
+\begin{exo}
+    Montrer que $2\mathbb N$, l'ensemble des entiers naturels pairs, est un sous-monoïde de $(\mathbb N,+)$. Montrer que $2\mathbb Z$, l'ensemble des entiers relatifs pairs, est un sous-groupe de $(\mathbb Z,+)$.
+\end{exo}
+
+\begin{exo}[Caractérisation d'un sous-groupe]
+    Soit $(G,\cdot)$ un groupe, et $G'\subseteq G$ non vide. Montrer que $G'$ est un sous-groupe de $G$ si et seulement si pour tous $x,y\in G'$, $x\cdot y^{-1}\in G'$.
+\end{exo}
+
+\begin{exo}
+    Soit $(G,\cdot)$ un groupe de neutre $e$. Montrer que $G$ et $\{e\}$ sont des sous-groupes de $G$ (on les appelle parfois les sous-groupes triviaux de $G$).
+\end{exo}
+
+La prochaine définition que nous introduisons est un autre point essentiel de l'algèbre générale : celui de morphisme. L'idée d'un morphisme est une application qui va être compatible avec la structure. Dans le cas des groupes, cela se traduit par le fait que l'image du produit est le produit des images :
+
+\begin{defi}[Morphisme de groupes]
+    Soient $(G,\cdot_G)$ et $(H,\cdot_H)$ deux groupes. $f : G\to H$ est un morphisme de groupes lorsque la proposition suivante est vérifiée : $$\forall x\in G,\forall y \in G, f(x\cdot_G y)=f(x)\cdot_H f(y)$$
+\end{defi}
+
+\begin{exo}
+    En reprenant les notations de la définition précédente, et en notant $e_G$ et $e_H$ les neutres des groupes respectifs, montrer que $f(e_G) = e_H$. Montrer que pour tout $x\in G$, $f(x^{-1}) = (f(x))^{-1}$
+\end{exo}
+
+On notera en général $\cdot$ pour toutes les lois de groupes, en considérant qu'il n'y a pas de confusion, mais un lecteur peu à l'aise avec la théorie des groupes devra faire attention à comprendre dans quel ensemble chaque objet écrit habite.
+
+La propriété suivante sera particulièrement utile dans ses implications :
+
+\begin{prop}
+    Soient $(G,\cdot)$ et $(H,\cdot)$ deux groupes, et $f : G\to H$ un morphisme de groupes. Soient $G'$ (respectivement $H'$) un sous-groupe de $G$ (respectivement de $H$). Alors $f(G')$ est un sous-groupe de $H$ et $f^{-1}(H')$ est un sous-groupe de $G$.
+\end{prop}
+
+\begin{proof}
+    Montrons que $f(G')$ est un sous-groupe de $H$ :
+    \begin{itemize}[label=$\bullet$]
+        \item Comme $G'\subseteq G$ et par définition de l'image directe, on a $f(G')\subseteq H$.
+        \item D'après l'exercice précédent, $f(e_G) = e_H$, et $e_G\in G'$ car $G'$ est un sous-groupe de $G$, donc $e_H\in f(G')$.
+        \item Soient $a,b\in f(G')$, alors par définition de $f(G')$ on trouve $x,y\in G'$ tels que $f(x)=a$ et $f(y) = b$. Alors $$a\cdot b = f(x)\cdot f(y) = f(x\cdot y)$$ donc $a\cdot b \in f(G')$ car $G'$ est stable par produit. 
+        \item Soit $a\in f(G')$, par définition on trouve $x\in G'$ tel que $f(x) = a$, or $f(x)^{-1} = f(x^{-1})$ donc $a^{-1}\in f(G')$ car $x^{-1}\in G'$.
+    \end{itemize}
+    Donc $f(G')$ est bien un sous-groupe de $H$.
+
+    Montrons que $f^{-1}(H')$ est un sous-groupe de $G$ :
+    \begin{itemize}[label=$\bullet$]
+        \item Là encore, la définition d'image réciproque d'une partie $H'\subseteq H$ nous donne directement que $f^{-1}(H')\subseteq G$.
+        \item Puisque $f(e_G) = e_H$ et que $e_H\in H'$ (car $H'$ est un sous-groupe), on en déduit que $e_G\in f^{-1}(H')$.
+        \item Soient $x,y\in f^{-1}(H')$. On peut alors écrire $f(x\cdot y) = f(x)\cdot f(y)$ or $f(x)\in H'$ et $f(y)\in H'$ par définition, et comme $H'$ est un sous-groupe de $H$, il est stable par produit, donc $x\cdot y \in f^{-1}(H')$.
+        \item Soit $x\in f^{-1}(H')$. Comme $f(x^{-1}) = (f(x))^{-1}$ et que $H'$ est stable par passage au symétrique, on en déduit que $f(x^{-1})\in H'$, donc que $x^{-1}\in f^{-1}(H')$.
+    \end{itemize}
+    Donc $f^{-1}(H')$ est bien un sous-groupe de $G$.
+\end{proof}
+
+Ce résultat signifie que les morphismes induisent des correspondances entre les sous-structures. Cependant, la considération inverse est très fructueuse aussi : étudier les sous-structures liées à un morphisme permet de mieux étudier ses propriétés.
+
+\begin{defi}[Noyau, Image]
+    Soient $(G,\cdot)$ et $(H,\cdot)$ deux groupes, et $f : G\to H$ un morphisme de groupes. On définit l'image de $f$, notée $\mathrm{Im}(f)$, par $$\img(f) = f(G)$$ On définit le noyau de $f$, noté $\ker(f)$, par $$\ker(f) = f^{-1}(\{e_H\})$$
+\end{defi}
+
+L'intuition derrière ces deux définitions est la suivante : $\img(f)$ représente l'étendue des valeurs atteintes par $f$, et $\ker(f)$ représente à quel point les points s'accumulent en le neutre de l'image. Ces objets sont étroitement liés respectivement à la surjectivité et à l'injectivité de $f$, comme nous allons le prouver.
+
+\begin{prop}
+    En reprenant les notations précédentes, on a les équivalences suivantes :
+    \begin{itemize}[label=$\bullet$]
+        \item $f$ est surjective si et seulement si $\img(f) = H$
+        \item $f$ est injective si et seulement si $\ker(f) = \{e_G\}$
+    \end{itemize}
+\end{prop}
+
+\begin{proof}
+    Supposons que $f$ est surjective. Soit $y\in H$, alors par surjectivité de $f$ il existe $x\in G$ tel que $f(x) = y$, donc $y\in f(G) = \img(f)$. Comme par définition $\img(f)\subseteq H$, on en déduit que $H = \img(f)$. Réciproquement, si $\img(f) = H$, alors soit $y\in H$ : puisque $H=\img(f)$, on en déduit que $y \in \img(f)$ donc on trouve $x\in G$ tel que $f(x) = y$, ce qui signifie que $f$ est surjective.
+
+    Supposons que $f$ est injective. Puisque $\ker(f)$ est un sous-groupe, $\{e_G\}\subseteq \ker(f)$. Comme $f$ est injective, si l'on prend $x\in\ker(f)$, comme on sait que $f(x) = f(e_G)$, il en découle que $x = e_G$, donc $\{e_G\} = \ker(f)$. Réciproquement, si $\ker(f) = \{e_G\}$, alors soient $x,y\in G$, montrons que si $f(x) = f(y)$ alors $x=y$ :
+    \begin{align*}
+        f(x) = f(y) &\implies f(x)\cdot f(y)^{-1} = e_H\\
+        &\implies f(x\cdot y^{-1}) = e_H\\
+        &\implies x\cdot y^{-1} \in \ker(f)\\
+        &\implies x\cdot y^{-1} = e_G \qquad \text{car} \ker(f) = \{e_G\}\\
+        &\implies x = y
+    \end{align*}
+    donc $f$ est injective.
+\end{proof}
+
+Cela nous donne donc un nouvel outil pour montrer qu'une fonction est bijective : si elle est un morphisme de groupes, il nous suffit de montrer que son image est l'ensemble d'arrivée, et que son noyau est réduit au neutre de l'ensemble de départ. Il se trouve que les morphismes bijectifs revêtent une importance particulière, car là où deux ensembles en bijections peuvent avoir des données différentes (par exemple $\mathbb N$ et $\mathbb Z$ ne sont pas équipés par défaut des mêmes structures), deux groupes tels qu'il existe un morphisme bijectif entre eux seront en général assimilé. En effet, du point de vue de la théorie des groupes, ces deux groupes auront strictement le même comportement et les résultats vrais sur l'un seront vrais sur l'autre. Nous allons donner quelques définitions pour pouvoir parler de ces aspects :
+
+\begin{defi}
+    Soient $(G,\cdot)$ et $(H,\cdot)$ deux groupes. On dit que :
+    \begin{itemize}[label=$\bullet$]
+        \item Un morphisme de groupe $f : G \to G$ est un endomorphisme (ce terme s'applique à un morphisme dont le domaine est le codomaine).
+        \item Un morphisme de groupe $f : G \to H$ bijectif est un isomorphisme.
+        \item Un morphisme de groupe $f : G \to G$ bijectif est un automorphisme (ce terme s'applique à un isomorphisme d'un groupe dans lui-même).
+        \item $G$ et $H$ sont isomorphes s'il existe un isomorphisme $f : G \to H$.
+    \end{itemize}
+\end{defi}
+
+\subsection{Exemple : des petits groupes}
+
+Nous allons tout d'abord étudier précisément un groupe comportant deux éléments. Comme nous l'avons dit, en théorie des groupes, nous nous importons peu du nom des éléments et l'important est de considérer les groupes à isomorphisme près. Cela signifie que nous parlerons \textit{du} groupe à deux éléments quand nous aurons établi que tous deux groupes de cardinal $2$ sont isomorphes.
+
+Puisque nous voulons deux éléments, nous allons prendre comme support l'ensemble $2 = \{0,1\}$, que nous noterons $G_2$ pour une meilleure lisibilité. Nous allons décrire la loi $\cdot$ sur $G_2$ à partir de ce qu'on appelle une table de Cayley, qui est un tableau à deux entrées, présentant le résultat de l'opération $x\cdot y$ pour $x$ et $y$ des éléments de notre groupe. Tout d'abord, on sait qu'il existe un élément neutre, nous déciderons que $0$ est ce tel élément. Cela fixe donc que $0\cdot 1 = 1 \cdot 0 = 1$, et que $0\cdot 0 = 1$ : il ne reste qu'à déterminer $1\cdot 1$. Cependant, comme tout élément a un inverse, on sait qu'il existe $x$ tel que $1\cdot x = 0$, et $1\cdot 0 \neq 0$, donc la seule possibilité est $1\cdot 1 = 0$.
+
+\begin{table}[ht]
+            \centering
+            \begin{tabular}{| c | c  c |}
+                \hline
+                $\cdot$ & $0$ & $1$\\
+                \hline
+                $0$ & $0$ & $1$\\
+                $1$ & $1$ & $0$\\
+                \hline
+            \end{tabular}
+            \caption{Table de Cayley du groupe à deux éléments}
+    \end{table}
+
+On montre alors le résultat suivant pour justifier que ce groupe est le seul à isomorphisme près :
+
+\begin{prop}
+    Soient $(G,\cdot)$ et $(H,\cdot)$ deux groupes à deux éléments, alors il existe un isomorphisme $\varphi : G \to H$.
+\end{prop}
+
+\begin{proof}
+    On note $x_G$ et $x_H$ respectivement l'élément de $G$ différent du neutre $e_G$ et l'élément de $H$ différent du neutre $e_H$. On définit alors $\varphi$ par $\varphi(e_G) = e_H$ et $\varphi(x_G)=x_H$.
+
+    $\varphi$ est bien un morphisme de groupe par disjonction de cas : $\varphi(e_G\cdot e_G) = \varphi(e_G)\cdot \varphi(e_G)$ dans le premier cas, $\varphi(e_G\cdot x_G) = \varphi(e_G)\cdot \varphi(x_G)$ dans le deuxième, $\varphi(x_G\cdot e_G) = \varphi(x_G)\cdot \varphi(e_G)$ dans le troisième et enfin $\varphi(x_G\cdot x_G) = \varphi(x_G)\cdot \varphi(x_G)$.
+
+    Montrons que $\varphi$ est surjective : $$\img(\varphi) = \{\varphi(e_G),\varphi(x_G)\} = \{e_H,x_H\} = H$$
+
+    Montrons que $\varphi$ est injective : $\ker(\varphi) = \{e_G\}$ puisque $\varphi(x_G)\neq e_H$.
+
+    Donc $\varphi$ est un isomorphisme entre $G$ et $H$.
+\end{proof}
+
+Ainsi il existe un unique groupe à deux éléments, à isomorphisme près.
+
+\begin{exo}[*]
+    Existe-t-il un unique groupe à trois éléments, à isomorphisme près ?
+\end{exo}
+
+\newpage

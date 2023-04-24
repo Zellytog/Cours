@@ -1,0 +1,27 @@
+\part{Isomorphisme de Curry-Howard}
+
+\chapter{Lambda-calcul non typé}
+
+Ce chapitre porte sur la version la plus basique du lambda-calcul, qui est le lambda-calcul non typé.
+
+Le lambda-calcul a d'abord été développé par Church pour rendre compte de la notion de calculabilité, même si ce formalisme s'est porté bien plus fécond qu'attendu. Il est à la base du paradigme fonctionnel en programmation et les langages tels que Haskell et OCaml l'utilisent.
+
+Nous commencerons par introduire la syntaxe du lambda-calcul, avec la forme des termes et les conversions $\alpha$ et $\beta$. Nous allons ensuite montrer que ce formalisme est aussi expressif que les machines de Turing en montrant son équivalence avec les fonctions récursives, puis clore le chapitre sur les théorèmes principaux du lambda-calcul.
+
+\input{Curry-Howard/lambda_calc_nt/definition}
+
+\input{Curry-Howard/lambda_calc_nt/programmation}
+
+\input{Curry-Howard/lambda_calc_nt/church_rosser}
+
+\chapter{Lambda-calcul simplement typé}
+
+Maintenant que nous avons la théorie du lambda-calcul, nous allons introduire la notion de typage. Ce chapitre s'attachera au typage en lui-même et donnera des résultats théoriques motivant le typage (principalement le théorème de normalisation forte) ainsi que les résultats pour utiliser un système de type.
+
+Motivons d'abord l'introduction des types. Nous avons parlé plus tôt de la normalisation, et avons vu qu'un terme tel que $\Omega := (\lambda x.x\;x)(\lambda x.x\;x)$ n'est pas normalisable. Cependant, on peut se demander si un tel terme correspond vraiment à une fonction comme on l'imagine. En effet, le terme $\lambda x.x\;x$ prend un terme et l'applique à lui-même : dans la conception habituelle de fonction, c'est un processus impossible puisque $E \neq F^E$ pour quelque $F$ que ce soit, donc si $f : E \to F$ alors on ne peut pas donner $f$ en argument à $f$. Il y a donc naturellement une notion d'homogénéité dans notre appréciation des fonctions, et cette notion que vont traduire les types. De plus, une conséquence particulièrement appréciable du fait de forcer l'homogénéité est que tous les termes homogènes en ce sens, sont fortement normalisables.
+
+La théorie des types a d'ailleurs été initialement introduite par Russell pour éviter le paradoxe d'avoir un ensemble de tous les ensembles, qui d'une certaine façon peut se rapprocher de l'élimination des lambda-termes s'appliquant à eux-mêmes. Un type sera donc une étiquette ajoutée à un terme pour indiquer sa nature. On pourra par exemple trouver le type $\intt$ qui étiquette les termes qui représenteront les entiers.
+
+\input{Curry-Howard/typage/definition}
+
+\input{Curry-Howard/typage/normalisation}

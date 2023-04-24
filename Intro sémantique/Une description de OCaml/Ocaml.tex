@@ -1,0 +1,62 @@
+\section[OCaml]{Le langage OCaml}
+
+Nous nous intéresserons maintenant à la syntaxe de OCaml et en donnerons une traduction en lambda-calcul simplement typé. Précisons ici que si OCaml fonctionne normalement avec du polymorphisme, nous nous restreindrons à en étudier une version sans polymorphisme.
+
+Dans cette partie, nous détaillerons la syntaxe de OCaml (en donnant à ce moment-là les restrictions du langage comparé au vrai langage OCaml).
+
+Nous allons désormais ajouter à notre langage la \og fonction\fg{} $Y$. Nous pourrons donc noter $Y\;M$ un nouveau terme. La règle de typage est $$\dfrac{\Gamma\vdash M : \tau \to\tau}{\Gamma\vdash Y\; M : \tau}$$ et la règle de réduction est $$\dfrac{}{Y\;M\to M\;(Y\;M)}$$
+
+Pour gagner en expressivité, nous devons alors sacrifier la sécurité de notre langage : en effet, il existe alors des lambda-termes qui ne sont pas normalisables.
+
+\begin{expl}
+    Le lambda-terme $M=Y\;(\lambda x^{\intt}.x+1)$ n'est pas normalisant. En effet, on peut montrer que $M\to^* M + n$ pour tout $n : \intt$. On construit ainsi une suite infinie de réductions.
+\end{expl}
+
+\begin{exo}
+    Trouver un lambda-terme typé $\Omega$ qui se réduise vers lui-même.
+\end{exo}
+
+\subsection{Syntaxe de OCaml}
+
+Nous allons maintenant préciser la syntaxe de notre version simplifiée de OCaml.
+
+\begin{defi}
+    Un terme de OCaml est défini par la grammaire :
+    \begin{multline*}
+        M,N,P ::= x\mid k\mid \top\mid\bot\mid \fun \;x\to M\mid M N\mid \ifthenelse{M}{N}{P}\mid \letin{x}{M}{N} \\\mid \letrec{x}{M}{N}\mid M+N\mid M\times N\mid M-N \mid M\| N \mid M \andt N\mid \nott\; M\mid M\leq N\mid \langle M,N\rangle\\\mid \pi_1M\mid \pi_2 M\mid \pare
+    \end{multline*}
+    Les types dans OCaml sont :
+        $$\sigma,\tau ::= \intt\mid\boolt\mid\unit\mid \sigma\times \tau\mid\sigma\to\tau$$
+    Le type \unit{} correspond à un type à un élément, noté \pare.
+\end{defi}
+
+Plutôt que de redéfinir de nouvelles règles de typage et de réduction, nous allons simplement traduire des termes de notre lambda-calcul simplement typé enrichi en des termes de notre OCaml.
+
+\begin{defi}[Traductions en lambda-calcul]
+    \ 
+    \begin{itemize}[label=$\bullet$]
+        \item On définit $\fun\;x\to M$ comme $\lambda x.M$.
+        \item On définit $\letin{x}{M}{N}$ comme $(\lambda x. N)\;M$.
+        \item On définir $\letrec{x}{M}{N}$ comme $(\lambda x. N)\;(Y\;(\lambda x. M))$.
+        \item On définit $M\|N$ par $M\lor N$.
+        \item On définit $M\andt N$ comme $M\land N$.
+        \item On définit $\nott M$ comme $\lnot M$.
+    \end{itemize}
+\end{defi}
+
+Enfin, nous définissons une syntaxe particulière pour alléger la lecture. L'expression $\letin{f\;x}{M}{N}$ signifie $\letin{f}{\fun\;x\to M}{N}$ (et on peut définir ainsi en appliquant récursivement cette définition des fonctions à plusieurs variables : par exemple $\letin{f\;x\;y}{M}{N}$ sera traduit par $\letin{f}{\fun\;x\to\fun\;y\to M}{N}$).
+
+\begin{exo}
+    Déterminer les nouvelles règles de typage pour OCaml, à partir des règles de typage de leur expression équivalente en lambda-calcul simplement typé enrichi.
+\end{exo}
+
+\begin{rmk}
+    La définition que nous avions faite en lambda-calcul non typé reste la même ici, pour la factorielle :
+    $$\letrec{\texttt{fact}\;n}{\ifthenelse{x=0}{1}{x\times \texttt{fact}\;(n-1)}}{\pare}$$
+\end{rmk}
+
+\begin{exo}
+    Définir les règles de typage et de réduction de l'opérateur $=$, que nous ajouterons alors au langage.
+\end{exo}
+
+\newpage

@@ -1,0 +1,96 @@
+\section[Interprétation catégorique]{Interprétation dans une catégorie cartésienne fermée du lambda-calcul}
+
+Cette section réutilisera les résultats de la section précédente pour développer un cadre général d'interprétation catégorique. Nous allons donc faire correspondre à nos lambda-termes des fonctions dans une catégorie. Le choix d'une catégorie cartésienne fermée est naturel puisque c'est la notion la plus simple de catégorie possédant des exponentiations, c'est-à-dire des objets de la forme $a\to b$. Nous verrons ainsi, tout d'abord, la définition d'une catégorie cartésienne fermée, pour pouvoir ensuite donner l'interprétation d'un lambda-terme du lambda-calcul simplement typé (sans extension car celles-ci seront traitées dans la partie sur l'interprétation de OCaml).
+
+\subsection{Définitions}
+
+Rappelons la définition d'une catégorie.
+
+\begin{defi}[Catégorie]\label{categorie}
+    Une catégorie $\cat$ est une classe composée :
+    \begin{itemize}[label=$\bullet$]
+        \item d'objets, dont on notera la classe $\cat_0$.
+        \item de flèches, dont on notera la classe $\cat_1$. Chaque flèche $f$ possède un domaine, noté $\mathrm{dom}(f)$ et un codomaine, noté $\mathrm{codom}(f)$. On notera plus simplement $f : a\to b$ pour dire que $\mathrm{dom}(f)=a$ et $\mathrm{codom}(f)=b$.
+        \item d'une opération de composition, associative, notée $\circ$, qui associe à deux flèches $f : a\to b$ et $g : b\to c$ une flèche $g\circ f : a \to c$.
+        \item pour chaque objet $c$, d'une flèche $\id_c$ appelée identité de $c$ telle que pour toute flèche $f : a \to c, \id_c\circ f = f$ et pour toute flèche $g : c \to b, g\circ \id_c = g$.
+    \end{itemize}
+\end{defi}
+
+Nous donnerons des exemples de catégories classiques et utiles dans notre étude.
+
+\begin{expl}
+    \ 
+    \begin{itemize}[label=$\bullet$]
+        \item La catégorie \textbf{Set} des ensembles avec comme flèches les applications entre les ensembles.
+        \item Les catégories $\dcpo$ et $\cpo$ avec comme flèches les application continues.
+        \item Les catégories $\adcpo$ et $\acpo$ avec les mêmes flèches.
+        \item La catégorie $\scott$ des domaines de Scott avec toujours les applications continues.
+    \end{itemize}
+\end{expl}
+
+\begin{rmk}
+    Le fait que les catégories précédentes en sont bien a été vérifié au long des exercices de la partie précédente, lorsqu'on justifiait la continuité des différentes fonctions.
+\end{rmk}
+
+Nous avons, de plus, besoin de trois éléments pour définir une catégorie cartésienne fermée : un objet terminal, un produit et une exponentiation. Nous allons donc définir ces termes dans un premier temps.
+
+\begin{defi}[Objet terminal]
+    On appelle objet terminal d'une catégorie $\cat$ un objet, noté $1$, tel que pour tout objet $a\in\cat_0$, il existe une unique flèche $!_a : a \to 1$.
+\end{defi}
+
+\begin{defi}[Produit]
+    Soit une catégorie $\cat$, deux objets $a$ et $b$. On appelle produit de $a$ et $b$, et on note $a\times b$, l'unique objet à isomorphisme près tel que pour tout objet $x$ et toute paire de flèche $f : x \to a, g : x\to b$ il existe une unique fonction, notée $\langle f,g\rangle$ qui fasse commuter le diagramme de la figure \ref{produit}.
+    
+    \begin{figure}[t]
+        \centering
+        \rule{17cm}{0.5pt}
+        \begin{tikzcd}
+        \\
+            & x \ar[dl,"f"]\ar[dr,"g"]\ar[d,dashed,"\langle f\comma g\rangle"] \\
+            a & a\times b \ar[l,"\pi_1"]\ar[r,"\pi_2"]& b\\
+        \end{tikzcd}
+        \rule{17cm}{0.5pt}
+        \vspace{-0.5cm}
+        \caption{Diagramme commutatif du produit}
+        \label{produit}
+    \end{figure}
+\end{defi}
+
+\begin{defi}[Exponentiation]
+    Soient $a$ et $b$ deux objets de $\cat$. On appelle exponentielle de $a$ par $b$ l'objet $a^b$, représentant les fonctions $b\to a$. On se munit d'une fonction $\ev : a^b\times b \to a$ et on a la propriété universelle que pour toute fonction $f : c\times b \to a$, alors il existe une unique fonction $\Lambda(f)$ (appelée curryfication de $f$) telle que le diagramme de la figure \ref{expo} commute.
+    \begin{figure}[t]
+        \centering
+        \rule{17cm}{0.5pt}
+        \begin{tikzcd}
+            \\
+            a^b\times b \ar[r,"\ev"] & a\\
+            c\times b \ar[u,"\Lambda(f)\times \id_b"]\ar[ur,"f"]\\
+        \end{tikzcd}
+        \rule{17cm}{0.5pt}
+        \caption{Diagramme commutatif de l'exponentielle}
+        \label{expo}
+    \end{figure}
+\end{defi}
+
+Une catégorie cartésienne fermée est donc une catégorie dans laquelle on a un élément terminale, tous les produits binaires (et donc tous les produits finis, par récurrence évidente) et toutes les exponentiations. Notre cadre d'étude, que sont les domaines de Scott, est une catégorie cartésienne fermée $\scott$, grâce aux exercices précédents.
+
+\subsection{Interprétation catégorique}
+
+Nous pouvons désormais définir l'interprétation catégorique du lambda-calcul simplement typé dans une CCC. Pour cela, on se fixe tout d'abord les objets de notre catégorie. Ceux-ci seront des interprétations de nos types. On notera $\llbracket -\rrbracket$ la fonction d'interprétation, associant à un objet syntaxique (type, terme...) une interprétation sémantique dans notre catégorique. Nous supposons donc que pour chaque type $\tau$ il existe un objet $\llbracket\tau\rrbracket$ associé dans lequel sera interprété notre type. Les morphismes seront les interprétations des jugements de typage.
+
+Nous allons d'abord définir l'interprétation d'un contexte. Soit un contexte $\Gamma$ donné sous la forme $\Gamma = x_1 : \tau_1,\ldots , x_n : \tau_n$, on définit $\llbracket\Gamma\rrbracket=\llbracket\tau_1\rrbracket\times\ldots\times\llbracket\tau_n\rrbracket$. Si $\Gamma = \varnothing$, alors $\llbracket\Gamma\rrbracket=1$. En effet, une flèche $1\to a$ est exactement un élément de $a$, donc un jugement de la forme $\vdash M : \tau$ sera exactement un élément de $\llbracket\tau\rrbracket$. Nous pouvons maintenant, par induction sur la structure d'un lambda-terme simplement typé, définir l'interprétation d'un lambda-terme.
+
+\begin{defi}[Interprétation]
+    On définit par induction l'interprétation d'un lambda-terme :
+    \begin{itemize}[label=$\bullet$]
+        \item Si $\Gamma\vdash x : \tau$, on note $i$ l'indice d'occurrence de $x$ dans $\Gamma$, alors $$\llbracket\Gamma\vdash x : \tau\rrbracket = \pi_i$$ l'interprétation d'une variable est donc une projection du contexte.
+        \item Si $\Gamma\vdash \lambda x.M : \sigma\to\tau$, on note $\llbracket\Gamma,x : \sigma\rrbracket=\llbracket\Gamma\rrbracket\times \llbracket\sigma\rrbracket$, ce qui nous permet e curryfier notre fonction :
+        $$\llbracket\Gamma\vdash\lambda x.M : \sigma\to\tau\rrbracket=\Lambda\llbracket\Gamma,x : \sigma\vdash M : \tau\rrbracket$$
+        \item Si $\Gamma\vdash M\;N : \tau$, nous avons juste à appliquer l'évaluation à $M$ et $N$ :
+        $$\llbracket\Gamma\vdash M\;N : \tau\rrbracket = \ev\circ\langle\llbracket\Gamma\vdash M : \sigma\to\tau\rrbracket,\llbracket\Gamma\vdash N : \sigma\rrbracket\rangle$$
+    \end{itemize}
+\end{defi}
+
+Ainsi, une catégorie cartésienne close, et en particulier $\scott$, permet d'interpréter les éléments de base du lambda-calcul simplement typé.
+
+\newpage

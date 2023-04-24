@@ -1,0 +1,148 @@
+\section[Lambda-calcul typé]{Le lambda-calcul simplement typé}
+
+Comme nous l'avons vu, le lambda-calcul possède un problème majeur : nous n'avons aucune assurance que calculer un terme convergera. Pour contrer ce fait, on utilise des types, qui sont des annotations de nos lambda-termes. Nous verrons dans cette partie ce qui constitue le lambda-calcul simplement typé, puis des résultats concernant ce lambda-calcul (principalement la forte normalisation). Enfin, nous explorerons des extensions classiques telles que l'ajout de types produits.
+
+\subsection{Définition des types}
+
+Nous travaillerons dans un premier temps dans un lambda-calcul ne possédant qu'un type de base, noté $\iota$. Un type précise dans quel univers est contenu un terme. Pour dire qu'un terme $M$ est annoté du type $\tau$, on note $M :\tau$.
+
+\begin{defi}[Type]
+    On définit la grammaire des types :
+    $$\tau,\sigma ::= \iota\mid\tau\to\sigma$$
+    
+    Nous lisons $\to$ avec une associativité à droite, ce qui signifie que $\tau_1\to\tau_2\to\tau_3 = \tau_1\to(\tau_2\to\tau_3)$.
+\end{defi}
+
+De plus, nous noterons désormais $\lambda x^\tau.M$ plutôt que $\lambda x.M$ pour préciser le type de $x$.
+
+Pour pouvoir définir la relation de typage, il convient de définir plusieurs éléments. Tout d'abord, intéressons-nous à ce qu'est un environnement de typage. C'est un ensemble (que l'on note comme une liste d'éléments séparés par des virgules) de couples $(x,\tau)$ où $x$ est une variable et $\tau$ un type. On notera $x : \tau$ les éléments de cet ensemble. Un environnement de typage pourra par exemple être $\Gamma = x : \iota, f : \iota\to\iota, g : \iota\to\iota\to\iota$. De plus, on note $\Gamma,x : \tau$ pour noter l'ensemble $\Gamma\cup \{(x,\tau)\}$. Cela nous permet de définir un jugement de typage, qui se fait dans un environnement.
+
+\begin{defi}[Jugement de typage]
+    On définit $\Gamma\vdash M : \tau$ un jugement de typage par induction sur la structure de $M$ :
+    $$(x,\tau)\in\Gamma\;\dfrac{}{\Gamma\vdash x : \tau}\;\mathrm{Ax}\qquad \dfrac{\Gamma,x : \tau\vdash M : \sigma}{\Gamma\vdash\lambda x^\tau.M : \tau\to\sigma}\;\mathrm{Abs}\qquad\dfrac{\Gamma\vdash M : \sigma \to \tau \quad \Gamma\vdash N : \sigma}{\Gamma\vdash M N : \tau}\;\mathrm{App}$$
+    
+    Lorsque $\Gamma=\varnothing$, on note $\vdash M : \tau$ directement, et on dit alors que $M$ est typable, ou de type $\tau$.
+\end{defi}
+
+\begin{expl}
+    \ 
+    \begin{itemize}[label=$\bullet$]
+        \item On montre que $\vdash \lambda x^\iota.x : \iota \to\iota$ :
+        \begin{center}
+            \begin{prooftree}
+                \infer{0}[Ax]{x :\iota\vdash x : \iota}
+                \infer{1}[Abs]{\vdash\lambda x^\iota.x : \iota\to\iota}
+            \end{prooftree}
+        \end{center}
+        \item On montre aussi que $\vdash\lambda f^{\iota\to\iota}.\lambda x^\iota. f\;x : (\iota\to\iota)\to\iota\to\iota$ :
+        \begin{center}
+            \begin{prooftree}
+                \infer{0}[Ax]{f : \iota\to\iota,x : \iota\vdash f :\iota\to\iota}
+                \infer{0}[Ax]{f : \iota\to\iota,x : \iota\vdash x : \iota}
+                \infer{2}[App]{f : \iota\to\iota,x : \iota\vdash f\;x : \iota}
+                \infer{1}[Abs]{f : \iota\to\iota\vdash.\lambda x^\iota. f\;x : (\iota\to\iota)\to\iota\to\iota}
+                \infer{1}[Abs]{\vdash \lambda f^{\iota\to\iota}.\lambda x^\iota. f\;x : (\iota\to\iota)\to\iota\to\iota}
+            \end{prooftree}
+        \end{center}
+    \end{itemize}
+\end{expl}
+
+\begin{exo}
+    Typer le lambda-terme $\lambda f^{\iota\to\iota}.\lambda g^{\iota\to\iota}.\lambda x^\iota.f\;(g\;x)$ puis généraliser ce typage à un lambda-terme identique pour lequel on remplace $\iota$ par un type indéterminé $\tau$.
+\end{exo}
+
+\subsection{Propriétés du lambda-calcul simplement typé}
+
+Tout d'abord, le lambda-calcul simplement typé, comme le non typé, est confluent et possède la propriété de Church-Rosser. Nous allons maintenant énumérer les autres propriétés de ce lambda-calcul.
+
+\begin{them}[Préservation du typage]
+    Soit un lambda-terme typé dans un contexte $\Gamma\vdash M : \tau$ et $N$ tel que $M\betareq N$. Alors $\Gamma\vdash N :\tau$.
+\end{them}
+
+De plus, le lambda-calcul simplement typé est fortement normalisant.
+
+\begin{defi}
+    Si $M$ est un terme bien typé, tel que $\vdash M :\tau$, alors toute suite de réduction depuis $M$ est finie (et converge donc vers une unique forme normale).
+\end{defi}
+
+\subsection{Extensions du langage}
+
+Le lambda-calcul simplement typé, dans son état actuel, possède un souci majeur : il ne permet pas d'exprimer l'arithmétique. Nous allons donc explorer une première extension du langage dans laquelle l'arithmétique est présente. Nous en profiterons pour ajouter la logique booléenne.
+
+\subsubsection{Ajout de l'arithmétique et des booléens}
+
+Cette partie traitera de l'ajout du type \intt et du type \boolt.Si nous avons codé les entiers naturels et les booléens dans le lambda-calcul non typé, le lambda-calcul typé, de par sa restriction forte sur la nature de ses objets, impose de définir les opérations arithmétiques et logiques de base dans la syntaxe du langage.
+
+\begin{defi}
+    Nous définissons la grammaire des types et du langage :
+    $$\sigma,\tau ::= \intt\mid\boolt\mid \sigma\to\tau$$
+        \begin{multline*}
+        M,N,P ::= x\mid \lambda x^\tau.M\mid M N\mid k\mid \top\mid\bot\mid M+N\mid M\times N\mid M-N\mid M\lor N\mid M \land N\mid \lnot M\\\mid M\leq N\mid\ifthenelse{M}{N}{P}
+        \end{multline*}
+    où $k\in\mathbb N$.
+\end{defi}
+
+Nous devons alors redéfinir nos règles de typage en ajoutant celles nécessaires à l'ajout des opérations que nous avons.
+
+\begin{defi}[Typage]
+    Les nouvelles règles de typages sont les suivantes :
+    $$\dfrac{}{\Gamma\vdash k : \intt}\qquad\dfrac{}{\Gamma\vdash \top : \boolt}\qquad\dfrac{}{\Gamma\vdash\bot : \boolt}$$
+    $$\dfrac{\Gamma\vdash M : \intt\quad \Gamma\vdash N :\intt}{\Gamma\vdash M+N : \intt}\qquad \dfrac{\Gamma\vdash M : \intt\quad\Gamma\vdash N:\intt}{\Gamma\vdash M\times N : \intt}\qquad \dfrac{\Gamma\vdash M : \intt\quad\Gamma\vdash N:\intt}{\Gamma\vdash M- N : \intt}$$
+    $$\dfrac{\Gamma\vdash M :\boolt \quad\Gamma\vdash N : \boolt}{\Gamma\vdash M \lor N : \boolt}\qquad \dfrac{\Gamma\vdash M :\boolt \quad\Gamma\vdash N : \boolt}{\Gamma\vdash M \land N : \boolt}\qquad \dfrac{\Gamma\vdash M :\boolt}{\Gamma\vdash \lnot M : \boolt}\qquad$$
+    $$\dfrac{\Gamma\vdash M : \intt\quad \Gamma\vdash N :\intt}{\Gamma\vdash M\leq N : \boolt}\qquad\dfrac{\Gamma\vdash M : \boolt\quad \Gamma\vdash N : \tau\quad \Gamma\vdash P : \tau}{\Gamma\vdash\ifthenelse{M}{N}{P} : \tau}$$
+\end{defi}
+
+Enfin, il convient aussi de redéfinir la réduction de termes. Nous allons noter $b$ un booléen et $k$ un entier, sous-entendu dans cette notation que les expressions associées sont réduites au maximum. Les ajouts à gauche d'une règles sont des conditions à vérifier pour appliquer la règle qui ne sont pas d'ordre syntaxique. Par exemple dans la première règle qui sera présentée, $k+k'=m$ sert simplement à préciser la valeur de $m$, mais cette condition n'est pas vérifiable par le système syntaxique. \'Evidemment, nous gardons pour autant la règle de la beta-réduction, mais nous allons y ajouter d'autres règles. Nous noterons simplement $\to$ la réduction ainsi faite.
+
+\begin{defi}[Réduction]
+    Voici les règles de réduction supplémentaires :
+    $$\dfrac{M\to M'}{M+N \to M' + N}\qquad\dfrac{N \to N'}{M+N\to M+N'}\qquad k+k'=n\;\dfrac{}{k+k'\to n}$$
+    $$\dfrac{M\to M'}{M\times N \to M' \times N}\qquad\dfrac{N \to N'}{M\times N\to M\times N'}\qquad k\times k'=m\;\dfrac{}{k\times k'\to n}$$
+    $$ \dfrac{M\to M'}{M-N \to M' - N}\qquad\dfrac{N \to N'}{M-N\to M-N'}\qquad k-k'=n\;\dfrac{}{k-k'\to n}$$
+    $$\dfrac{M\to M'}{M\lor N \to M' \lor N}\qquad\dfrac{N \to N'}{M\lor N\to M\lor N'}\qquad b\lor b'=c\;\dfrac{}{b\lor b'\to c}$$
+    $$\dfrac{M\to M'}{M\land  N \to M' \land  N}\qquad\dfrac{N \to N'}{M\land  N\to M\land  N'}\qquad b\land  b'=c\;\dfrac{}{b\land  b'\to c}$$
+    $$\dfrac{M\to M'}{\lnot M\to\lnot M'}\qquad\lnot b = b'\;\dfrac{}{\lnot b\to b'}$$
+    $$k\leq k'\;\dfrac{}{k\leq k'\to \top}\qquad k>k'\;\dfrac{}{k\leq k' \to\bot} $$
+    $$\dfrac{}{\ifthenelse{\top}{M}{N}\to M}\qquad\dfrac{}{\ifthenelse{\bot}{M}{N}\to N}$$
+\end{defi}
+
+Les propriétés du lambda-calcul simplement typé sont encore conservées en utilisant ces ajouts.
+
+\begin{exo}
+    \ 
+    \begin{itemize}[label=$\bullet$]
+        \item Effectuer la réduction du lambda-terme $\ifthenelse{0=27\times (0+0)}{(\lambda x.x+1) 3}{5}$
+        \item Typer le lambda-terme $\lambda x. \ifthenelse{(x-5 \leq 0)\lor (6\leq x)}{1}{0}$
+    \end{itemize}
+\end{exo}
+
+\subsubsection{Ajout des couples}
+
+Pour ajouter ce que nous avions utilisé dans le lambda-calcul non typé, il nous manque la récursion et les couples de valeurs. La récursion sera le problème d'une partie suivante, les couples seront étudiés ici.
+
+Pour éviter de réécrire toute la grammaire que nous avions écrite précédemment, nous écrirons simplement $G$ pour l'ensemble des règles de construction définies.
+
+\begin{defi}
+    La grammaire des types est la suivante :
+    $$\sigma,\tau ::= \intt\mid\boolt\mid\sigma\to\tau\mid\sigma\times\tau$$
+    
+    Celles des termes vaut :
+    $$M,N,P ::= G \mid \langle M,N\rangle\mid \pi_1 M\mid\pi_2 M$$
+\end{defi}
+
+\begin{defi}[Typage]
+    Les règles de typage ajoutées sont :
+    $$\dfrac{\Gamma\vdash M : \sigma\quad\Gamma\vdash N : \tau}{\Gamma\vdash \langle M,N\rangle : \sigma\times \tau}\qquad\dfrac{\Gamma\vdash M : \sigma\times\tau}{\Gamma\vdash \pi_1 M : \sigma}\qquad\dfrac{\Gamma\vdash M : \sigma\times \tau}{\Gamma\vdash \pi_2 M : \tau}$$
+\end{defi}
+
+\begin{defi}[Réduction]
+    Les règles de réduction ajoutées sont :
+    $$\dfrac{M\to M'}{\langle M,N\rangle\to\langle M',N\rangle}\qquad\dfrac{N\to N'}{\langle M,N\rangle\to\langle M,N'\rangle}$$
+    $$\dfrac{}{\pi_1\langle M,N\rangle \to M}\qquad \dfrac{}{\pi_2\langle M,N\rangle \to N}$$
+\end{defi}
+
+\begin{exo}
+    Typer la fonction $\lambda x.\lambda y.\langle x,y\rangle$.
+\end{exo}
+
+\newpage

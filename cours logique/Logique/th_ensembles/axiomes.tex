@@ -1,0 +1,379 @@
+\section{Théorie naïve des ensembles}
+
+Avant de voir les axiomes de la théorie ZF, nous allons parler de la théorie naïve des ensembles. L'idée première d'un ensemble est de regrouper des objets mathématiques : on décrit aisément des ensembles par énumération de leurs éléments, comme $\{1,2,3\}$, mais le point central est de pouvoir décrire des ensembles par compréhension, par exemple $\{ x \mid \exists y. x = 2\times y\}$ est un ensemble dans lequel on décrit les élément $x$ qui sont le double d'au moins un élément. Remarquons ici que notre quantification du premier ordre fait perdre le sens de ce certains objets : parlons-nous de $x$ dans $\nat$, dans $\reel$ ? L'ensemble décrit sera fondamentalement différent. Mais outre ce problème mineur (que l'on peut régler en s'accordant sur le sens qu'on donne aux opérations par exemple), le vrai problème réside dans le paradoxe de Russell.
+
+Rappelons que le langage des ensembles est la signature $\{\in,=\}$ où les deux symboles sont des symboles de relation binaires, le premier exprimant l'appartenance d'un élément à un ensemble, e.g. $2\in\{1,2,3\}$.
+
+Nous allons d'abord donner des définitions :
+
+\begin{defi}[Ensemble, axiome naïf de compréhension]
+    On appelle ensemble une collection d'objets mathématiques. Ces collections possèdent la propriété suivante : si $P$ est une proposition à une variable libre sur le langage des ensembles, alors il existe un ensemble $E_P$ dont les éléments sont exactement les objets qui vérifient $P$.
+\end{defi}
+
+Le paradoxe de Russell peut alors s'énoncer :
+
+\begin{prop}
+    La théorie naïve des ensembles est incohérente.
+\end{prop}
+
+\begin{proof}
+    Notons $X$ l'ensemble défini par la proposition $x\notin x$. Alors si $X\in X$, on en déduit que $X\notin X$ par définition de $X$, et si $X\notin X$ alors $X\in X$ par définition de $X$ : on arrive dans tous les cas à une contradiction.
+\end{proof}
+
+\begin{rmk}
+    Si on voit $\in$ comme une relation binaire sur l'univers utilisé dans notre théorie des ensemble, alors $x\in x$ exprime exactement la diagonale de cette relation, et $x\notin x$ est donc sa négation : on a là encore un argument diagonal.
+\end{rmk}
+
+La théorie naïve des ensembles possède donc un problème majeur : on ne peut pas utiliser un axiome aussi fort que l'axiome de compréhension sans restriction. La solution proposée par l'axiomatique de ZF est alors la suivante : on va pouvoir construire des ensembles de plus en plus grands en utilisant des opérations telles que l'union ou l'ensemble des parties, et c'est seulement au sein d'un ensemble que l'on pourra utiliser l'axiome de compréhension (en supposant donc que la collection de tous les ensembles n'est pas elle-même un ensemble, pour ne pas retomber dans le paradoxe précédent).
+
+\section{Axiomatique de ZF}
+
+Nous utilisons donc le langage des ensembles. Nous allons présenter les axiomes un à un, sous leur forme formelle et en expliquant leur sens.
+
+\subsection{A propos de la Skolémisation}
+
+Nous utiliserons dans cette partie la skolémisation de nombreuses fois, qui est un principe très naturel : si l'on a une formule de la forme $\forall x_1.\ldots\forall x_n.\exists y. P(x_1,\ldots,x_n,y)$ alors on peut définir un symbole de fonction $f$ correspondant, tel que $\forall x_1.\ldots\forall x_n.P(x_1,\ldots,x_n,f(x_1,\ldots,x_n))$. C'est-à-dire que le choix de $y$ dépend des quantificateurs universels qui le précèdent, donc on peut remplacer la propriété d'existence de $y$ par une fonction de ces universels qui le précèdent. Un cas particulier est celui d'une proposition de la forme $\exists X.P(X)$ : on pourra donner un nom spécial à un tel $X$ (surtout si l'on sait qu'il est unique). Dans les axiomes qui suivront, justement, la propriété associée à l'objet dont on stipule l'existence assure son unicité, ce qui nous conforte dans l'introduction d'un symbole de fonction. Nous considérerons ici, étant donné notre cadre d'étude (la fonction de Skolem associée étant unique), que c'est un simple procédé de réécriture pour rendre lisible la théorie des ensembles.
+
+
+\subsection{Axiome d'extensionnalité}
+
+\begin{ax}[Extensionnalité]
+    L'axiome d'extensionnalité est le suivant : $$\ZF_1 := \forall X.\forall Y. (\forall x. x\in X\iff x\in Y)\implies X=Y$$
+    et signifie qu'un ensemble est défini exactement par les éléments qui le constituent.
+\end{ax}
+
+\begin{exo}
+    Montrer le sens réciproque : $$\vdash\forall X.\forall Y. X=Y\implies (\forall x. x\in X\iff x\in Y)$$
+\end{exo}
+
+Le premier axiome sert à définir l'essence même d'un ensemble : c'est ce qui renforce l'égalité pour lui donner la forme qu'on accepte implicitement en théorie des ensembles : pour une collection d'objets donnée, il n'y a qu'un ensemble qui correspond à cette collection. Il nous montre déjà que les répétitions et l'ordre n'ont pas d'importance dans la définition d'un ensemble.
+
+\subsubsection{Sur l'inclusion}
+
+On peut déjà définir la relation d'inclusion, notée $X\subseteq Y$ par $\forall x. x\in X\implies x \in Y$.
+
+\begin{exo}
+    Montrer que $\subseteq$ est une relation d'ordre si l'on accepte l'extensionnalité, c'est-à-dire :
+    \begin{itemize}[label=$\bullet$]
+        \item $\ZF_1\vdash X\subseteq X$
+        \item $\ZF_1\vdash (X\subseteq Y \land Y\subseteq X)\implies X = Y$
+        \item $\ZF_1\vdash (X\subseteq Y \land Y\subseteq Z) \implies X\subseteq Z$
+    \end{itemize}
+\end{exo}
+
+On ajoutera donc à notre langage la relation $\subseteq$ comme façon plus simple d'écrire la proposition qui la définit.
+
+\subsection{Axiome de la paire}
+
+\begin{ax}[Paire]
+    L'axiome s'énonce comme suit : $$\ZF_2 := \forall X.\forall Y. \exists Z. \forall x. x\in Z \iff (x=X \lor x=Y)$$ et signifie que si $X$ et $Y$ sont des ensembles, alors l'ensemble $\{X,Y\}$ contenant les éléments $X$ et $Y$ et aucun autre, est aussi un ensemble.
+\end{ax}
+
+\begin{rmk}
+    En prenant $X=Y$ alors on construit le singleton $\{X\}$.
+\end{rmk}
+
+\begin{exo}[Sur les couples]
+    Pour $x,y$ deux ensembles, on définit le couples $(x,y)$ par $(x,y) = \{\{x\},\{x,y\}\}$. Montrer que la propriété des couples est respectée : si $(x,y)=(x',y')$ alors $x=x'$ et $y=y'$, pour tous ensembles $x,x',y,y'$.
+\end{exo}
+
+\subsection{Axiome de l'union}
+
+\begin{ax}[Union]
+    L'axiome de la réunion est : $$\ZF_3 := \forall X.\exists Z. \forall x. (x\in Z \iff \exists y. (x\in y\land y\in X))$$ et signifie que si l'on a un ensemble $X$, alors on peut construire l'ensemble $Z$ (en général noté $\bigcup X$) qui est l'union des éléments de $X$, c'est-à-dire que ses éléments sont exactements les éléments d'éléments de $X$.
+\end{ax}
+
+\begin{exo}
+    Montrer que si on a un nombre fini d'ensembles, disons $(X_i)_{1\leq i\leq n}$ alors $\{X_1,\ldots,X_n\}$ est un ensemble, et qu'il est l'unique ensemble contenant exactement chaque $X_i$, et rien d'autre. \textit{Remarque : notre $(X_i)$ est une collection au sens intuitif et non formel, nous supposons juste qu'il y a un nombre fini d'ensembles.}
+\end{exo}
+
+\begin{exo}
+    Montrer que si on a un nombre fini d'ensembles $(X_i)_{1\leq i \leq n}$ alors $\displaystyle{\bigcup_{i = 1}^n X_i}$ est aussi un ensemble. En particulier, pour deux ensembles, on notera $X\cup Y$ leur union.
+\end{exo}
+
+\subsection{Axiome de l'ensemble des parties}
+
+\begin{ax}[Ensemble des parties]
+    L'axiome de l'ensemble des parties est : $$\ZF_4 := \forall X.\exists Z. \forall x. (x\in Z \iff x\subseteq X)$$ qui signifie que si $X$ est un ensemble, alors la collection des ensembles inclus dans $X$ forme aussi un ensemble. On notera en général $\mathcal P(X)$ l'ensemble des parties de $X$.
+\end{ax}
+
+\begin{exo}
+    Soit $X,Y$ des ensembles, montrer qu'un couple $(x,y)$ où $x\in X$ et $y\in Y$ est un élément de $\mathcal P (\mathcal P(X\cup Y)$.
+\end{exo}
+
+\subsection{Axiome de l'infini}
+
+L'idée de l'axiome de l'infini est de stipuler qu'il existe un ensemble infini. Pour cela, nous allons définir deux notions qui feront fortement penser à $\nat$ : un ensemble correspondant à $0$ et une \og fonction \fg{} correspondant au successeur.
+
+\begin{ax}[Ensemble vide]
+    L'axiome est $$\ZF_5:=\exists X. \forall x. \lnot(x\in X)$$ et signifie qu'il existe un ensemble vide, c'est-à-dire un ensemble ne contenant aucun élément. On le note $\varnothing$.
+\end{ax}
+
+\begin{exo}[Opération successeur]
+    Si $X$ est un ensemble, montrer que l'ensemble $SX := X \cup \{X\}$ est aussi un ensemble. On appelle $S$ la fonction successeur, qui à $X$ associe $SX$ (et on prendra la convention que $SSX = S(SX)$).
+
+    Calculer $SSS\varnothing$.
+\end{exo}
+
+On peut alors définir l'axiome de l'infini :
+
+\begin{ax}[Infini]
+    L'axiome se présente de la façon suivante : $$\ZF_6 := \exists X.(\varnothing\in X \land (\forall x. x\in X \implies Sx\in X))$$ qui signifie qu'il existe un ensemble contenant $\varnothing$ et qui est stable par l'opération successeur.
+\end{ax}
+
+\begin{rmk}
+    Ce que ne venons de définir n'est pas à proprement parler $\nat$, car $\nat$ est le plus petit ensemble contenant $0$ et stable par successeur. Nous verrons que cet axiome nous permet, avec le suivant, de construire $\nat$.
+\end{rmk}
+
+\subsection{Schéma d'axiomes de remplacement}
+
+Plutôt que l'axiome de compréhension, la théorie $ZF$ utilise un axiome plus fort : celui de remplacement. L'idée est qu'au lieu de simplement exprimer des ensembles par compréhension, on se permet de donner une image à ces axiomes. Pour cela, il nous faut d'abord définir la notion de proposition fonctionnelle.
+
+\begin{defi}[Proposition fonctionnelle]
+    Une proposition $P$ à $k+2$ variables libres est dite fonctionnelle, si, étant donnés $a_1,\ldots,a_k$ des paramètres fixés, on a $$\forall x.\forall y.\forall y'. ((P(x,y,a_1,\ldots,a_k)\land P(x,y',a_1,\ldots,a_k))\implies y=y')$$
+
+    On va noter $\mathrm{fonc}(P)$ pour signifier que $P$ est fonctionnelle (sous-entendu à $a_1,\ldots,a_k$ fixés).
+\end{defi}
+
+On peut donc voir $P$ comme décrivant le graphe d'une fonction partielle : si $x$ et $y$ sont en relation par $P$ alors cela signifie que $y$ est l'image de $x$. Cela donne l'idée du schéma d'axiomes de remplacement (on a une infinité d'axiomes).
+
+\begin{ax}[Remplacement]
+    Le schéma d'axiomes de remplacement est, pour $P$ une proposition à $k+2$ variables libres : $$\ZF_{7,P} := \forall a_1.\ldots\forall a_k.(\mathrm{fonc}(P)\implies \forall X.\exists Z. \forall y. (y\in Z \iff \exists x.(x\in X \land P(x,y,a_1,\ldots,a_k))))$$
+\end{ax}
+
+\begin{exo}
+    Une version plus faible du schéma d'axiome de remplacement est le schéma d'axiomes de compréhension : pour $P$ une proposition à $k+1$ variables libres, le schéma est $$\forall a_1.\ldots\forall a_k.\forall X. \exists Z. \forall x. (x\in Z \iff (x\in X\land P(x,a_1,\ldots,a_k))$$
+
+    Montrer que l'on peut déduire ce schéma d'axiomes du schéma d'axiomes de remplacement.
+\end{exo}
+
+Nous utiliserons principalement le schéma d'axiomes de compréhension, et nous utiliserons pour cela la notation suivante : $$\{ x\in X\mid P(x)\}$$ pour signifier que l'on considère l'ensemble des éléments de $X$ vérifiant la proposition $P(x)$. Si nous voulons utiliser le schéma d'axiomes de remplacement, nous utiliserons $$\{y \mid x\in X, P(x,y)\}$$ voire $\{f(x)\mid x \in X\}$ si la proposition $P$ définit de façon évidente une fonction $f$. Dans tous les cas, nous verrons que la plupart des fonctions que nous utiliserons pourrons être vues comme des ensembles, et nous aurons donc simplement à considérer le schéma d'axiomes de remplacement.
+
+\section{De la théorie ZF à notre pratique usuelle}
+
+On définit donc $\ZF = \ZF_{1,\ldots,6}\cup\displaystyle{\bigcup_{P\in \mathrm{Prop}}\ZF_{7,P}}$ qui est donc l'ensemble des axiomes que nous avons introduit auparavant.
+
+\begin{exo}
+    Montrer que l'axiome de la paire est redondant, c'est-à-dire qu'il peut se montrer à l'aide des autres axiomes. De même, montrer que l'axiome de l'ensemble vide n'est pas utile si on considère qu'il existe au moins un ensemble.
+\end{exo}
+
+\subsection{A propos de l'intersection}
+
+Nous avons vu l'union d'un ensemble, mais nous pouvons aussi définir l'intersection d'un ensemble, pour peu que celui-ci soit non vide.
+
+\begin{defi}[Intersection]
+    Soit $X$ un ensemble non vide. On définit $\bigcap X$ par compréhension, en choisissant un élément $y\in X$ quelconque : $$\bigcap X := \{ x\in y\mid \forall z\in X.x\in z\}$$
+\end{defi}
+
+\begin{exo}
+    Montrer que cette définition est satisfaisante au sens où l'ensemble défini ne dépend pas de l'élément $y\in X$ choisi.
+\end{exo}
+
+\begin{exo}
+    Soit une collection finie $(X_i)_{1\leq i \leq n}$ d'ensembles, montrer que $\displaystyle{\bigcap_{i=1}^n X_i}$ est un ensemble bien défini. On notera $A\cap B$ pour l'intersection de deux ensembles.
+\end{exo}
+
+\subsection{Les entiers naturels}
+
+On va désormais construire les entiers naturels. On a vu qu'il existait un ensemble contenant $\varnothing$ (que l'on prendra pour notre $0$) et qui était stable par successeur, mais il n'était pas $\nat$ au sens où il était possiblement plus grand que $\nat$. Nous allons donc définir $\nat$ comme étant exactement l'ensemble des éléments qui sont dans toute partie contenant $0$ et stable par successeur.
+
+\begin{defi}[Entiers naturels]
+    On nomme $X$ l'ensemble obtenu par l'axiome de l'infini, et on définit $$\nat := \{ x \in X \mid \forall F.(F\subseteq X \land \varnothing \in F\land (\forall z.z\in F\implies Sz \in F))\implies x\in F\}$$
+
+    Un construction équivalente est de considérer $\mathcal F := \{F\in\mathcal P(X)\mid \varnothing \in F \land (\forall z. z\in F \implies Sz \in F)\}$ et de définir $\nat := \bigcap \mathcal F$, qui existe bien puisque $X\in\mathcal F$.
+\end{defi}
+
+\begin{exo}
+    Montrer que ces deux définitions sont équivalentes, c'est-à-dire que les deux ensembles définis sont égaux.
+\end{exo}
+
+On peut alors démontrer le théorème de récurrence :
+
+\begin{prop}[Récurrence]
+    Si $F\subseteq \nat$ est telle que $\varnothing \in F$ et $\forall z.z\in F \implies Sz\in F$, alors $F=\nat$.
+\end{prop}
+
+\begin{proof}
+    Il nous suffit de montrer l'inclusion $\nat\subseteq F$, mais comme $F$ est une partie de $X$ (en prenant notre convention précédente) contenant $\varnothing$ et stable par successeur, elle contient tous les éléments de $\nat$, donc $\nat\subseteq F$, d'où l'égalité.
+\end{proof}
+
+Nous reviendrons plus en détail sur la récurrence lors de l'encodage de PA dans ZF.
+
+\subsection{Produit cartésien et relations}
+
+Nous avons vu qu'individuellement, un couple $(a,b)$ appartenait bien à un plus gros ensemble, mais nous voulons que les ensembles de couples forment eux-mêmes un ensemble.
+
+\begin{defi}[Produit cartésien]
+    Soient $X$ et $Y$ deux ensembles. On définit $X\times Y$, le produit cartésien de $X$ et $Y$, par $$X\times Y := \{ z\in \mathcal P(\mathcal P(X\cup Y)) \mid \exists x.\exists y. (x\in X\land y\in Y \land (z = \{x\} \lor z = \{x,y\}))\}$$
+
+    De par la définition, on notera plus directement $(x,y)\in X\times Y$.
+\end{defi}
+
+On peut alors définir les relations binaires sur des ensembles :
+
+\begin{defi}[Relation binaire]
+    On appelle relation binaire entre $E$ et $F$ une partie $\RR\subseteq E\times F$. On note en général $x\RR y$ pour signifier $(x,y)\in\RR$.
+\end{defi}
+
+\begin{defi}[Relation transposée, complémentaire, composition]
+    Si $\RR$ est une relation binaire, alors on note $\RR^{-1}$ la relation transposée définie par $x\RR^{-1} y \iff y\RR x$ et on note $\overline \RR$ la relation complémentaire de $\RR$ définie par $x\overline \RR y \iff \lnot (x\RR y)$.
+
+    Si $\RR$ est un relation binaire entre $E$ et $F$, et $\sS$ est une relation binaire entre $F$ et $G$ ($E,F,G$ des ensembles) on note $\sS\circ\RR$ la relation définie par $$x(\sS\circ\RR) z \iff \exists y. y\sS z\land x\RR y$$ que l'on note composée de $\RR$ et $\sS$.
+\end{defi}
+
+\begin{exo}[Associativité de la composition]
+    Montrer que la composition est associative, i.e. que si $\RR$,$\sS$ et $\mathcal T$ sont des relations binaires respectivement entre $E$ et $F$, entre $F$ et $G$ et entre $G$ et $H$, alors $(\RR\circ \sS)\circ\mathcal T = \RR\circ(\sS\circ\mathcal T)$
+\end{exo}
+
+\begin{defi}
+    On note aussi $\mathrm{id}_E$ ou $\Delta_E$ la relation binaire entre $E$ et $E$ (on dit aussi \og sur $E$\fg{}) définie par $x\Delta_E y \iff x = y$.
+\end{defi}
+
+\begin{exo}[Vers la catégorie des relations binaires]
+    Montrer que pour toute relation $\RR$ entre $E$ et $F$, $\RR\circ \mathrm{id}_E = \RR$ et $\mathrm{id}_F\circ\RR = \RR$.
+\end{exo}
+
+Traitons alors des relations fonctionnelles, qui nous permettront de définir ensuite les fonctions en elles-mêmes.
+
+\begin{defi}[Relation fonctionnelle]
+    Soit $\RR$ une relation entre $E$ et $F$. On dit que $\RR$ est fonctionnelle si la propriété suivante est vérifiée : $$\forall x.\forall y. \forall y'. (x\RR y\land x\RR y')\implies y=y'$$
+
+    On dit que $\RR$ est une relation fonctionnelle totale si, de plus, on a la propriété suivante : $$\forall x.\exists y. x\RR y$$
+\end{defi}
+
+\begin{exo}
+    Montrer que la relation entre $X\times Y$ et $X$ définie par $z\pi_1 x\iff \exists y. z=(x,y)$ est une relation fonctionnelle totale. De même on définit $\pi_2$ une relation fonctionnelle entre $X\times Y$ et $Y$.
+\end{exo}
+
+\begin{exo}[Vers la catégorie des ensembles]
+    Montrer que si $\RR$ et $\sS$ sont des relations fonctionnelles, respectivement entre $E$ et $F$ et entre $F$ et $G$, alors $\sS\circ \RR$ est aussi une relation fonctionnelle. Montrer que $\mathrm{id}_E$ est une relation fonctionnelle.
+\end{exo}
+
+Une fonction est alors simplement une relation fonctionnelle pour laquelle on précise les deux ensembles entre lesquels est la relation :
+
+\begin{defi}[Fonction]
+    Une fonction est un triplet $(E,F,\Gamma)$ où $\Gamma$ est une relation fonctionnelle totale entre $E$ et $F$ appelée le graphe de la fonction. Si $\Gamma$ est simplement une relation fonctionnelle, on parle de fonction partielle. Ce triplet s'écrit en réalité $((E,F),\Gamma)$ puisque nous ne pouvons construire que des couples. On appelle $E$ le domaine de $f$, $F$ son codomaine.
+\end{defi}
+
+\begin{rmk}
+    Historiquement, le terme fonction désigne les fonctions partielles, et le terme d'application les fonctions totales. Mais dans le cadre de ce cours, nous utiliserons les noms de fonction et d'application de façon interchangeable.
+\end{rmk}
+
+\begin{exo}
+    Montrer que l'ensemble $F^E$, aussi noté $\mathcal F(E,F)$, constitué des fonctions de $E$ dans $F$, est un ensemble.
+\end{exo}
+
+On notera en général $f : E \to F$ pour dire que $f\in F^E$, et au lieu d'écrire le graphe nous écrirons $x\mapsto y$ pour donner, à un $x$ fixé, quel est l'unique $y$ tel que $x\Gamma y$.
+
+\begin{expl}
+    Une définition de fonction peut être $$\fundef{f}{\nat}{\nat}{x}{x+x}$$
+\end{expl}
+
+L'intérêt d'une fonction, c'est évident, est d'être appliqué à un argument pour donner une image. Cependant, ce que nous avons actuellement est purement un couple avec d'un côté deux ensembles, et de l'autre une relation fonctionnelle. Nous allons donc convenir maintenant d'une convention dans notre écriture de proposition : si $f$ est une fonction, alors pour une proposition $P(x)$ on écrira $P(f(x))$ à la place de $\forall \Gamma.\forall y.f\pi_2 \Gamma\land x\Gamma y \implies P(y)$. C'est-à-dire qu'on considérera directement que $f(x)$ est la deuxième projection du couple $(x,y)$ du graphe de $f$ dont la première projection est $x$ : $f(x)$ est l'image de $x$.
+
+\begin{rmk}
+    Tant qu'à parler de conventions d'usage, en mathématiques usuelles on se permet en général des quantifications typées, c'est-à-dire par exemple $\forall x\in\reel$. Nous pouvons parfaitement traduire cela dans notre théorie du premier ordre (uniquement car nous sommes en théorie des ensembles) en remplaçant $\forall x\in E. P(x)$ par $\forall x. (x\in E \implies P(x))$ et $\exists x\in E. P(x)$ par $\exists x.(x\in E\land P(x))$. Nous utiliserons donc, dorénavant, des quantifications typées lorsque nous en avons l'envie (remarquons que, comme on peut définir une partie par une propriété grâce à l'axiome de compréhension, notre théorie du premier ordre code en fait une théorie d'ordre bien supérieur : on peut quantifier nos variables sur des propositions exprimées en tant que parties d'un ensemble).
+\end{rmk}
+
+On va rappeler ici les notions d'être injective, surjective et bijective pour une fonction.
+
+\begin{defi}[Injection, surjection, bijection]
+    Une fonction $f : E \to F$ est 
+    \begin{itemize}[label=$\bullet$]
+        \item une injection si $\forall x\in E.\forall y\in E.f(x)=f(y)\implies x=y$
+        \item une surjection si $\forall y\in F.\exists x\in E. f(x)=y$
+        \item une bijection si $\forall y\in F.\exists x\in E. f(x)=y\land (\forall x'\in E. f(x)=y\implies x=x')$
+    \end{itemize}
+\end{defi}
+
+\begin{exo}
+    Montrer que
+    \begin{itemize}[label=$\bullet$]
+        \item s'il existe une fonction $g : F\to E$ telle que $g\circ f = \id_E$, alors $f$ est injective.
+        \item s'il existe une fonction $g : F \to E$ telle que $f\circ g = \id_F$, alors $f$ est surjective.
+        \item $f$ est bijective si et seulement s'il existe une fonction $g : F \to E$ telle que $f\circ g = \id_F$ et $g\circ f = \id_E$.
+    \end{itemize}
+\end{exo}
+
+\subsection{Encoder PA}
+
+Comme nous avons utilisé la théorie PA dans la section précédente, montrons que l'on peut exhiber un modèle de PA dans ZF en utilisant $\nat$. D'abord, l'interprétation de $0$ est évidemment $\varnothing$ et l'interprétation de $S$ est $S$.
+
+\begin{rmk}
+    Dans notre codage des entiers, le nombre $n$ est exactement l'ensemble $\{0,\ldots,n-1\}$.
+\end{rmk}
+
+Nous allons maintenant considérer des lemmes nous permettant de construire des fonctions par récurrence :
+
+\begin{lem}[Définition par récurrence]
+    Soit $X$ un ensemble, $x_0\in X$ et $f : X \to X$. Alors il existe une unique fonction $g : \nat\to X$ telle que $g(0) = x_0$ et $g(Sx) = f(g(x))$.
+\end{lem}
+
+\begin{proof}
+    L'important est de montrer que le graphe ainsi défini existe de façon unique et est fonctionnel et total. Montrons-le par récurrence sur la première projection :
+    \begin{itemize}[label=$\bullet$]
+        \item d'abord le graphe de $g$ est défini pour tout couple de la forme $(0,y)$ : seul $(0,x_0)$ appartient au graphe de $g$, c'est donc un graphe fonctionnel total sur $\{0\}\times X$ et il n'existe qu'un seul graphe possible respectant les propriétés énoncées plus haut.
+        \item si le graphe de $g$ (unique) est défini et fonctionnel total sur $\{0,\ldots,n\}\times X$, alors $(Sn,y)$ est dans le graphe de $g$ si et seulement si $y=f(g(n))$. Or par hypothèse de récurrence $g(n)$ est bien défini et est unique, et comme $f$ est une fonction, $f(g(n))$ est bien défini et est unique. Donc il existe un seul couple de la forme $(Sn,y)$ dans le graphe de $g$ sur $\{0,\ldots,Sn\}\times X$.
+    \end{itemize}
+    Par récurrence, le graphe de $g : \nat\to X$ existe, est unique et est fonctionnel et total.
+\end{proof}
+
+Un autre lemme qui sera important est appelé la curryfication (du nom de Haskell Curry) :
+
+\begin{lem}[Curryfication]
+    Il y a une bijection entre $\mathcal F(X\times Y,Z)$ et $\mathcal F(X,Z^Y)$.
+\end{lem}
+
+\begin{proof}
+    Soit $f : X\times Y \to Z$, on définit $$\fundef{\hat f}{X}{Z^Y}{x}{(y\mapsto f(x,y))}$$ et pour $g : X \to Z^Y$ on définit $$\fundef{\overline g}{X\times Y}{Z}{(x,y)}{g(x)(y)}$$
+
+    Soit $(x,y)\in X\times Y$, l'image de ce couple par $f$ est la même que par $\overline{\hat f}$ donc $f$ et $\overline{\hat f}$ coïncident, donc sont égales (même domaine, même codomaine et même graphe). Soit $x\in X$, son image par $g$ est la fonction $y\mapsto g(x)(y)$ et son image par $\hat{\overline g}$ est $y\mapsto g(x)(y)$ donc les deux fonctions sont égales, donc $g$ et $\hat{\overline g}$ coïncident sur $X$, donc sont égales.
+
+    On en déduit que nos deux transformations effectuent bien une bijection.
+\end{proof}
+
+\begin{exo}
+    Montrer qu'il existe une bijection entre $X\times Y$ et $Y\times X$. En déduire qu'il y a une bijection entre $\mathcal F(X\times Y,Z)$ et $\mathcal F(Y,Z^X)$.
+\end{exo}
+
+On peut alors définir l'addition et la multiplication :
+
+\begin{defi}[Addition]
+    On définit l'addition dans $\nat$ par la fonction $f : \nat\to\nat^\nat$ définie par récurrence de la façon suivante : 
+    \begin{itemize}[label=$\bullet$]
+        \item l'image de $0$ est $\id_\nat$.
+        \item la récurrence est définie par la fonction $\nat^\nat\to\nat^\nat, f \mapsto S\circ f$.
+    \end{itemize}
+
+    En utilisant l'exercice précédent, cela nous donne une fonction $+ : \nat\times \nat \to \nat$ définie par :
+    \begin{itemize}[label=$\bullet$]
+        \item $(n,0)\mapsto n$
+        \item $(n,Sm)\mapsto S(n + m)$
+    \end{itemize}
+\end{defi}
+
+\begin{defi}[Multiplication]
+    En utilisant le même procédé, on définit la multiplication $\times : \nat\times\nat\to\nat$ par :
+    \begin{itemize}[label=$\bullet$]
+        \item $(n,0)\mapsto 0$
+        \item $(n,Sm)\mapsto (n\times m)+n$
+    \end{itemize}
+\end{defi}
+
+\begin{exo}
+    Vérifier alors que notre structure $(\nat,+,\times)$ est bien un modèle de $\PA$.
+\end{exo}
+
+On peut alors définir, au-delà des couples, les $n$-uplets, ou tuples, et le produit d'ensembles indexé par une famille.
+
+\begin{defi}[Tuple]
+    Soient $E_0,\ldots,E_{n-1}$ des ensembles, l'ensemble $E_0\times \ldots \times E_{n-1}$ (sans parenthèses) est l'ensemble $$\{ f\in \mathcal F(n,\bigcup_{i=1}^n E_i)\mid \forall i\in n. f(i)\in X_i\}$$
+\end{defi}
+
+\begin{defi}[Produit quelconque d'ensembles]
+    Soit $I$ un ensemble non vide et $(X_i)_{i\in I}$ une famille d'ensembles indexée par $i$. On appelle le produit de ces ensembles, et on le note $\displaystyle{\prod_{i\in I} X_i}$ l'ensemble $$\prod_{i\in I}X_i = \{ f\in\mathcal F(I,\bigcup_{i\in I} X_i) \mid f(i)\in X_i\}$$
+
+    On remarque que l'union existe car, par l'axiome de remplacement, l'ensemble des $X_i$ existe.
+\end{defi}
+
+A partir de maintenant, on supposera que l'on peut traduire (avec plus ou moins de difficulté) nos constructions usuelles en théorie des ensembles.

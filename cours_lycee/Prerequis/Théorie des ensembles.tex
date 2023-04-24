@@ -1,0 +1,710 @@
+\section{Théorie des ensembles}
+
+Cette section s'intéresse aux éléments basiques de la théorie des ensembles. Cette expression désigne à la fois la manipulation élémentaire des ensembles utilisée dans toutes les branches des maths, une forme de formalisme employé pour formaliser les mathématiques, et une théorie à part entière s'occupant d'ensembles particuliers. Cette section étant avant tout une introduction, nous nous contenterons évidemment de nous intéresser aux manipulations élémentaires autorisées en mathématiques. Nous ne rentrerons pas dans le formalisme de le théorie axiomatique de $ZF$ à cause de sa complexité théorique, et admettrons simplement que ce qu'il est évident que l'on peut faire, peut être fait.
+
+\subsection{Que faire d'un ensemble ?}
+
+Tout d'abord, nous devons nous interroger rapidement sur ce qu'est un ensemble exactement. Les mathématiques utilisant cette notion comme primitive, un ensemble ne peut pas être décrit en termes mathématiques autres que \og un ensemble est un objet qui se comporte comme un ensemble\fg{}. Ceci étant, il est important d'avoir une idée précise de ce que désigne un ensemble au niveau de l'intuition, dans ce qu'on pourrait appeler des méta-mathématiques. Un ensemble est un regroupement (appelé aussi une collection) d'objets, pouvant comporter virtuellement n'importe quoi. On appelle \og élément\fg{} un objet appartenant à un ensemble donné. Un facteur important dans cette définition intuitive est que les collections que nous constituons sont insensibles à l'ordre et à la multiplicité des éléments. Par exemple un ensemble contenant $x$ et $x$ est exactement identique à un ensemble ne contenant $x$ qu'une fois (ainsi chaque élément n'est listé qu'une fois, par convention). De même, un ensemble contenant $x$ \textit{puis} $y$ est le même qu'un ensemble contenant $y$ \textit{puis} $x$ : on dira donc seulement que l'ensemble contient $x$ et $y$. Nous allons maintenant donner les différents éléments de base pour pouvoir désigner efficacement des ensembles : les définition d'ensembles par extension, compréhension, l'union, l'intersection, le complémentaire relatif, la différence symétrique, le produit cartésien et l'ensemble des parties.
+
+\subsubsection{Appartenance et égalité}
+
+Comme nous l'avons dit, un objet peut être élément d'un ensemble. Pour cela, nous utilisons le symbole $\in$, qui s'utilise ainsi :
+$$x\in X \text{ signifie que } x \text{ appartient à l'ensemble } X
+$$
+
+De plus, la notion d'égalité, qui signifie que deux objets sont les mêmes, existe évidemment aussi pour les ensembles. Un ensemble $X$ est égal à un autre ensemble $Y$ lorsqu'il a les mêmes éléments, ce qui signifie que pour tout objet $x$, on a l'équivalence $$x\in X \iff x\in Y$$
+
+\begin{expl}
+    En reprenant les définitions d'ensembles usuels données plus tôt, il est évident que $$1\in\nat$$ et de plus, en imaginons que l'on nomme $\mathbb M$ l'ensemble $\nat$ auquel on a ajouté $0$, l'égalité $$\mathbb M = \nat$$ est vérifiée, comme le nombre d'apparitions d'un élément dans un ensemble n'a pas d'importance et que $0\in \nat$.
+\end{expl}
+
+\subsubsection{Description par extension.}
+
+La façon la plus simple de décrire un ensemble est encore de lister explicitement ses éléments : on appelle cela une description de l'ensemble par extension. La notation est d'écrire chaque élément de l'ensemble, séparé par une virgule, le tout entre accolades. Il n'y aura en général par de confusion entre la virgule séparant deux éléments et celle séparant un nombre de sa partie décimale, mais dans un objectif de clarté nous utiliserons la notation anglophone où la partie décimale d'un nombre est séparée de sa partie entière par un point (par exemple \og un demi\fg{} s'écrira $0.5$).
+
+\begin{expl}
+    L'ensemble des entiers naturels inférieurs à $5$ est $\{0,1,2,3,4,5\}$.
+\end{expl}
+
+\begin{rmk}[L'ensemble vide]
+    Si un ensemble contient des éléments, il existe aussi un ensemble ne contenant pas d'éléments. Cet ensemble s'appelle l'ensemble vide et se note $\varnothing$ : il a la caractéristique que pour tout objet $x$, la propriété suivante est vérifiée : $$x\notin \varnothing$$
+    
+    Remarquons d'ores et déjà que l'ensemble $\{\varnothing\}$ est parfaitement différent que $\varnothing$ puisqu'il contient un élément. Il sera plus tard utile d'être à l'aise sur la différence entre un ensemble et ses éléments.
+\end{rmk}
+
+\subsubsection{Description par compréhension}
+
+Nous connaissons plusieurs ensembles dont nous acceptons l'existence, comme $\nat$ ou $\reel$, mais ces ensembles ont la particularité d'être infinis. Malheureusement, décrire par extension un ensemble infini est parfaitement impossible pour nous, et il nous faut donc recourir à une notation permettant d'écrire des ensembles infinis. La description par compréhension existe dans ce but : si l'on considère un ensemble $X$ et un prédicat (propriété dépendant d'un paramètre) $P(x)$, on peut considérer l'ensemble des éléments appartenant à $X$ qui vérifient ce prédicat. La description par compréhension permet donc d'écrire des parties de plus gros ensembles, la plupart du temps de façon concise. La grammaire pour écrire un ensemble par compréhension dépend parfois des auteurs, mais une écriture classique et admise de tout est la suivante, pour écrire \og l'ensemble des éléments de $X$ qui vérifient le prédicat $P$\fg{} :
+$$\compre{x}{x\in X, P(x)}
+$$
+
+\begin{rmk}
+    Selon l'auteur, la barre $|$ est remplacée par deux points $:$. De plus, il arrive de vouloir plutôt que simplement sélectionner des éléments $x$, considérer l'image de chaque $x$ par une certaine fonction $f$ (par exemple au lieu de regarder les entiers impaires, on peut vouloir considérer toutes les moitiés de nombres entiers impaires). Dans ce cas, l'écriture devient dans le cas général :
+    $$\compre{f(x)}{x\in X, P(x)}
+    $$
+    
+    Enfin, dans le cas d'une propriété qui se déduit de façon évidente en donnant les premiers termes, on peut écrire seulement les premiers termes en utilisant de points de suspension (cette utilisation est moins rigoureuse mais beaucoup plus lisible, nous conseillons de l'utiliser seulement lorsque l'on est sûrs d'être compris sans ambiguïté).
+\end{rmk}
+
+\begin{expl}
+    Explicitons l'exemple précédent : nous allons noter l'ensemble $A$ constitué des moitiés de tous les nombres entiers impaires :
+    $$A=\Bcompre{\dfrac{1}{2}\,x}{x\in \mathbb N, \mathrm{impair}(x)}
+    $$
+    
+    Avec des points de suspension, cet ensemble est $$A=\{0.5,1.5,2.5,\ldots\}$$
+\end{expl}
+
+\subsubsection{Inclusion d'ensembles}
+
+Nous allons nous intéresser à l'inclusion, permettant de comparer des ensembles. L'idée est naturelle : l'inclusion permet de déterminer si un ensemble est plus grand qu'un autre (attention, on ne parle pas ici du nombre d'éléments, qui est une notion plus fine appelée cardinale). Un ensemble $E$ est inclus dans un ensemble $F$ lorsque tout élément $x$ de $E$ est aussi un élément de $F$. On dit alors que $E$ est un sous-ensemble de $F$, et on le note $E\subseteq F$ (ou parfois $E\subset F$, qui induit une ambiguïté sur si $E\neq F$ ou si les deux ensembles peuvent être égaux).
+
+Nous donnerons, lorsque cela est possible, un dessin explicatif des différentes notions ensemblistes. Nous appelons diagrammes de Venn les diagrammes que nous dessineront, illustrant les ensembles. Ceux-ci sont intuitifs : une surface fermée représente un ensemble, un point dans une surface représente un élément de l'ensemble donné et une surface entièrement contenue dans une autre surface représente un ensemble inclus dans un autre.
+
+
+\includefig{Prerequis/Figures/inclusion.tex}{En gris clair $C$, foncé $D$, avec $D\subseteq C$}
+
+
+\subsubsection{Union d'ensembles}
+
+Maintenant que nous pouvons définir des ensembles et les comparer, nous allons définir des opérations sur nos ensembles, qui ressembleront fortement aux définitions que nous avons vu en logique. La première opération ensembliste est l'union : c'est une opération qui à partir de deux ensembles construit un nouvel ensemble regroupant les éléments des deux premiers ensembles. On note l'union grâce au symbole $\cup$, et appartenir à l'ensemble $A\cup B$ signifie exactement que l'on appartient à $A$ ou à $B$. On peut donc vouloir dire $$A\cup B = \compre{x}{x\in A \lor x \in B}$$ mais on remarque que cela ne respecte pas exactement la syntaxe que nous avons fixée pour un ensemble en compréhension car l'on ne connaît pas forcément d'ensemble plus grand dans se trouvent l'ensemble des $x$ désignés. L'intuition reste cependant importante car elle montre que $\cup$ est l'équivalent ensembliste du connecteur $\lor$.
+
+\begin{expl}
+    De façon évidente :
+    $$\nat=\compre{x}{x\in\nat, \mathrm{pair}(x)}\cup\compre{x}{x\in\nat,\mathrm{impair}(x)}$$
+\end{expl}
+
+\includefig{Prerequis/Figures/union.tex}{En gris l'union $A\cup B$}
+
+
+\begin{rmk}[Union généralisée]
+    Si nous avons une famille d'ensembles (qui est une liste d'ensembles), que nous noterons $X_1,X_2,\ldots,X_n$, alors nous pouvons définir l'union de cette famille comme les unions successives $\displaystyle{(((X_1\cup X_2)\cup X_3)\cup\ldots)\cup X_n=\bigcup_{i=1}^n X_i}$. La notation donnée à droite du $=$ permet d'écrire des unions avec beaucoup d'ensembles d'un coup. Si, au lieu d'une famille d'ensembles $X_1,\ldots, X_n$, nous avons un ensemble $\textbf{X}=\{X_1,\ldots,X_n\}$, l'union $\displaystyle{\bigcup_{i=1}^n X_i}$ s'écrira directement $\displaystyle{\bigcup \textbf{X}}$.
+\end{rmk}
+
+\begin{exo}
+    Soient $A$ et $B$ deux ensembles, montrer d'abord que $A\subseteq A\cup B$ et $B\subseteq A\cup B$, puis montrer que $B\subseteq A$ si et seulement si $A=A\cup B$.
+\end{exo}
+\begin{correction}
+    Soit $x\in A$, alors $x\in A \cup B$, donc $A\subseteq A\cup B$. De même, si $x\in B$ alors $x\in A \cup B$ donc $B\subseteq A \cup B$.
+    
+    Si $A=A\cup B$, alors soit $x\in B$. Par inclusion, $x\in A \cup B= A$ donc $x\in A$. Donc $B\subseteq A$.
+    
+    Si $B\subseteq A$, alors soit $x\in A\cup B$. Par disjonction de cas :
+    \begin{itemize}[label=$\bullet$]
+        \item si $x\in A$, alors $x\in A$
+        \item si $x\in B$, alors par inclusion $x\in A$.
+    \end{itemize}
+    Donc dans tous les cas, $x\in A$. On en déduit donc que $A\cup B \subseteq A$, et par ce que nous avons prouvé avant $A\subseteq A\cup B$, donc $A=A\cup B$.
+\end{correction}
+
+\subsubsection{Intersection d'ensembles}
+
+Si l'union permet de construire, à partir de deux ensembles, un ensemble plus gros regroupant les éléments des deux ensembles, l'intersection est l'opération inverse : à partir de deux ensembles $A$ et $B$, l'intersection $A\cap B$ est l'ensemble qui contient seulement les éléments à la fois dans $A$ et dans $B$. Là encore, on pourrait écrire d'une façon proche d'un ensemble par compréhension cette opération :
+$$A\cap B = \compre{x}{x\in A \land x \in B}
+$$
+ce qui nous donne donc le pendant ensembliste de la conjonction logique.
+
+\begin{expl}
+    Sans le prouver, nous savons que $2$ est le seul nombre à la fois pair et premier, d'où : $$\compre{n}{n\in\nat, \mathrm{premier}(n)}\cap\compre{n}{n\in\nat, \mathrm{pair}(n)}=\{2\}$$
+\end{expl}
+
+\includefig{Prerequis/Figures/inter.tex}{En gris l'intersection $A\cap B$}{1}
+
+\begin{rmk}
+    De la même façon que pour l'union, on peut définir pour $X_1,\ldots,X_n$ l'intersection $\displaystyle{\bigcap_{i=1}^nX_i}$ pour écrire avec concision l'intersection d'un grand nombre d'ensembles, et l'on pourra aussi écrire $\displaystyle{\bigcap \textbf{X}}$ pour un ensemble regroupand tous les ensembles dont on prend l'intersection.
+\end{rmk}
+
+\begin{exo}
+    Soient $A$ et $B$ des ensembles, montrer que $A\cap B\subseteq A$ et $A\cap B \subseteq B$, puis que $A\subseteq B$ si et seulement si $A\cap B = A$.
+\end{exo}
+
+\subsubsection{Le complémentaire relatif}
+
+Pour continuer notre analogie avec la logique, nous pouvons chercher un équivalent ensembliste à la négation. Cependant, dans le cadre des ensembles, cela signifierait chercher un ensemble de la forme $$\compre{x}{x\notin A}$$ à partir d'un certain ensemble $A$. Or un ensemble pareil contiendrait presque tous les ensembles (tous sauf $A$), et en l'appliquant directement à $\varnothing$ on obtiendrait ainsi l'ensemble de tous les ensembles, qui est une absurdité. En effet, il suffit alors de considérer l'ensemble des ensembles qui ne se contiennent pas eux-mêmes.
+
+L'équivalent de la négation doit donc être relatif : nous n'allons pas écrire $\compre{x}{x\notin A}$ mais, pour deux ensembles $A$ et $B$, nous allons construire $\compre{x}{x\in A, x\notin B}$. Nous listons donc les éléments qui ne sont pas dans un ensemble, mais en se fixant d'abord comme référentiel un premier ensemble. Cet ensemble, que l'on lit \og $A$ privé de $B$\fg{}, se note $A\setminus B$ ou $\complement_A B$, voire, si l'on connaît déjà implicitement le référentiel (ce qui arrive souvent), simplement $\overline B$.
+
+\begin{expl}
+    Les nombres impairs sont exactement les nombres qui ne sont pas pairs, d'où : $$\compre{n}{n\in\nat,\mathrm{impair}(n)}=\nat\setminus\compre{n}{n\in\nat,\mathrm{pair}(n)}$$
+    
+    De plus, le contexte de travailler avec des entiers peut parfois être évident, et dans ce cas nous pouvons directement écrire : $$\compre{n}{\mathrm{impair}(n)}=\overline{\compre{n}{\mathrm{pair}(n)}}$$
+\end{expl}
+
+\includefig{Prerequis/Figures/complem.tex}{En gris le complémentaire relatif $A\setminus B$}
+
+\subsubsection{Différence symétrique}
+
+Le complémentaire permet donc de supprimer dans un ensemble les éléments qui sont en commun avec un autre ensemble. La différence symétrique, elle, applique cette idée aux deux ensembles en réunissant à la fois $A\setminus B$ et $B\setminus A$. On peut donc l'écrire $(A\setminus B) \cup(B\setminus A)$ : ce sont les éléments appartenant à uniquement l'un des deux ensembles, mais pas les deux à la fois. On note cet ensemble $A\Delta B$. Il existe une opération qui lui correspond en logique mais elle est moins utile dans le strict cadre de la logique (elle peut se rencontrer dans l'informatique, par exemple en architecture d'ordinateur), on l'appelle le \og ou exclusif\fg{} ou le $XOR$.
+
+\begin{expl}
+    $$\{1,2,3,4,5\}\Delta \{5,6,7,8,9\}=\{1,2,3,4,6,7,8,9\}$$
+\end{expl}
+
+\includefig{Prerequis/Figures/diff_sym.tex}{En gris la différence symétrique $A\Delta B$}
+
+\subsubsection{Produit cartésien d'ensembles}
+
+Nous allons désormais voir une forme plus complexe d'ensemble à travers le produit cartésien. Le produit cartésien de deux ensembles $A$ et $B$ se note $A\times B$ et correspond à l'ensemble des couples constitués d'un élément de $A$ et d'un élément de $B$.
+
+Plus précisément, un couple ressemble à un ensemble, mais avec deux éléments pour lesquels l'ordre et le nombre d'occurrences compte. On note un couple constitué de $a$ comme premier élément et $b$ comme deuxième élément par $(a,b)$, et on appelle respectivement $a$ la première composante et $b$ la deuxième composante du couple $(a,b)$. Ainsi deux couples $(a,b)$ et $(b,a)$ sont distincts (en supposant que $a\neq b$) et le couple $(a,a)$ n'est pas $(a)$ (qui n'est d'ailleurs même pas un couple). On peut étendre cette notion à des groupements par trois, appelés triplets, ou des groupements par $n$ avec $n\in \nat$, appelés $n$-uplets. Ici, nous adopterons la convention qu'un $n$-uplet est simplement un couple avec un couple pour l'une de ses composantes (par exemple $(a,b,c)$ est juste une façon commode d'écrire $((a,b),c)$).
+
+\begin{expl}
+    Commençons par un exemple simple en considérant $A=\{2,4,6\}$ et $B=\{3,6,9\}$, alors : $$A\times B = \{(2,3),(2,6),(2,9),(4,3),(4,6),(4,9),(6,3),(6,6),(6,9)\}$$
+\end{expl}
+
+\begin{rmk}[Carré d'un ensemble]
+    Pour un ensemble $A$, on écrit $A^2$ pour l'ensemble $A\times A$, et même $A^3$ pour $A\times A \times A$, jusqu'à $A^n$ pour $A\times \ldots \times A$ où l'on multiplie $n$ fois $A$ à lui-même.
+\end{rmk}
+
+Nous allons illustrer l'idée de produit cartésien en utilisant le plan usuel. Pour cela, nous allons considérer acquise la représentation d'un système de coordonnées et la correspondance entre $\reel^2$ et le plan usuel (nous reviendront plus tard sur les fondements de ces affirmations, mais les utiliserons ici de façon intuitive). C'est-à-dire que l'on va considérer fixés deux axes gradués ($x$ et $y$), orthogonaux, et nous assimilerons un point $A$ à ses coordonnées dans ce repère, qui seront donc un couple $(x_A,y_A)$. Nous noterons $I$ l'ensemble des nombres réels entre $1$ et $2$ : $I=\compre{x}{x\in\reel, 1\leq x \leq 2}$. L'ensemble $I^2=I\times I$ est alors l'ensemble des points dont l'abscisse est entre $1$ et $2$ et l'ordonnée entre $1$ et $2$, puisque ce sont les couples formés de réels tous les deux entre $1$ et $2$.
+
+\includefig{Prerequis/Figures/prod_cartesien.tex}{En gris le produit cartésien $I\times I$}
+
+\subsubsection{Ensemble des parties}
+
+Pour finir cette partie, nous allons nous intéresser à une construction permettant de lister toutes les parties d'un ensemble. En effet, si $A$ est un ensemble, alors tous les ensembles $X$ tels que $X\subseteq A$ existent, et l'on peut tous les regrouper dans un ensembles (dont les éléments sont donc des ensembles), que l'on appelle ensemble des parties de $A$, et que l'on note $\Pset A$. Remarquons que par définition $\varnothing$ et $A$ sont des éléments de $\Pset A$ puisque $\varnothing\subseteq A$ et $A\subseteq A$. Pour des ensembles quelconques $A$ et $E$, on a donc l'équivalence suivante : $$A\subseteq E \iff A\in\Pset E$$
+
+\begin{expl}
+    Nous allons construire plusieurs ensembles de parties, successivement, à partir de l'ensemble vide :
+    $$\Pset \varnothing = \{\varnothing\}\quad \Pset {\Pset \varnothing}=\{\{\varnothing\},\varnothing\}\quad \Pset{\Pset{\Pset \varnothing}} = \{\{\{\varnothing\},\varnothing\},\{\{\varnothing\}\},\varnothing,\{\varnothing\}\}$$
+    
+    On conviendra aisément que le dernier ensemble est plutôt difficile à lire, mais il permet de remarquer qu'à partir d'un ensemble à $0$ éléments, nous obtenons successivement des ensembles à $1$, puis $2$, puis $4$ éléments. Nous pourrions donc conjecturer sur le nombre de parties d'un ensemble à $n$ éléments donnés, mais nous traiterons ce problème plus tard.
+\end{expl}
+
+\subsubsection{Intervalles de nombres réels}
+
+On appelle intervalle une partie $E$ de $\reel$ convexe, c'est-à-dire que si $x\in E$ et $y\in E$ alors pour tout $x\leq t\leq y, t\in E$. Un intervalle s'écrit sous l'une des formes suivantes :
+\begin{itemize}[label=$\bullet$]
+    \item $[a;b]=\compre{x}{a\leq x \leq b}$
+    \item $[a;b[ = \compre{x}{a\leq x < b}$
+    \item $]a;b] = \compre{x}{a< x \leq b}$
+    \item $]a;b[ = \compre{x}{a < x < b}$
+    \item $]-\infty;b] =\compre{x}{x \leq b}$
+    \item $]-\infty;b[ = \compre{x}{x < b}$
+    \item $[a;+\infty[ = \compre{x}{a\leq x}$
+    \item $]a;+\infty[ = \compre{x}{a<x}$
+\end{itemize}
+
+\subsubsection{Raisonner sur des ensembles}
+
+Maintenant que nous avons vu les principales opérations et la grammaire élémentaire pour parler des ensembles, nous allons parler de la façon dont nous pouvons raisonner avec les ensembles. Le but ici ne sera pas de décrire des raisonnement alambiqués et virtuoses mais seulement de donner au lecteur une idée de ce qu'il devra écrire dans des exercices basiques de théorie des ensembles.
+
+\paragraph{Introduire un élément}
+L'un des procédés les plus souvent utilisés pour raisonner sur les ensembles est d'introduire un élément quelconque de cet ensemble pour raisonner dessus. Pour revenir à la partie sur les raisonnement, l'idée derrière ce procédé est simplement que $\forall x\in X \implies P(x)$ doit se prouver en introduisant un élément $x$ de $X$ quelconque.
+
+\begin{expl}
+    Montrons que $A\cap B \subseteq A$ :
+    
+    Soit $x\in A\cap B$, alors comme $x\in A\cap B$, on en déduit que $x\in A$, donc $x\in A\cap B \implies x\in A$, ce qui signifie par définition que $A\cap B \subseteq A$.
+\end{expl}
+
+\paragraph{Raisonner par double inclusion}
+La façon la plus simple de prouver qu'un ensemble est égal à un autre est de procéder par double inclusion. Ce principe se fait en deux temps. Supposons qu'on possède un ensemble $X$ et un ensemble $Y$, on prouve :
+\begin{itemize}[label=$\bullet$]
+    \item que $X\subseteq Y$, puis
+    \item que $Y\subseteq X$
+\end{itemize}
+et alors $X=Y$.
+
+\begin{expl}
+    Soient les ensembles $A=\compre{n}{n\in\nat, \mathrm{pair}(n)}$ et $B=\compre{2\times n}{n\in \nat}$, et montrons que $A=B$ :
+    
+    Raisonnons par double inclusion :
+    \begin{itemize}[label=$\bullet$]
+        \item Soit $n\in A$, alors par définition de la parité, il existe un nombre $k\in\nat$ tel que $n=2\times k$. On en déduit que $n$ est le double d'un nombre entier, ce qui signifie que $n\in B$.
+        \item Soit $n\in B$, alors $n=2\times k$ pour un certain $k\in\nat$ par définition des éléments de $B$. $n$ est alors pair par définition, donc $n\in A$.
+    \end{itemize}
+    Donc $A=B$.
+\end{expl}
+
+\subsection{Relations binaires et fonctionnelles}
+
+Cette partie va parler des relations binaires, qui sont un outil essentiel pour la construction et la compréhension des mathématiques. Nous verrons dans l'ordre les généralités sur les relations binaires (leur définition, principalement), les relations d'ordre, les relations d'équivalence et les fonctions.
+
+\subsubsection{Relation binaire}
+
+Commençons par donner la définition d'une relation binaire sur un ensemble donné. Faisons un \textit{aparte} pour distinguer une définition d'une caractérisation. Une définition correspond à la première rencontre avec un objet mathématique, alors qu'une caractérisation est une propriété d'un objet qui \textit{pourrait} remplacer la définition, au sens où tout objet suivant la définition est exactement un objet suivant la caractérisation. Nous verrons plus tard des caractérisations, mais l'important dans cette opposition, à l'heure actuelle, est que la définition d'un objet ne demande en général pas d'argument ou de démonstration : on se contente d'affirmer à quoi renvoie un certain terme mathématique.
+
+\begin{defi}[Relation binaire]
+    Une relation binaire $\RR$ sur un ensemble $E$ est une partie de $E^2$ (c'est-à-dire un ensemble $\RR\subseteq E^2$). On dit que deux élément $x\in E$ et $y\in E$ sont en relation pour $\RR$ lorsque le couple $(x,y)$ est un élément de $\RR$. Plutôt que d'écrire cela $(x,y)\in\RR$, on écrit en général $x\RR y$.
+    
+    En général, une relation binaire est donnée par une description des éléments qui sont en relation plutôt que par la liste explicite des couples (cette liste explicite est en général impossible à faire puisque la plupart des relation binaires que nous utiliserons seront sur des ensembles infinis).
+\end{defi}
+
+Listons quelques relations binaires usuelles pour mieux se faire à cette notion nouvelle.
+
+\begin{expl}
+
+\ 
+    \begin{itemize}[label=$\bullet$]
+        \item Sur $\nat$, $\leq$ est une relation binaire : on écrit $x\leq y$ pour dire que $x$ est inférieur à $y$.
+        \item Pour un ensemble $E$ quelconque, l'égalité $=$ peut se considérer comme une relation binaire sur $E$, c'est alors l'ensemble $\compre{(x,x)}{x\in E}$ qu'on appelle aussi diagonale de $E$. En effet, chaque élément $x$ n'est que dans le couple $(x,x)$, donc n'est en relation qu'avec lui-même, ce qui correspond bien à $x=x$.
+        \item Si l'on définit $\mathcal D$ comme l'ensemble des droites du plan, alors le parallélisme est une relation binaire sur $\mathcal D$.
+        \item Sur $\nat$, la relation $|$ définie par $x\mid y$ s'il existe $k$ tel que $y=k\times x$ (appelée divisibilité) est une relation binaire.
+    \end{itemize}
+\end{expl}
+
+Nous allons maintenant présenter des notions liées aux relations permettant de mieux voit quelles en sont les manipulations possibles. Comprendre en profondeur le sens et l'utilité de ces définitions n'est pas nécessaire pour la suite.
+
+\begin{defi}[Complémentaire, relation réciproque]
+    Soit $E$ un ensemble et $\RR$ une relation binaire sur $E$. On appelle complémentaire de $\RR$ la relation $\overline\RR$ décrite par l'ensemble $\overline\RR = \compre{(x,y)}{x\in E, y \in E, (y,x)\notin \RR}$. Cela signifie que deux éléments sont en relation pour $\overline\RR$ si et seulement s'ils ne sont pas en relation pour $\RR$.
+    
+    On appelle la relation réciproque de $\RR$, que l'on note $\RR ^{-1}$, la relation définie par $x\RR ^{-1} y \iff y\RR x$.
+\end{defi}
+
+\begin{expl}
+    Dans $\nat$, le complémentaire de $\leq$ est $>$, tandis que la réciproque de $\leq$ est $\geq$.
+\end{expl}
+
+Donnons les propriétés qui sont habituellement utilisées pour les relation binaires.
+
+\begin{defi}[Réflexivité, symétrie, transitivité, antiréflexivité, antisymétrie]
+    Soit un \\ensemble $E$. On définit les propriétés suivantes pour une relation binaire $\RR$ sur $E$ :
+    \begin{itemize}[label =]
+        \item Réflexivité : $\forall x\in E, x\RR x$
+        \item Symétrie : $\forall x\in E, \forall y\in E, x\RR y \implies y \RR x$
+        \item Transitivité : $\forall x \in E, \forall y \in E, \forall z \in E, (x\RR y \land y\RR z)\implies x \RR z$
+        \item Antiréflexivité : $\forall x\in E, \lnot (x\RR x)$
+        \item Antisymétrie : $\forall x \in E, \forall y \in E, (x\RR y \land y\RR x)\implies x = y$
+    \end{itemize}
+\end{defi}
+
+\begin{defi}[Finesse]
+    Soit $E$ un ensemble et $\RR_1$ et $\RR_2$ deux relations binaires sur $E$. On dit que $\RR_1$ est plus fine que $\RR_2$ lorsque $\RR_1\subseteq \RR_2$. Cela revient à la proposition suivante : $$\forall x \in E, \forall y \in E, x\RR_1 y \implies x \RR_2 y$$
+    
+    Une relation plus fine qu'une autre possède donc moins de liaisons entre les éléments.
+\end{defi}
+
+\begin{exo}
+    Soit $E$ un ensemble et $\RR$ une relation binaire réflexive sur $E$. Montrer que l'égalité est une relation binaire plus fine que $\RR$.
+\end{exo}
+
+\begin{exo}
+    Soit $E$ un ensemble et $\RR$ une relation binaire transitive et symétrique. Montrer que pour tout $x\in E, y\in E$, si $x\RR y$ alors $x\RR x$ et $y\RR y$. 
+    
+    En déduire qu'une relation transitive et symétrique où tout élément est en relation avec au moins un élément est réfléxive.
+\end{exo}
+
+\begin{exo}
+    Soit $E$ un ensemble et $\RR$ une relation binaire symétrique et antisymétrique. Montrer que $\RR$ est l'égalité.
+\end{exo}
+
+\begin{exo}[Construire une relation réflexive et transitive \textbf *]
+    Soit $E$ un ensemble et $\RR$ une relation binaire sur $E$. On définie $\RR^*$, appelée la clôture réflexive et transitive de $\RR$ de la façon suivante : 
+    $x\RR^*y$ si $x=y$ ou s'il existe une suite finie $x_0,\ldots,x_n$ où $x_0=x$, $x_n=y$ et pour chaque $i\in\{1,\ldots, n-1\}$, $x_i\RR x_{i+1}$.
+    
+    Montrer que $\RR^*$ est bien une relation réflexive et transitive, que de plus $\RR\subseteq \RR^*$ (ce qui est équivalent à dire que $x\RR y \implies x\RR^* y$), et enfin, que $\RR^*$ est la plus fine relation réflexive et transitive qui contient $\RR$.
+\end{exo}
+
+\begin{exo}[Construire une relation symétrique \textbf *]\label{exo:sym}
+    Soit $E$ un ensemble et $\RR$ une relation binaire sur $E$. Montrer que $\RR\cup \RR^{-1}$ est une relation symétrique contenant $\RR$. Montrer, de plus, que $\RR\cup \RR^{-1}$ est plus fine que toute les relations symétriques contenant $\RR$.
+\end{exo}
+
+\begin{exo}[Intersection et union de relations \textbf{**}]
+    Soit $E$ un ensemble, et $\boldsymbol{\RR}$ un ensemble de relations binaires sur $E$ (donc $\boldsymbol{\RR}\subseteq\Pset{E^2}$). Montrer que $\RR' = \displaystyle{\bigcap \boldsymbol{\RR}}$ est aussi une relation binaire sur $E$, et que $\RR'$ est plus fine que toute relation $\RR\in\boldsymbol{\RR}$. De même, montrer que $\RR'' = \displaystyle{\bigcup\boldsymbol{\RR}}$ est une relation binaire sur $E$ et que toute relation $\RR\in\boldsymbol{\RR}$ est plus fine que $\RR''$.
+\end{exo}
+
+Nous verrons plus tard que regrouper plusieurs relations ou objets divers pour en prendre l'intersection sera souvent fructueux, car beaucoup de propriétés restent stables par intersection (ce qui signifie que si l'on prend un ensemble d'objets possédant une propriété, alors l'intersection de tous ces objets possédera aussi cette propriété). La prochaine partie nous donnera un tel exemple.
+
+\subsubsection{Relation d'équivalence}
+
+Une relation d'équivalence est une relation binaire particulière. Celle-ci prend une importance particulière car elle permet de relever des propriétés partagées par des éléments, et devient un élément de construction mathématique essentiel lorsque l'on veut traiter ces propriétés en tant que telles. Par exemple, la propriété pour des droites d'être parallèles entre elles est intéressantes, mais on peut en définir la notion de direction, qui est \og l'endroit vers lequel pointent toutes les droites parallèles à une certaine droite\fg{}. Nous allons donc voir comment définir rigoureusement ce procédé.
+
+Commençons par présenter des exemples de relations d'équivalences usuelles pour donner une idée de l'intuition derrière cette notion :
+\begin{expl}[Relations d'équivalence classiques]
+    Les relations suivantes sont des relations d'équivalences :
+    \begin{itemize}[label=$\bullet$]
+        \item La relation de parallélisme sur l'ensemble $\mathcal D$ des droites du plan affine est une relation d'équivalence.
+        \item La similitude sur l'ensemble $\mathcal T$ des triangles du plan est une relation d'équivalence. 
+        
+        Pour rappel, deux triangle sont semblables si leurs angles sont les mêmes, ou de façon équivalente si l'on peut les superposer en en tournant un et en l'agrandissant ou en le réduisant.
+        \item Soit $n\in\nat$ fixé, la relation dite de congruence modulo $n$ (qui sera détaillée plus tard) est une relation d'équivalence. On la définit par le fait que si $x$ est congru à $y$ modulo $n$ alors $n$ divise $y-x$, ou encore que $x$ et $y$ ont le même reste par la division euclidienne par $n$.
+    \end{itemize}
+\end{expl}
+
+Nous pouvons maintenant donner la définition d'une relation d'équivalence :
+
+\begin{defi}[Relation d'équivalence]
+    Une relation d'équivalence $\sim$ sur un ensemble $E$ est une relation binaire possédant les propriétés suivantes :
+    \begin{itemize}[label=]
+        \item Réflexivité : $\forall x \in E, x\sim x$.
+        \item Symétrie : $\forall x\in E, \forall y \in E, x\sim y \implies y\sim x$.
+        \item Transitivité : $\forall x\in E, \forall y \in E, \forall z \in E, (x\sim y \land y\sim z) \implies x\sim z$.
+    \end{itemize}
+\end{defi}
+
+L'intérêt d'une relation d'équivalence est de pouvoir regrouper les éléments par groupes possédant une propriété commune, c'est-à-dire étant tous en relation.
+
+\begin{defi}[Classe d'équivalence]
+    Soit $E$ un ensemble et $\sim$ une relation d'équivalence sur $E$. Soit $x\in E$. On appelle classe d'équivalence de $x$, et l'on notera $C_x$ ou $\overline x$ l'ensemble : $$C_x = \compre{y}{y\in E, x\sim y}$$ qui sont des ensembles non vides car $x\in C_x$ (par réflexivité de $\sim$).
+    
+    L'utilisation de la notation $\overline x$ est standard mais peut porter à confusion à cause de l'utiliser de $\overline{}$ pour de nombreuses notions mathématiques, aussi nous garderons la notation $C_x$ pour qualifier la classe d'un élément $x$.
+\end{defi}
+
+L'intérêt de cette notion est que la classe d'équivalence ne varie par suivant l'élément choisi dans la classe. Le résultat suivant le montre :
+
+\begin{prop} \label{sim:disjonction}
+    Soit $E$ un ensemble et $\sim$ une relation d'équivalence sur $E$, soient $x\in E$ et $y\in E$. Il y a alors deux possibilités :
+    \begin{itemize}[label=$\bullet$]
+        \item Si $x\sim y$, alors $C_x=C_y$.
+        \item Si $\lnot (x\sim y)$, alors $C_x\cap C_y = \varnothing$.
+    \end{itemize}
+\end{prop}
+
+\begin{proof}
+    Prouvons le premier cas par double inclusion :
+    \begin{itemize}[label=]
+        \item Soit $z\in C_x$, prouvons que $z\in C_y$. Par définition, comme $z\in C_x$, $x\sim z$. Or par hypothèse, $x\sim y$ donc, puisque $\sim$ est symétrique, $y\sim x$, ce qui nous donne par transitivité que $y\sim z$, soit $z\in C_y$. Donc $z\in C_x\implies z\in C_y$, donc \underline{$C_x\subseteq C_y$}.
+        \item Réciproquement, si $z\in C_y$, alors par définition $y\sim z$ et l'hypothèse $x\sim y$ nous permet par transitivité de déduire que $y\sim z$, donc que $z\in C_y$, donc \underline{$C_y\subseteq C_x$}.
+    \end{itemize}
+    D'où par double inclusion que $\boxed{C_x=C_y}$.
+    
+    \vspace{0.25cm}
+    Prouvons le deuxième cas par contradiction :\\
+    Supposons qu'il existe $z\in C_x\cap C_y$. Alors on en déduit que $z\in C_x$ et que $z\in C_y$. De ces deux hypothèses, respectivement, on déduit que $x\sim z$ et $y\sim z$, donc par symétrique et transitivité de $\sim$, on en déduit que \underline{$x\sim y$}, ce qui contredit notre hypothèse de départ.\\
+    Donc $\boxed{C_x\cap C_y = \varnothing}$.
+\end{proof}
+
+Nous pouvons maintenant définir les ensembles quotients, qui seront essentiels pour construire des objets mathématiques de plus en plus complexes.
+
+\begin{defi}[Ensemble quotient]
+    Soit $E$ un ensemble et $\sim$ une relation d'équivalence sur $E$. On appelle le quotient de $E$ par $\sim$, et on note \quot{E}{\sim} l'ensemble $$\quot{E}{\sim} = \compre{C_x}{x\in E}$$ qui est donc l'ensemble des regroupement de familles de même propriété pour cette relation d'équivalence.
+    
+    Remarquons qu'il existe naturellement la fonction $\fonction{\pi}{E}{\quot{E}{\sim}}{x}{C_x}$. Nous détaillerons la notion de fonction plus tard, mais nous donnons dès maintenant l'existence d'une telle fonction pour l'étudier plus tard.
+\end{defi}
+
+\begin{exo}
+    Montrer que les deux relations suivantes sont des relations d'équivalence :
+    \begin{itemize}[label=$\bullet$]
+        \item La relation de parallélisme sur l'ensemble $\mathcal D$ des droites du plan (nous pouvons utilisés les résultats appris en 6e).
+        \item \textbf{(*)} Pour $n\in\nat$ fixé, la congruence modulo $n$.
+    \end{itemize}
+\end{exo}
+
+\begin{exo}[Construire une relation d'équivalence \textbf{*}]
+    Soit $E$ un ensemble et $\to$ une relation binaire sur $E$. On note $\toot$ la relation symétrique décrite dans l'exercice \ref{exo:sym} et $\toot^*$ sa clôture réflexive et symétrique.
+    
+    Montrer que $\toot^*$ est une relation d'équivalence contenant $\to$, et qu'elle est la plus fine relation d'équivalence contenant $\to$.
+\end{exo}
+
+\begin{exo}[Construction alternative d'une relation d'équivalence \textbf{**}]
+    Soit $E$ un ensemble et $\RR$ une relation binaire sur $E$. On note $\boldsymbol{\mathcal R}$ l'ensemble des relations d'équivalence contenant $\RR$.
+    \begin{enumerate}
+        \item Montrer que $\boldsymbol{\mathcal R}$ n'est pas vide (car on veut en considérer l'intersection).
+        \item Montrer que si $\boldsymbol{\mathcal R}$ est constitué uniquement de relations réflexives, alors $\displaystyle{\bigcap\boldsymbol{\mathcal R}}$ est réflexive, et contient $\RR$.
+        \item Montrer que si $\boldsymbol{\mathcal R}$ est constitué uniquement de relations symétriques, alors $\displaystyle{\bigcap\boldsymbol{\mathcal R}}$ est réflexive, et contient $\RR$.
+        \item Montrer que si $\boldsymbol{\mathcal R}$ est constitué uniquement de relations transitives, alors $\displaystyle{\bigcap\boldsymbol{\mathcal R}}$ est réflexive, et contient $\RR$.
+        \item En déduire que $\displaystyle{\bigcap\boldsymbol{\mathcal R}}$ est la relation d'équivalence la plus fine qui contient $\RR$.
+    \end{enumerate}
+\end{exo}
+
+\begin{rmk}
+    D'après les deux exercices précédents, on remarque qu'il existe deux façon de définir une structure contenant un ensemble : la première est d'étendre cet ensemble jusqu'à obtenir la structure souhaitée, et la deuxième est de prendre une surestimation des structure qui contiennent l'ensemble en question pour en prendre l'intersection. L'avantage de la première méthode est d'en général donner une description explicite de la structure attendue, mais celle-ci peut-être difficilement manipulable, alors que la deuxième façon permet de traiter de façon systématique ce genre de problèmes (c'est ce que nous utiliserons dans la suite du document).
+\end{rmk}
+
+\subsubsection{Partition d'un ensemble}
+
+Cette partie permet de mieux se familiariser avec les quotients par une relation d'équivalence. En effet, on appelle partition d'un ensemble l'ensemble de parties produit par un quotient de la forme \quot{E}{\sim}.
+
+\begin{defi}[Partition d'un ensemble]
+    Soit $E$ un ensemble et $\boldsymbol P\subseteq \Pset{E}$ un ensemble de parties de $E$. On dit que $\boldsymbol P$ est une partition de $E$ si :
+    \begin{itemize}[label=$\bullet$]
+        \item $\forall P\in\boldsymbol P, P\neq\varnothing$.
+        \item $\displaystyle{\bigcup \boldsymbol P = E}$.
+        \item $\forall P\in\boldsymbol P, \forall P'\in\boldsymbol P, P\neq P'\implies P\cap P'=\varnothing$.
+    \end{itemize}
+    
+    Une partition d'un ensemble est donc exactement une façon de découper un ensemble en paquets pour que chaque élément de l'ensemble aille dans exactement un ensemble.
+\end{defi}
+
+Le dessin ci-dessous présente un ensemble $E$ avec une partition $\boldsymbol P = \{P_1,P_2,P_3,P_4,P_5\}$.
+
+\includefig{Prerequis/Figures/partition.tex}{Un ensemble $E$ partitionné}
+
+
+Donnons une définition équivalente à une partition qui sera moins centrée sur les parties que sur les éléments de l'ensemble :
+
+\begin{prop}[Caractérisation d'une partition]
+    Soit $E$ un ensemble et $\boldsymbol P\subseteq \Pset{E}$, les deux propositions sont équivalentes :
+    \begin{itemize}[label=$\bullet$]
+        \item $\boldsymbol P$ est une partition de $E$.
+        \item Les conditions suivantes sont respectées :
+        \begin{itemize}
+            \item $\forall P\in\boldsymbol P, P\neq \varnothing$.
+            \item $\forall x\in E, \exists P \in\boldsymbol P, x\in P$.
+            \item $\forall x\in E, \forall P\in\boldsymbol P, \forall P'\in\boldsymbol P, (x\in P \land x\in P')\implies P=P'$
+        \end{itemize}
+    \end{itemize}
+\end{prop}
+
+\begin{rmk}
+    Les points $2$ et $3$ de la caractérisation précédente peuvent se réécrire $$\forall x\in E, \exists ! P\in\boldsymbol P, x\in P$$ signifiant \og il existe un unique élément tel que\fg{} plutôt que simplement \og il existe \fg{}. Nous éviterons d'utiliser ce symbole car il évite de voir l'importance que revêt l'unicité dans la phrase.
+\end{rmk}
+
+\begin{proof}
+    Montrons qu'une partition vérifie bien les conditions décrites :
+    \begin{itemize}[label=$\bullet$]
+        \item La première phrase est commune à la définition et à la caractérisation.
+        \item Soit $x\in E$, alors comme $\displaystyle{E=\bigcup \boldsymbol P}$, $\displaystyle{x\in\bigcup\boldsymbol P}$, ce qui signifie par définition de l'union, qu'\underline{il existe } \underline{$P\in\boldsymbol P$ tel que $x\in P$}, ce qui est le résultat que nous voulons démontrer.
+        \item Soit $x\in E$ et soient $P\in\boldsymbol P$, $P'\in\boldsymbol P$. Par contraposée de la dernière propriété d'une partition, comme $\lnot (P\cap P' =\varnothing)$ (en effet, cette intersection contient au moins $x$), on en déduit $\lnot (P\neq P')$, c'est-à-dire \underline{$P=P'$}.
+    \end{itemize}
+    
+    Montrons le sens réciproque, c'est-à-dire que les conditions suffisent à construire une partition :
+    \begin{itemize}[label=$\bullet$]
+        \item Le fait que toutes les parties sont non vides est vrai par hypothèse.
+        \item Pour hypothèse, tout élément $x\in E$ appartient à une partie $P\in\boldsymbol P$, donc $E\subseteq\displaystyle{\bigcup \boldsymbol P}$, et l'autre inclusion est évidente puisque tous les éléments des parties de $E$ sont des éléments de $E$. D'où \underline{$\displaystyle{\bigcup \boldsymbol P = E}$}.
+        \item Soient $P$ et $P'$ deux éléments de $\boldsymbol P$. Supposons que $P\neq P'$, alors il n'existe pas d'élément $x\in E$ tel que $x\in P\land x\in P'$, ce qui signifie qu'il n'existe pas d'élément $x\in E$ tel que $x\in P\cap P'$, donc \underline{$P\cap P'=\varnothing$}.
+    \end{itemize}
+    
+    \fbox{Les deux définitions sont donc équivalentes.}
+\end{proof}
+
+Nous allons maintenant voir un théorème exprimant l'équivalence entre une relation d'équivalence et une partition.
+
+\begin{them}[Equivalence d'une partition et d'un ensemble quotient]
+    Soit $E$ un ensemble. Alors pour toute partition $\boldsymbol P$ il existe une unique relation d'équivalence $\sim_{\boldsymbol P}$ telle que $\quot{E}{\sim_{\boldsymbol P}} = \boldsymbol P$.
+    
+    Réciproquement, si $\sim$ est une relation d'équivalence, alors $\quot{E}{\sim}$ est une partition de $E$.
+\end{them}
+
+\begin{proof}
+    Comme pour chaque $x\in E$, il existe un unique $P\in\boldsymbol P$ tel que $x\in P$, on définit $\sim_{\boldsymbol P}$ par le fait que deux éléments $x$ et $y$ sont en relation quand ils appartiennent à la même partie $P\in\boldsymbol P$. Montrons alors que cela forme une relation d'équivalence ;
+    \begin{itemize}[label=$\bullet$]
+        \item Par définition, pour tout $x\in E$, en nommant $P$ la partie de la partition à laquelle appartient $x$, $x\in P$, donc \underline{$x\sim_{\boldsymbol P} x$}.
+        \item Soient $x\in E$ et $y\in E$ tels que $x\sim_{\boldsymbol P} y$ , nommons $P$ la partie à laquelle appartiennent $x$ et $y$. Il est évident que \underline{$y\sim_{\boldsymbol P} x$} comme $P$, un ensemble, n'est pas ordonné.
+        \item Soient $x\in E$, $y\in E$ et $z\in E$ tels que $x\sim_{\boldsymbol P} y$ et $y\sim_{\boldsymbol P} z$, alors les trois éléments appartiennent à une même partie $P\in\boldsymbol P$, donc \underline{$x\sim_{\boldsymbol P} z$}.
+    \end{itemize}
+    
+    \fbox{Donc $\sim_{\boldsymbol P}$ est une relation d'équivalence.}
+    
+    Montrons maintenant que $\quot{E}{\sim_{\boldsymbol P}}=\boldsymbol P$ :
+    
+    Soit $x\in E$, alors $C_x = P$ pour un certain $P\in\boldsymbol P$. En effet, puisque tous les éléments en relation avec $x$ sont dans la même partie $P\in\boldsymbol P$, on fixe ce $P$ et on en déduit que \underline{$C_x\subseteq P$}. Réciproquement, tout élément de $P$ est en relation avec $x$ par définition puisque ceux-ci appartiennent à la même partie. Donc \fbox{$C_x = P$}. 
+    
+    Ainsi, pour toute partie $P\in\boldsymbol P$, on trouve un élément $x\in P$ (car $P$ est non vide par hypothèse) et on en déduit que $P=C_x$, dont on déduit que \underline{$\boldsymbol P \subseteq \quot{E}{\sim_{\boldsymbol P}}$}. Réciproquement, si l'on prend $P\in \quot{E}{\sim_{\boldsymbol P}}$, alors pour tout élément $x\in P$ appartient à un certain $P'\in\boldsymbol P$, mais $P'=C_x=P$ d'après les argument précédents, donc \underline{$\quot{E}{\sim_{\boldsymbol P}}\subseteq \boldsymbol P$}.
+    
+    Donc par double inclusion, $\boxed{\quot{E}{\sim_{\boldsymbol P}}= \boldsymbol P}$
+    
+    \vspace{0.5cm}
+    Montrons que $\quot{E}{\sim}$ est une partition de $E$ :
+    \begin{itemize}[label=$\bullet$]
+        \item Tout d'abord, soit $P\in \quot{E}{\sim_{\boldsymbol P}}$, par définition on trouve $x\in P$ tel que $P=C_x$, or $\sim$ est réflexive donc $x\in P$, donc \underline{$P\neq \varnothing$}.
+        \item Soit $x\in E$, par définition $x\in C_x$ et $C_x\in \quot{E}{\sim_{\boldsymbol P}}$, donc \underline{on trouve $P\in \quot{E}{\sim_{\boldsymbol P}}$ tel que $x\in P$}.
+        \item Soit $x\in E$, $P,P'\in \quot{E}{\sim_{\boldsymbol P}}$ tels que $x\in P\land x\in P'$. Alors on trouve $y$ et $z$ tels que $P=C_x$ et $P'=C_z$. Alors par \ref{sim:disjonction}, comme $P\cap P'\neq \varnothing$, on en déduit que \underline{$P=P'$}.
+    \end{itemize}
+    \fbox{Donc \quot{E}{\sim} est bien une partition de $E$.}
+\end{proof}
+
+\begin{exo}[Direction d'une droite]
+    Soit $\mathcal D$ l'ensemble des droites du plan. On décide de partitionner cet ensemble en regroupant les droites qui ont la même direction. Quelle est la relation d'équivalence correspondant à cette partition ?
+\end{exo}
+
+\subsubsection{Relation d'ordre}
+
+Outre les relations d'équivalence, un autre type de relations important pour toutes les maths usuelles est celui des relations d'ordre. Celles-ci servent, comme leur nom l'indique, à ordonner un ensemble. Leur exemple le plus évident est la relation $\leq$ qui permet d'ordonner les entiers, et qui est la base du fait de pouvoir compter. En effet, l'intérêt de compter $1,2,3,4,\ldots$ dans cet ordre est juste que ces entiers viennent avec un ordre naturel. Voyons donc la définition d'une relation d'ordre.
+
+\begin{defi}[Relation d'ordre]
+    Soit $E$ un ensemble et $\preceq$ une relation binaire sur $E$. On dit que $\preceq$ est une relation d'ordre lorsqu'elle possède les propriétés suivantes :
+    \begin{itemize}[label=]
+        \item Réflexivité : $\forall x\in E, x\preceq x$
+        \item Antisymétrie : $\forall x\in E, \forall y \in E, (x\preceq y \land y \preceq x)\implies x=y$
+        \item Transitivité : $\forall x\in E,\forall y\in E,\forall z \in E, (x\preceq y \land y \preceq z)\implies x \preceq z$
+    \end{itemize}
+\end{defi}
+
+Nous ne nous attarderons pas beaucoup sur les relations d'ordre car, si celles-ci ouvrent le champ à des théories très larges, elles sont largement hors de notre étude et beaucoup trop abstraites. Nous allons donner dans un premier temps des exemples de relations d'ordre, puis nous verrons quelques éléments importants dans l'étude des relations d'ordre.
+
+\begin{expl}
+    Voici quelques relations d'ordre classiques :
+    \begin{itemize}[label=$\bullet$]
+        \item Dans $\nat$, la relation $\leq$ est une relation d'ordre.
+        \item Dans $\nat$, la relation $\mid$ définie précédemment est aussi une relation d'ordre.
+        \item Si l'on fixe un ensemble $E$, alors $\subseteq$ est une relation d'ordre sur $\Pset E$.
+    \end{itemize}
+\end{expl}
+
+Une différence  notable entre $\leq$ et, par exemple, $\subseteq$, est que l'on peut toujours comparer deux entiers avec $\leq$, alors qu'il existe des parties de $E$ que l'on ne peut pas comparer.
+
+\begin{expl}
+    En prenant $E=\{1,2,3\}$, on remarque que $\{1\}\subseteq\{1,2\}$ et $\{1\}\subseteq\{1,3\}$ mais que $\lnot(\{1,2\}\subseteq\{1,3\})$, de même que $\lnot(\{1,3\}\subseteq\{1,2\})$. Donc ces deux ensembles sont dits incomparables.
+\end{expl}
+
+On peut donc définir une nouvelle propriété pour certains ordres.
+
+\begin{defi}[Ordre total]
+    Soit $E$ un ensemble et $\preceq$ une relation d'ordre sur $E$. On dit que $\preceq$ est total si :
+    $$\forall x\in E,\forall y\in E, x\preceq y \lor y\preceq x$$
+    signifiant que deux éléments peuvent toujours être comparés.
+\end{defi}
+
+Nous pouvons aussi définir la notion de minorant et de majorant.
+
+\begin{defi}[Minorant, majorant]
+    Soit $(E,\preceq)$ un ensemble ordonné, et soit $A\subseteq E$ une partie de $E$. On dit que $m$ est un minorant de $A$ lorsque $$\forall x\in A, m\preceq x$$ c'est donc un élément plus petit que l'ensemble des éléments de $A$. On dit que $M$ est un majorant de $A$ lorsque $$\forall x\in A, x\preceq M$$ c'est donc un élément plus grand que l'ensemble des éléments de $A$.
+\end{defi}
+
+\begin{rmk}
+    Un minorant, comme un majorant, n'est en général pas unique. En prenant par exemple $E=\reel$ et $A=\{0,1,5,6\}$, on remarque que $-1$ comme $0$ sont des minorants de $A$. De même, $8$ et $9$ sont des majorants de $A$.
+\end{rmk}
+
+Ajoutons une notion plus fine que celle de majorant et de minorant que sont les bornes supérieures ét inférieures.
+
+\begin{defi}[Borne supérieure, borne inférieure]
+    Soit $(E,\preceq)$ un ensemble ordonné, et soit $A\subseteq E$ une partie de $E$. On dit que $m$ est la borne inférieure de $A$ si $m$ est un minorant de $A$ tel que pour tout $x$ minorant de $A$, on a $$x\preceq m$$ et de même, on dit que $M$ est le borne supérieure de $A$ si $M$ est un majorant de $A$ tel que pour tout majorant $x$ de $A$, on a $$M\preceq x$$
+    
+    Ce sont donc le plus grand minorant et le plus petit minorant. Attention cependant, ceux-ci n'existent pas forcément.
+\end{defi}
+
+On remarquera l'emploi du déterminant \og un\fg{} pour parler de minorant, et \og le\fg{} pour parler de borne inférieure. Cette pratique est essentielle, car \og le\fg{} et \og la\fg{} insinuent qu'il y a unicité de l'objet considéré. Prouvons, sous réserve d'existence, cette unicité.
+
+\begin{prop}
+    Si $A$ a une borne supérieure, alors celle-ci est unique. De même, si $A$ a une borne inférieure, celle-ci est unique.
+\end{prop}
+\begin{proof}
+    Nous ne traiterons que le cas de la borne supérieure : l'autre cas est laissé en exercice au lecteur.
+    
+    Soit $M$ borne supérieure et $A$ et $M'$ borne supérieure de $A$. Alors comme $M$ est plus petit que tous les majorants de $A$ et que $M'$ est un majorant de $A$, on en déduit que \underline{$M\preceq M'$}. De même, $M$ est un majorant de $A$ et $M'$ est plus petit que tous les majorants de $A$, donc \underline{$M'\preceq M$}.
+    
+    \fbox{On en déduit que $M=M'$.}
+\end{proof}
+
+\subsubsection{Fonctions}
+
+Nous allons maintenant introduire ce qui est sûrement l'élément le plus important des mathématiques : les fonctions. En effet, que cela soit en algèbre, en analyse ou même en géométrie, la notion de fonction est omniprésente. Nous allons donc préciser ce qu'est une fonction.
+
+\begin{rmk}
+    Dans ce document, nous parlerons indifféremment de fonctions ou d'applications. Les deux termes ont la même signification.
+\end{rmk}
+
+\begin{defi}[Fonction]
+    Soient $E$ et $F$ des ensembles. On appelle une fonction un triplet $(E,F,\Gamma)$ où $\Gamma\subseteq E\times F$ est une relation entre $E$ et $F$ telle que pour tout $x\in E$, il existe un unique couple $\alpha\in\Gamma$ tel que $x$ est le premier élément de $\alpha$.
+    
+    Autrement dit, $\Gamma$ est un ensemble de couples de la forme $(x,y)$ où $x\in E$, $y\in F$ et tel qu'à $x$ fixé, il y a un seul couple de la forme $(x,y)$.
+    
+    Pour noter $E$, appelé l'ensemble de départ (ou domaine) de $f$, et $F$ appelé l'ensemble d'arrivée (ou codomaine) de $f$, on écrit $f : E \to F$. Comme nous connaissons déjà les éléments $x\in E$, décrire l'ensemble des couples $(x,y)$ composant $\Gamma$ (appelé le graphe de $f$) se fait en donnant la forme de $y$ en fonction de $x$. Pour cela, on écrit $x\mapsto f(x)$. On appelle antécédent l'élément $x$ et image l'élément $f(x)$.
+\end{defi}
+
+Donnons quelques exemples de fonctions.
+
+\begin{expl}
+    \ 
+    \begin{itemize}[label=$\bullet$]
+        \item $\fonction{f}{\reel}{\reel}{x}{x^2}$
+        \item $\fonction{g}{\nat}{\nat}{n}{n+2}$
+        \item $\fonction{0}{\reel}{\reel}{x}{0}$
+        \item $\fonction{i}{\nat}{\reel}{x}{x}$
+        \item $\fonction{\mathrm{id}_\nat}{\nat}{\nat}{n}{n}$
+    \end{itemize}
+\end{expl}
+
+Les fonctions sont essentielles car elles nous permettent de définir des liens entre des objets mathématiques. De plus, elles sont l'objet d'étude privilégié de la discipline appelée l'analyse.
+
+\begin{rmk}
+    La fonction $\mathrm{id}_\mathbb N$, appelée la fonction identité, peut se généraliser à n'importe quel ensemble $E$ :
+    $$\fonction{\mathrm{id}_E}{E}{E}{x}{x}
+    $$
+    De plus, le graphe de cette fonction est la diagonale de l'ensemble : $\compre{(x,x)}{x\in E}$.
+\end{rmk}
+
+Enfin, nous allons définir une opération sur les fonctions, qui permet de s'abstraire de l'évaluation d'une fonction en lui donnant un argument :
+
+\begin{defi}[Composition de fonctions]
+    Soient $f : E \to F$ et $g : F \to G$ deux fonctions. On définit $g\circ f$ de la façon suivante :
+    $$\fonction{g\circ f}{E}{G}{x}{g(f(x))}$$ Cette relation définit bien une fonction.
+\end{defi}
+\begin{proof}
+    Montrons que la relation donnée par le graphe de $g\circ f$ est fonctionnelle. En effet, ce qu'il est essentiel de montrer est que pour $x\in E$, il existe un unique élément $y\in G$ tel que $(g\circ f)(x)=y$.
+    
+    Soit $x\in E$, alors $(g\circ f)(x)=g(f(x))$, or il existe un unique $y'\in F$ tel que $y'=f(x)$ et il existe un unique $y\in G$ tel que $y=g(y')$ (car $f$ et $g$ sont des fonctions). Donc \underline{il existe un unique $y\in G$ tel que}\quad\underline{$(g\circ f)(x)=y$.}
+    
+    On en déduit que \fbox{$g\circ f$ est bien définie en tant que fonction.}
+\end{proof}
+
+La composition de fonctions est, de plus, associative.
+
+\begin{prop}
+    Si $f : E \to F$, $g : F\to G$ et $h : G\to H$ sont des fonctions, alors $$h\circ(g\circ f)=(h\circ g)\circ f$$ ce que l'on écrira directement $h\circ g \circ f$.
+\end{prop}
+\begin{proof}
+    Le résultat est évident en regardant à un $x$ fixé : les deux fonction s'évaluent en $h(g(f(x))$.
+\end{proof}
+
+Nous allons maintenant étudier des propriétés liées aux fonctions.
+
+\begin{defi}[Injection, surjection, bijection]
+    Soit $f : E \to F$ une fonction. On dit que $f$ est injective lorsqu'elle envoie chaque élément sur une image différente. Cela s'écrit formellement $$\forall x\in E, \forall y \in E, f(x)=f(y)\implies x=y$$
+    ce qui signifie que seul $x$ a comme image $f(x)$.
+    
+    On dit que $f$ est surjective lorsque tout élément de $F$ est l'image d'un élément de $E$ par $f$. Cela se formalise par la phrase $$\forall y\in F, \exists x\in E, f(x)=y$$
+    
+    On dit que $f$ est bijective lorsque $f$ est à la fois injective et surjective. Une formulation équivalente à cela est $$\forall y\in F,\exists ! x\in E, f(x)=y$$ ce qui revient aussi à dire que pour chaque élément $y\in F$, il existe une unique solution à l'équation $f(x)=y$.
+\end{defi}
+
+Donnons maintenant une caractérisation d'une fonction bijective.
+
+\begin{them}[Bijection réciproque]
+    Soit $f : E \to F$, $f$ est bijective si et seulement s'il existe $g : F\to E$ telle que $f\circ g = \mathrm{id}_F$ et $g\circ f = \mathrm{id}_E$.
+\end{them}
+
+\begin{rmk}
+    Ces équations se traduisent de la façon suivante :
+    $$(\forall x\in F, f(g(x))=x)\land (\forall x\in E, g(f(x))=x)$$
+\end{rmk}
+
+\begin{proof}
+    Montrons l'équivalence par double implication. On va donc montrer dans un premier temps que si une fonction est bijective alors il existe une fonction $g$ telle que décrite plus haut, puis que s'il existe une telle fonction $g$ alors $f$ est bijective.
+    
+    \begin{itemize}[label=]
+        \item \fbox{$\Rightarrow$} Supposons que $f$ est bijective. Alors soit la fonction $g : F \to E$ définie par le graphe réciproque de $f$ : $\forall x \in E, \forall y \in F, f(x)=y \iff x=g(y)$. On remarque que par construction, \underline{$x=g(y)=g(f(x))$ et $y=f(x)=f(g(y))$}. Il suffit donc de vérifier que $g$ est bien une fonction. Pour cela, on remarque que $f$ étant une bijection, pour tout $y\in F$, il existe un unique $x\in E$ tel que $f(x)=y$, donc tel que $x=g(y)$. On en déduit donc que pour tout $y\in F$, il existe une unique image $g(y)$, donc \underline{$g$ est bien définie en tant que fonction}.
+        
+        \item \fbox{$\Leftarrow$} Supposons qu'il existe $g$ telle que $f\circ g =\mathrm{id}_F$ et $g\circ f = \mathrm{id}_E$. Montrons que $f$ est injective.
+        
+        Soient $x,y\in E$ tels que $f(x)=f(y)$. Alors $g(f(x))=g(f(y))$, ce qui signifie que $x=y$ puisque $\forall a, g(f(a))=a$. \underline{On en déduit que $f$ est injective.} Montrons maintenant qu'elle est surjective. Soit $y\in F$, alors $g(y)\in E$ et $f(g(y))=y$ par hypothèse, donc $g(y)$ est un antécédent de $y$ : tout élément $y\in F$ possède un antécédent, donc \underline{$f$ est surjective}.
+        
+        \fbox{L'équivalence est donc prouvée par double implication.}
+    \end{itemize}
+\end{proof}
+
+On peut prouver une version plus forte de ce résultat : en effet, on peut remarquer que pour l'injectivité, on utilise l'un des deux sens, et l'autre sens pour la surjectivité. En réalité, on peut caractériser ainsi l'injectivité et la surjectivité.
+
+\begin{exo}
+    Soit $f : E \to F$ une fonction. Montrer que :
+    \begin{itemize}
+        \item $f$ est injective si et seulement s'il existe une fonction $g : F \to E$ telle que $g\circ f = \mathrm{id}_E$.
+        \item $f$ est surjective si et seulement s'il existe une fonction $g : F\to E$ telle que $f\circ g = \mathrm{id}_F$.
+    \end{itemize}
+\end{exo}
+
+\begin{exo}
+    Soient $f : E `\to F$ et $g : \to F$. Montrer que :
+    \begin{itemize}
+        \item si $f$ et $g$ sont injectives, alors $g\circ f$ est injective.
+        \item si $f$ et $g$ sont surjectives, alors $g\circ f$ est surjective.
+        \item si $f$ et $g$ sont bijectives, alors $g\circ f$ est bijective.
+    \end{itemize}
+\end{exo}
+
+Nous donnons en exercice d'approfondissement une autre caractérisation de l'injectivité et de la surjectivité.
+
+\begin{exo}[$\boldsymbol{*}$]
+    Soit $f : E \to F$ une fonction. Montrer que :
+    \begin{itemize}
+        \item $f$ est injective si et seulement si pour tout ensemble $A$ et toutes fonctions $g : A \to E, h : A \to E$, si $f\circ g = f \circ h$ alors $g=h$.
+        \item $f$ est surjective si et seulement si pour tout ensemble $B$ et toutes fonctions $g : F \to B, h : F \to B$, si $g\circ f = h \circ f$ alors $g=h$.
+    \end{itemize}
+\end{exo}
+
+\subsubsection{Fonctions et ensembles}
+
+Nous allons maintenant définir des opérations sur les fonctions par rapport à des ensembles, et sur des ensembles par rapport à des fonctions.
+
+\begin{defi}[Restriction, co-restriction]
+    Soit $f : E \to F$ une fonction, $E'\subseteq E$ et $F'\subseteq F$. On appelle restriction de $f$ à $E'$, et on note $f_{|E'}$, la fonction définie par le triplet $(E',F,\Gamma_f')$ où $\Gamma_f'$ coïncide avec $\Gamma_f$ sur $E'$, ce qui signifie que si $x\in E'$, alors $f(x)=f_{|E'}(x)$. On appelle co-restriction de $f$ à $F'$, et on note $f^{|F'}$, la fonction définie par le triplet $(E,F',\Gamma)$. 
+    
+    Une restriction est toujours définie, mais une co-restriction nécessite de prouver que $\forall x \in E, f(x)\in F'$ pour être définie.
+\end{defi}
+
+\begin{defi}[Image directe, image réciproque]
+    Soit $f : E \to F$ une fonction, soient $E'\subseteq E$ et $F'\subseteq F$. On définit l'image directe de $E'$ par $f$, notée $f(E')$, par $$f(E')=\compre{f(x)}{x\in E'}$$ et on définit l'image réciproque de $F$ par $f$, notée $f^{-1}(F')$, par $$f^{-1}(F')=\compre{x}{x\in E, f(x)\in F'}$$
+\end{defi}
+
+\newpage

@@ -1,0 +1,325 @@
+\documentclass[11pt,french]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[french]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{amssymb}
+\usepackage{cancel}
+\usepackage{comment}
+
+\usepackage{geometry}
+\geometry{
+	a4paper,
+	total={170mm,260mm},
+	left=20mm,
+	top=20mm,
+}
+
+\usepackage{caption}
+\usepackage{graphicx}
+\usepackage{longtable}
+\usepackage[titletoc]{appendix}
+
+\usepackage{enumitem}
+
+\usepackage{subcaption}
+\usepackage{tikz}
+\usetikzlibrary{optics}
+\usepackage{indentfirst}
+
+\graphicspath{{images/}}
+
+\renewcommand{\contentsname}{Table des matières}
+\renewcommand{\refname}{Références}
+\renewcommand{\abstractname}{}
+\renewcommand{\appendixname}{Appendice}
+\renewcommand{\tablename}{Tableau}
+
+\usepackage{epstopdf} % Permet la conversion des .eps en .pdf pour les inclure
+
+\usepackage{tabularx} % gestion avancée des tableaux
+
+\usepackage{psfrag} % remplacement du texte d'une figure ps par du texte latex
+
+\usepackage{eurosym} % symbole
+
+\usepackage{xcolor} % gestion de différentes couleurs
+
+\definecolor{linkcolor}{rgb}{0,0,0.6} % définition de la couleur des liens pdf
+\usepackage[ pdftex,colorlinks=true,
+pdfstartview=FitV,
+linkcolor= black,
+citecolor= linkcolor,
+urlcolor= linkcolor,
+hyperindex=false,
+hyperfigures=false]
+{hyperref}
+
+\usepackage{fancyhdr} % entêtes et pieds de pages personnalisés
+
+\pagestyle{fancy}
+\fancyhead[L]{\scriptsize \textsc{Cours lycée}} % À changer
+\fancyhead[R]{\scriptsize \textsc{}} % À changer
+\fancyfoot[C]{ \thepage}
+
+\usepackage{listings}
+\usepackage{color}
+
+\definecolor{mygreen}{rgb}{0,0.6,0}
+\definecolor{mygray}{rgb}{0.5,0.5,0.5}
+\definecolor{mymauve}{rgb}{0.58,0,0.82}
+
+\definecolor{darkWhite}{rgb}{0.94,0.94,0.94}
+
+\lstset{
+  backgroundcolor=\color{white},   % choose the background color; you must add \usepackage{color} or \usepackage{xcolor}; should come as last argument
+  basicstyle=\footnotesize,        % the size of the fonts that are used for the code
+  breakatwhitespace=false,         % sets if automatic breaks should only happen at whitespace
+  breaklines=true,                 % sets automatic line breaking
+  captionpos=b,                    % sets the caption-position to bottom
+  commentstyle=\color{mygreen},    % comment style
+  deletekeywords={...},            % if you want to delete keywords from the given language
+  escapeinside={\%*}{*)},          % if you want to add LaTeX within your code
+  extendedchars=true,              % lets you use non-ASCII characters; for 8-bits encodings only, does not work with UTF-8
+  firstnumber=0,                % start line enumeration with line 1000
+  frame=single,	                   % adds a frame around the code
+  %keepspaces=true,                 % keeps spaces in text, useful for keeping indentation of code (possibly needs columns=flexible)
+  keywordstyle=\color{blue},       % keyword style
+  language=Octave,                 % the language of the code
+  morekeywords={*,...},            % if you want to add more keywords to the set
+  numbers=left,                    % where to put the line-numbers; possible values are (none, left, right)
+  numbersep=10pt,                   % how far the line-numbers are from the code
+  numberstyle=\tiny\color{mygray}, % the style that is used for the line-numbers
+  rulecolor=\color{black},         % if not set, the frame-color may be changed on line-breaks within not-black text (e.g. comments (green here))
+  showspaces=false,                % show spaces everywhere adding particular underscores; it overrides 'showstringspaces'
+  showstringspaces=false,          % underline spaces within strings only
+  showtabs=false,                  % show tabs within strings adding particular underscores
+  stepnumber=1,                    % the step between two line-numbers. If it's 1, each line will be numbered
+  stringstyle=\color{mymauve},     % string literal style
+  tabsize=2,	                   % sets default tabsize to 2 spaces
+  %title=\lstname                   % show the filename of files included with \lstinputlisting; also try caption instead of title
+}
+
+\lstdefinestyle{customc}{
+  belowcaptionskip=1\baselineskip,
+  breaklines=true,
+  frame=L,
+  xleftmargin=\parindent,
+  language=C,
+  showstringspaces=false,
+  basicstyle=\footnotesize\ttfamily,
+  keywordstyle=\bfseries\color{green!40!black},
+  commentstyle=\itshape\color{purple!40!black},
+  identifierstyle=\color{blue},
+  stringstyle=\color{orange},
+}
+
+\lstdefinestyle{customasm}{
+  belowcaptionskip=1\baselineskip,
+  frame=L,
+  xleftmargin=\parindent,
+  language=[x86masm]Assembler,
+  basicstyle=\footnotesize\ttfamily,
+  commentstyle=\itshape\color{purple!40!black},
+}
+
+\lstset{escapechar=@,style=customc}
+
+\tikzset{CrochetStyle/.style ={black, line width=2pt}}
+
+%Série de macros
+%Dérivées
+\newcommand{\derd}[2] {\dfrac{\textrm{d} #1}{\textrm{d} #2}} %Derivée \derd{f}{x}
+\newcommand{\ope} {\widehat{\mathcal{O}}}
+\newcommand{\cpx}[0] {\mathbb{C}}
+\newcommand{\nat}[0] {\mathbb{N}}
+\newcommand{\reel} {\mathbb{R}}
+\newcommand{\blank} {\newline \quad \newline}
+\newcommand{\dd} {\mathrm{d}}
+\newcommand{\lag} {\mathcal L}
+\newcommand{\vecteur}[1]{\overset{\longrightarrow}{#1}}
+\newcommand{\compre}[2]{\{#1\;|\;#2\}}
+\newcommand{\Bcompre}[2]{\Bigg\{#1\;\Bigg|\;#2\Bigg\}}
+\newcommand{\Pset}[1]{\mathcal P (#1)}
+\newcommand{\lblE}[0]{\draw (-4,4) node[below right]{$E$};}
+\newcommand{\EEE}[0]{\draw (-4,-1) rectangle (4,4);}
+\newcommand{\EEe}[0]{(0,0) circle (2);}
+\newcommand{\lble}[0]{\draw (0,2) node[above]{$E$};}
+\newcommand{\AAA}[0]{(0,0) ++(135:2) circle (2);}
+\newcommand{\lblA}[0]{\draw (0,0) ++ (135:2) ++ (90:2) node[above]{$A$};}
+\newcommand{\BBB}[0]{(0,0) ++(45:2) circle (2);}
+\newcommand{\lblB}[0]{\draw (0,0) ++ (45:2) ++ (90:2) node[above]{$B$};}
+\newcommand{\lblC}[0]{\draw (0,1.5) ++(-65:2) node[below right]{$C$};}
+\newcommand{\CCC}[0]{(0,1.5) circle (2);}
+\newcommand{\lblD}[0]{\draw (1,1) node[below left]{$D$};}
+\newcommand{\DDD}[0]{(-0.5,1) arc (-180:0:0.5) (-0.5,2) arc (180:0:0.5) (-0.5,1) rectangle (0.5,2);}
+\newcommand{\xcrochet}[4]{
+   \draw[CrochetStyle] (#1)--(#2);
+   \draw[CrochetStyle] (#1)--+(0,+#3)--+(+#4,+#3);  	
+   \draw[CrochetStyle] (#1)--+(0,-#3)--+(+#4,-#3);
+   \draw[CrochetStyle] (#2)--+(0,+#3)--+(-#4,+#3);  	
+   \draw[CrochetStyle] (#2)--+(0,-#3)--+(-#4,-#3); 
+}
+\newcommand{\ycrochet}[4]{
+   \draw[CrochetStyle] (#1)--(#2);
+   \draw[black, line width=2pt] (#1)--+(+#4,0)--+(+#4,+#3);    
+   \draw[black, line width=2pt] (#1)--+(-#4,0)--+(-#4,+#3);
+   \draw[black, line width=2pt] (#2)--+(+#4,0)--+(+#4,-#3);   
+   \draw[black, line width=2pt] (#2)--+(-#4,0)--+(-#4,-#3); 
+}
+\newcommand{\includefig}[2]{\begin{figure}[htb]
+\centering
+\begin{tikzpicture}[scale = .8]
+\input{#1}
+\end{tikzpicture}
+\caption{#2}
+\end{figure}}
+\newcommand{\RR}[0]{\mathcal R}
+\newcommand{\quot}[2]{\raisebox{0.1cm}{$#1$}\!/\!\raisebox{-0.1cm}{$#2$}}
+\newcommand{\toot}[0]{\longleftrightarrow}
+\newcommand{\card}[1]{\mathrm{card}(#1)}
+\newcommand{\img}[0]{\mathrm{Im}}
+\newcommand{\syst}[4]{\left\{ 
+\begin{array}{rcl}
+#1&=&#2 \\
+#3&=&#4
+\end{array}
+\right.}
+\newcommand{\systrec}[4]{\left\{ 
+\begin{array}{rccl}
+#1&&&\\
+#2&#3 &=& #4
+\end{array}
+\right.}
+\newcommand{\axes}[0]{
+\draw (-6,0) [->] -- (6,0);
+\draw (0,-6) [->] -- (0,6);
+}
+\newcommand{\barre}[1]{\overline{#1}}
+
+\newcommand{\fonction}[5]{\begin{array}[t]{lrcl}
+#1: & #2 & \longrightarrow & #3 \\
+    & #4 & \longmapsto & #5 \end{array}}
+
+% permet de centrer les colonnes dans les tableaux
+\newcolumntype{M}[1]{\rangle{\centering\arraybackslash}m{#1}}
+
+\theoremstyle{definition}
+\newtheorem{defi}{Définition}[section]
+\newtheorem{expl}{Exemple}[section]
+\newtheorem{exo}{Exercice}[section]
+
+\theoremstyle{plain}
+\newtheorem{them}{Théorème}[section]
+\newtheorem{lem}{Lemme}[subsection]
+\newtheorem{cor}{Corollaire}[subsection]
+\newtheorem{prop}{Proposition}[subsection]
+\newtheorem{ax}{Axiome}[section]
+
+\theoremstyle{remark}
+\newtheorem*{rmk}{Remarque}
+\newtheorem*{correction}{Correction}
+
+\title{Cours lycée}
+\author{Cassis}
+\date{March 2022}
+
+
+\begin{document}
+
+\setlength{\unitlength}{1cm}
+
+\date{}
+
+\thispagestyle{empty}
+
+\vspace{0.5cm}
+
+\begin{center}
+
+	\vspace{1.5cm}
+
+	\rule[11pt]{6cm}{0.5pt}
+
+	\textbf{\huge Cours de lycée}
+
+	\vspace{0.2cm}
+
+	\text{}
+
+	\vspace{0.2cm}
+
+	\text{Cassis}
+
+	\text{Avril 2022}
+
+	\rule{6cm}{0.5pt}
+
+	\vspace{1cm}
+
+\end{center}
+
+\subsection*{Avant-propos}
+
+Ce document reprend le programme du lycée en introduisant constructions formelles et preuves rigoureuses. Il est destiné principalement à un élève de lycée (ou entrant au lycée) qui souhaite se familiariser avec les mathématiques du supérieur. L'objectif étant de suivre le programme, nous limiterons autant que possible les écarts au programme, mis à part pour la première partie (pré requis) qui est nécessaire à formaliser rigoureusement les mathématiques : les autres chapitres aborderont chacun un point essentiel des mathématiques du lycée (géométrie / analyse /algèbre) en détails. Notons tout de même l'ajout de deux chapitre d'approfondissement en algèbre, pour poursuivre plus loin que le programme dans cette branche peu développée au lycée.
+
+Il y aura plusieurs exercices, leur objectif premier est de familiariser le lecteur avec les éléments détaillés dans les parties qui précèdent l'exercice, mais certains sont plus compliqués ou visent à approfondir une notion. Dans ce cas, ces exercices porteront une étoile \textbf{(*)}. Nous conseillons de plus de ne faire les exercices étoilés qu'en deuxième lecture d'un chapitre, pour s'être d'abord assuré d'avoir maîtrisé ce dont il est question. Certains exercices sont aussi utilisés dans des preuves. Ce sont en général des exercices techniques, pour ne pas poser problème dans l'acceptation de la validité des preuves qui les utilisent.
+
+\vspace{\baselineskip}
+
+\vfill
+
+\date{}
+
+\newpage
+
+\tableofcontents
+\vspace{5cm}
+
+\vfill \hfill
+\newpage \setcounter{page}{1}
+
+\part{Prérequis}
+
+\input{Prerequis/Logique de base}
+
+\input{Prerequis/Théorie des ensembles}
+
+\input{Prerequis/Combinatoire}
+
+\part{Géométrie}
+
+\input{Geometrie/Vecteur}
+
+\input{Geometrie/Angles_trigo}
+
+\input{Geometrie/Produit_scalaire}
+
+\part{Algèbre}
+
+\input{Algèbre/Equations}
+
+\input{Algèbre/Complexes}
+
+\input{Algèbre/Suites}
+
+\input{Algèbre/Polynomes}
+
+\input{Algèbre/Groupes}
+
+\part{Analyse}
+
+\input{Analyse/TopoR}
+
+\input{Analyse/Continuite}
+
+\input{Analyse/Derivation}
+
+\input{Analyse/Intégrales}
+
+\input{Analyse/Fonctions}
+
+\end{document}

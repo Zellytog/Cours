@@ -1,0 +1,238 @@
+\section{Suites : des éléments algébriques}
+
+Dans cette section, nous définirons la notion de suite, où nous utiliserons pleinement le raisonnement par récurrence. Nous étudierons ensuite les sommes et leurs propriétés, puis nous verrons plus en précision les suites arithmétiques, géométriques et arithmético-géométriques.
+
+\subsection{Définition d'une suite}
+
+Nous allons voir la définition d'une suite, avec les notations associées.
+
+\begin{defi}
+    On appelle suite réelle, ou simplement suite, une fonction $u : \nat \to \reel$. C'est donc une liste infinie de nombres réels ordonnés (d'abord l'élément d'indice $0$, puis l'élément d'indice $1$, etc.) On note généralement une suite $u$ de l'une des façons suivantes : $(u)$, $(u_n)_{n\in\nat}$ ou $(u_n)$ s'il n'y a pas de confusion possible.
+    
+    Pour une suite $(u)$, on notera $u_i$ son terme d'indice $i$, ou encore $[u]_i$ (cette notation sera surtout utile pour une suite avec un nom plus long, pour écrire par exemple $[u+v]_i$).
+    
+    Une suite peut être vue comme une succession de nombres réels allant à l'infini.
+\end{defi}
+
+\begin{expl}
+    Voici plusieurs suites classiques :
+    \begin{itemize}[label=$\bullet$]
+        \item la suite $(n)$ qui est la suite $0,1,2,3,4,5,\ldots$
+        \item la suite $(n^2)$ qui est la suite $0,1,4,9,16,25,\ldots$
+        \item la suite $(2n)$ qui est la suite $0,2,4,6,8,10,\ldots$
+        \item la suite $((-1)^n)$ qui est la suite $1,-1,1,-1,1,-1,\ldots$
+    \end{itemize}
+\end{expl}
+
+\begin{rmk}
+    De par la définition même d'une suite, le raisonnement par récurrence est particulièrement adapté. En effet, un raisonnement par récurrence permet de prouver une propriété pour tout entier naturel. Ici, justement, une suite est définie par l'image qu'elle envoie à chaque entier naturel.
+\end{rmk}
+
+\begin{defi}[Suite définie par une relation de récurrence]
+    On peut définir une suite $(u)$ par une relation de récurrence, c'est-à-dire par deux relations :
+    $$\systrec{u_0 \in\reel}{\forall n \in\nat,}{u_{n+1}}{f(u_n)}$$
+    Où $f : \reel\to\reel$
+\end{defi}
+\begin{proof}
+    Montrons que la suite est bien définie, par récurrence :
+    \begin{itemize}[label=$\bullet$]
+        \item \fbox{$(u)$ est bien définie en $0$} puisqu'on a fixé $u_0$.
+        \item Supposons que $(u)$ soit bien définie pour tout $k\leq n$, où $n\geq0$. Alors $u_{n+1}=f(u_n)$ est bien définie, puisqu'image par une fonction de $u_n$, bien définie. \fbox{Donc $(u)$ est bien définie en $n+1$.}
+    \end{itemize}
+    Par récurrence, on en déduit que \fbox{$(u)$ est bien définie en $n$ pour tout $n\in\nat$.}
+\end{proof}
+
+\begin{exo}
+    Soit la suite $(u)$ définie par la relation de récurrence suivante :
+    $$\systrec{u_0=0}{\forall n \in\nat,}{u_{n+1}}{u_n + 1}$$
+    
+    Montrer que $(u)=(n)$, c'est-à-dire que $\forall n \in\nat, u_n = n$.
+\end{exo}
+
+\begin{exo}
+    Soit la suite $(u)$ définie par la relation de récurrence suivante :
+    $$\systrec{u_0=0}{\forall n \in\nat,}{u_{n+1}}{u_n^2+2u_n + 1}$$
+    
+    Montrer que $(u)=(n^2)$, c'est-à-dire que $\forall n \in\nat, u_n = n^2$.
+\end{exo}
+
+\subsection{Sommes et produits}
+
+Nous allons maintenant étudier le symbole $\sum$ et le symbole $\prod$, qui permettent d'écrire rigoureusement ce que l'on peut écrire par une somme avec des points de suspension.
+
+\begin{defi}
+    Soit $(u_n)$ une suite. On note $\sum_{k=i}^j u_k$ et $\prod_{k=i}^j u_k$ (pour $i \leq j$ fixés) les réels suivants :
+    $$\sum_{k=i}^j u_k = u_i + u_{i+1}+ u_{i+2}+\ldots + u_{j-1}+u_j$$ \begin{center} et \end{center} $$\prod_{k=i}^j u_k =  u_i \times u_{i+1}\times u_{i+2}\times \ldots \times u_{j-1}\times u_j$$
+    
+    La variable $k$ dans ces expressions est muettes : elle est seulement propre à l'intérieur de l'expression décrite dans le symbole et peut être remplacée par n'importe quelle autre variable.
+    
+    Nous allons définir, plus rigoureusement, les sommes et les produits par récurrence :
+    $$\left[\sum_{k=i}^i u_k = u_i\right] \land \left[\sum_{k=i}^{j+1}u_k=\sum_{k=i}^j u_k + u_{j+1} \right]$$
+    $$\left[\prod_{k=i}^i u_k = u_i\right] \land \left[\prod_{k=i}^{j+1}u_k=\prod_{k=i}^j u_k \times u_{j+1} \right]$$ et l'on prend la convention que si $j<i$, alors $\sum_{k=i}^j u_k=0$ et $\prod_{k=i}^j = 1$.
+\end{defi}
+
+Nous allons voir plusieurs propriétés de ces notations. Nous ne prouverons que le cas de $\sum$ car le cas de $\prod$ sera en général similaire, et fait un bon exercice pour le lecteur.
+
+\begin{prop}[Recollement]\label{recollement}
+    Soit $(u)$ une suite, $i\leq j< n$ des entiers. Alors $$\sum_{k=i}^j u_k + \sum_{k=j+1}^n u_k = \sum_{k=i}^n u_k$$ \begin{center} et de même\end{center} $$\prod_{k=i}^j u_k \times \prod_{k=j+1}^n u_k = \prod_{k=i}^n u_k$$
+\end{prop}
+\begin{proof}
+    Nous allons prouver ce résultat par deux récurrences successives.
+    
+    Tout d'abord, prouvons que $$\sum_{k=i}^j u_k = u_i + \sum_{k=i+1}^j u_k$$ par récurrence sur $j$ :
+    \begin{itemize}[label=$\bullet$]
+        \item Si $i=j$, alors $$\sum_{k=i}^j u_k = u_i + 0$$
+        \item Si la propriété est vraie pour un $i<j$, alors $$\sum_{k=i}^{j+1}u_k=\sum_{k=i}^j u_k + u_{j+1}=u_i+\sum_{k=i+1}^{j+1}u_k$$
+    \end{itemize}
+    D'où la propriété par récurrence : $$\sum_{k=i}^j u_k = u_i + \sum_{k=i+1}^j u_k$$
+    
+    Prouvons maintenant la proposition par récurrence sur $j$, où $i$ et $n$ sont fixés.
+    \begin{itemize}[label=$\bullet$]
+        \item Si $j=i$, alors l'équation est directe avec la propriété précédente.
+        \item Si la propriété est vraie pour $j$, montrons qu'elle est vraie pour $j+1$ : $$\sum_{k=i}^j u_k + \sum_{k=j+1}^n u_k = \sum_{k=i}^j u_k +u_{j+1} + \sum_{k=j+2}^n u_k = \sum_{k=i}^{j+1} u_k + \sum_{k=j+2}^n u_k $$
+    \end{itemize}
+    Ainsi la propriété est vraie pour tout $j$, y compris pour $j=n$, donnant alors comme résultat \fbox{$\displaystyle{\sum_{k=i}^j u_k + \sum_{k=j+1}^n u_k = \sum_{k=i}^n u_k + 0}$.}
+\end{proof}
+
+\begin{exo}
+    Montrer que $$\prod_{k=i}^j k =\dfrac{j!}{(i-1)!}$$ sachant que $n!=\prod_{k=1}^n k$.
+\end{exo}
+
+\begin{prop}
+    Soient $(u),(v)$ deux suites et $\lambda \in\reel$. Alors
+    $$\sum_{k=i}^j (\lambda u_k + v_k) = \lambda \sum_{k=i}^j u_k + \sum_{k=i}^j v_k$$ \begin{center} et \end{center} $$\prod_{k=i}^j (\lambda u_k) = \lambda ^{j-i}\prod_{k=i}^j u_k$$
+\end{prop}
+
+\begin{proof}
+    Nous allons prouver ce résultat par récurrence sur $j$ :
+    \begin{itemize}[label=$\bullet$]
+        \item Si $j=i$ alors l'égalité devient $\lambda u_i+v_i = \lambda u_i + v_i$, qui est vraie.
+        \item Supposons la propriété vraie jusqu'au rang $j$. Alors $$\sum_{k=i}^{j+1} (\lambda u_k + v_k) = \lambda \sum_{k=i}^j u_k + \sum_{k=i}^j v_k + \lambda u_{j+1} + v_{j+1}$$ d'où le résultat en regroupant les termes par factorisation et recollement.
+    \end{itemize}
+    Donc la propriété est vraie.
+\end{proof}
+
+\begin{prop}
+    Soit $(u)$ une suite. Alors $$\sum_{k=i}^j u_k = \sum_{k=0}^{j-i} u_{j-k}$$ \begin{center} et \end{center} $$\prod_{k=i}^j u_k = \prod_{k=0}^{j-i} u_{j-k}$$
+\end{prop}
+\begin{proof}
+    Démonstration laissée au lecteur. \textit{Indication : utiliser la propriété utilisée dans la preuve de la proposition \ref{recollement}.}
+\end{proof}
+
+\begin{prop}
+    $$\sum_{k=i}^j 1=j-i+1$$
+\end{prop}
+\begin{proof}
+    Nous allons prouver ce résultat par récurrence.
+    \begin{itemize}[label=$\bullet$]
+        \item Si $j=i$, alors la somme vaut $1=j-i+1$
+        \item Si l'égalité vaut pour $j > i$, alors $$\sum_{k=i}^{j+1} 1 = \sum_{k=i}^j + 1 = j-i+1+1=(j+1)-i+1$$
+        d'où l'égalité dans le cas $j+1$.
+    \end{itemize}
+    L'égalité est donc vraie pour tout $j>i$.
+\end{proof}
+
+\begin{exo}[Calcul d'une somme classique $\boldsymbol *$]
+    Nous allons étudier la somme $\sum_{k=0}^n k$.
+    \begin{enumerate}
+        \item Montrer que $\sum_{k=0}^n k + \sum_{k=0}^n (n-k)=\sum_{k=0}^n n$.
+        \item En déduire la valeur de $\sum_{k=0}^n k + \sum_{k=0}^n (n-k)$. \textit{Indication : on peut écrire $n=n\times 1$ puis factoriser $n$.}
+        \item En réécrivant la somme précédente, en déduire la valeur de $\sum_{k=0}^n k$.
+    \end{enumerate}
+\end{exo}
+
+\subsection{Suites particulières}
+
+Nous étudierons ici trois cas particuliers de suites définies par récurrence : les suites arithmétiques, géométriques et arithmético-géométriques.
+
+\subsubsection{Suite arithmétique}
+
+\begin{defi}
+    Une suite arithmétique, dite de raison $r$, est une suite définie par $$\systrec{u_0\in\reel}{\forall n\in\nat}{u_{n+1}}{u_n+r}$$ où $r\in\reel$.
+\end{defi}
+
+Nous allons déterminer le terme général d'une telle suite.
+
+\begin{prop}
+    Le terme général d'une suite arithmétique de raison $r$ est $u_n = u_0+r\times n$.
+\end{prop}
+\begin{proof}
+    Nous allons prouver ce résultat par récurrence :
+    \begin{itemize}[label=$\bullet$]
+        \item Le résultat est évident pour $u_0$
+        \item Si $u_n=u_0+r\times n$ alors $u_{n+1}=r+u_n=u_0+r\times (n+1)$. D'où le résultat.
+    \end{itemize}
+\end{proof}
+
+\subsubsection{Suite géométrique}
+
+\begin{defi}
+    Une suite géométrique, dite de raison $q$, est une suite définie par $$\systrec{u_0\in\reel}{\forall n \in\nat,}{u_{n+1}}{q\times u_n}$$
+\end{defi}
+
+Donnons le terme général d'une telle suite.
+
+\begin{prop}
+    Une suite de raison $q$ a comme terme général $$u_n = u_0\times q^n$$
+\end{prop}
+\begin{proof}
+    Exercice laissé au lecteur. \textit{Indication : refaire le modèle de la preuve précédente.}
+\end{proof}
+
+\subsubsection{Somme géométrique}
+
+Nous allons désormais étudier un cas particulier de somme, appelé somme géométrique.
+
+\begin{prop}
+    Soit $q$ un réel différent de $1$. Alors $$\sum_{k=0}^n q^k=\frac{q^{n+1}-1}{q-1}$$
+\end{prop}
+\begin{proof}
+    Calculons d'abord $\displaystyle{q\sum_{k=0}^n q^k}$ puis $\displaystyle{q \sum_{k=0}^n q^k - \sum_{k=0}^n q^k}$ :
+    \begin{align*}
+        q \sum_{k=0}^n q^k &= \sum_{k=0}^n q^{k+1}\\
+        q \sum_{k=0}^n q^k &= \sum_{k=1}^{n+1} q^k\\
+        q \sum_{k=0}^n q^k - \sum_{k=0}^n q^k &= q^{n+1} + \sum_{k=0}^n q^k - \sum_{k=0}^n q^k - q^0\\
+        (q-1) \sum_{k=0}^n q^k &= q^{n+1}-1\\
+        \sum_{k=0}^n q^k &= \frac{q^{n+1}-1}{q-1}
+    \end{align*}
+    
+    D'où le résultat.
+\end{proof}
+
+\subsubsection{Suite arithmético-géométrique}
+
+Nous allons définir ici une dernière forme de suite, qui est une combinaison des deux précédentes.
+
+\begin{defi}
+    Une suite arithmético-géométrique est une suite de la forme $$\systrec{u_0\in\reel}{\forall n\in\nat,}{u_{n+1}}{q\times u_n + r}$$
+\end{defi}
+
+Nous allons d'abord définir le point fixe d'une telle suite.
+
+\begin{defi}
+    On appelle point fixe de la relation $u_{n+1}=q\times u_n + r$ un réel $\lambda$ tel que $\lambda = q\times \lambda + r$. Trouver un point fixe équivaut à résoudre une équation du premier degré, donc l'existence d'un tel point fixe (pour $r\neq 1$) est évidente.
+\end{defi}
+
+On peut alors trouver le terme général d'une suite arithmético-géométrique.
+
+\begin{them}
+    Soit $(u)$ une suite arithmético-géométrique de point fixe $\lambda$. Alors $(u-\lambda)$ est une suite géométrique.
+\end{them}
+\begin{proof}
+    On prouve par récurrence ce résultat :
+    \begin{itemize}[label=$\bullet$]
+        \item Au premier rang, il n'y a rien à vérifier.
+        \item Puisque $\lambda=q\times \lambda + r$, on en déduit que $u_{n+1}-\lambda = q \times u_n + r - q\times \lambda - r = q(u_n-\lambda)$, ce qui est une relation de récurrence géométrique.
+    \end{itemize}
+    Donc la suite est bien géométrique, on en déduit la forme générale de la suite :
+    $$u_n = q^n(u_0-\lambda) + \lambda$$
+\end{proof}
+
+\begin{exo}
+    Trouver le terme général de la suite $$\systrec{u_0=2}{\forall n\in \nat,}{u_{n+1}}{3u_n+2}$$
+\end{exo}
+\begin{exo}
+    Trouver le terme général de la suite $$\systrec{u_0=5}{\forall n\in \nat,}{u_{n+1}}{u_n+2}$$
+\end{exo}
+
+\newpage

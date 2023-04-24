@@ -1,0 +1,460 @@
+\section{Correction et complétude dans le calcul des prédicats du premier ordre}
+
+L'objectif de cette section sera de montrer l'équivalence entre $T\vdash P$ et $T\vDash P$. Nous y gagnerons le théorème de compacité quand nous aurons le théorème de complétude.
+
+\subsection{Correction}
+
+\'Enonçons directement le théorème que nous cherchons à montrer.
+
+\begin{them}[Correction]
+    Si $T\vdash P$ alors $T\vDash P$.
+\end{them}
+
+Pour reformuler ce théorème, cela signifie que si notre système de preuve dérive $T\vdash P$, alors pour toute structure $\MM$ telle que $\valu_{\MM}(T)=1$, on a $\valu_{\MM}(P) = 1$. Le raisonnement se fera donc évidemment par induction sur $T\vdash P$. Comme les structures sur les connecteurs logiques sont les mêmes, nous n'aborderons pas les cas de $\lor$, $\land$, $\to$ et $\lnot$, identiques à ceux du calcul propositionnel. Il nous reste donc à traiter le cas des quantificateurs et de l'égalité. Cependant, nous allons prouver une version plus forte pour pouvoir considérer les environnements (et donc des formules non closes).
+
+Nous allons donc introduire des lemmes liés à la gestion des environnements pour pouvoir calculer efficacement les substitutions dans les termes :
+
+\begin{lem}
+    Soient $t,u$ des termes et $\nu$ un environnement permettant d'évaluer $t$ et $u$. Soit $v = t[x/u]$ et $\nu' = \nu[x \leftarrow \evall(u,\nu)]$. Alors $\nu(v) = \nu'(t)$.
+\end{lem}
+
+\begin{proof}
+    La preuve se fait par induction sur la définition de $\evall$. Nous ne détaillerons pas la preuve car elle est directe, mais l'idée est que dans le cas de base, $\nu(x_i)=\nu'(x_i)$ car soit on a $x$ et les deux valeurs sont $\nu(u)$, soit le fait que $\nu$ et $\nu'$ coïncident ailleurs nous donne la propriété. Le passage pour une fonction $f$ est direct aussi.
+\end{proof}
+
+\begin{lem}
+    Soit $P$ une formule, $t$ un terme et $\nu$ un environnement. On définit $\nu' = \nu[x \leftarrow \nu(t)]$, alors $\valu_{\MM,\nu}(P[x/t])=\valu_{\MM,\nu'}(P)$.
+\end{lem}
+
+\begin{proof}
+    L'induction se fait sur $\valu$ de façon naturelle.
+\end{proof}
+
+\begin{exo}
+    \'Ecrire l'induction.
+\end{exo}
+
+\begin{lem}
+    Si $T\vdash P$ où $P$ est une proposition avec (possiblement) des variables libres et $T$ est un ensemble de propositions (possiblement) des variables libres, alors pour toute structure $\MM$ sur $\LL$ et pour tout environnement $\nu$, si $\valu_{\MM,\nu}(\Gamma)=1$ alors $\valu_{\MM,\nu}(P) = 1$. 
+\end{lem}
+
+\begin{proof}
+    Nous allons donc faire l'induction sur les cas considérés :
+    \begin{itemize}[label=$\bullet$]
+        \item Cas $\exists_\mathrm i$ : on suppose que $T\vdash P[x/a]$ et qu'alors, $\valu_{\MM,\nu}(P[x/a]) = 1$. Par le lemme précédent, $\valu_{\MM,\nu[x \leftarrow \nu(a)]}(P)=1$, ce qui prouve que $\max_{m\in\MM} \valu_{\MM,\nu[x \leftarrow m]}(P) = 1$, donc que $\valu_{\MM,\nu}(\exists x.P) = 1$.
+        \item Cas $\exists_\mathrm e$ : On peut remplacer $\Gamma,P\vdash C$ par $\Gamma\vdash P\to C$. Dans ce cas, on suppose $T\vdash \exists x.P$ et $T\vdash P \to C$. On en déduit que $$\max_{m\in\MM} \valu_{\MM,\nu[x\leftarrow m]}(P) = 1$$ et que $\valu_{\MM,\nu}(P\to C) = 1$ pour un certain environnement $\nu$. Comme $x$ n'apparaît ni dans $T$ ni dans $C$, la valeur de $\valu_{\MM,\nu}(C)$ ne dépend pas de $\nu(x)$ : cela signifie que $\valu_{\MM,\nu}(C)=\valu_{\MM,\nu[x \leftarrow m]}(C)$ où $m$ est tel que $\valu_{\MM,\nu[x \leftarrow m]}(P) = 1$ (qui existe par hypothèse). Par la définition de $\valu_{\MM,\nu[x\leftarrow m]}(P\to C) = 1$ on en déduit que $\valu_{\MM,\nu}(C) = 1$ pour toute valuation $\nu$.
+        \item Cas $\forall_\mathrm i$ : On suppose que $T\vdash P$ et que $x$ n'apparaît pas dans $T$. Cela signifie que pour chaque $m\in\MM$, la valeur $\valu_{\MM,\nu}(P[x/m])$ (qui est $\valu_{\MM,\nu[x\leftarrow m]}(P)$) est indépendante de $T$, et donc constante. Comme ces valeurs valent toutes $1$, on en déduit que $\valu_{\MM,\nu}(\forall x.P)=1$.
+        \item Cas $\forall_\mathrm e$ : puisque $\valu_{\MM,\nu}(P)$ est supérieure au minimum des valeurs pour $\nu[x\leftarrow m]$, on en déduit directement que $\valu_{\MM,\nu}(P)=1$ par l'hypothèse d'induction.
+        \item Cas $=_\mathrm i$ : Le terme est vrai de façon évidente.
+        \item Cas $=_\mathrm e$ : Pour que $\valu(a=b)=1$, il faut que $a$ et $b$ soient identiques, donc on en déduit que $$\valu_{\MM,\nu}(P[x/a])=\valu_{\MM,\nu[x\leftarrow a]}(P)=\valu_{\MM,\nu[x\leftarrow b]}(P) = \valu_{\MM,\nu}(P[x/b])$$
+    \end{itemize}
+    Cela termine notre induction.
+\end{proof}
+
+On peut alors directement en déduire la démonstration du théorème de correction :
+
+\begin{proof}
+    Si $T\vdash P$ avec $P$ close, alors pour tout modèle $\MM\models T$, le lemme précédent nous dit que $\MM\models P$, donc $T\vDash P$.
+\end{proof}
+
+Donnonc maintenant un exercice important pour construire des théories complètes à partir de modèles :
+
+\begin{exo}
+    Soit $\MM$ une $\LL$-structure. On note $\Theor(\MM)$ l'ensemble des formules vraies dans $\MM$, c'est-à-dire l'ensemble des $P$ tels que $\MM\models P$. Monter que $\Theor(\MM)$ est une théorie complète et que si $\MM\models T$ alors $t\subseteq \Theor(\MM)$.
+\end{exo}
+
+\begin{prop}[\'Enoncé équivalent de la correction]
+    Le théorème de correction est équivalent à la propriété suivante : s'il existe un modèle $\MM\models T$ alors $T\nvdash \bot$ ($T$ est cohérente).
+\end{prop}
+
+\begin{proof}
+    Supposons le théorème de correction, supposons qu'il existe un modèle $\MM\models T$. Supposons que $T\vdash \bot$. Alors par construction (par analyse sur les règles de $\vdash$) on trouve une proposition $P$ telle que $T\vdash P$ et $T\vdash \lnot P$. On trouve alors que $\MM\models P$ et $\MM\models \lnot P$ ce qui, en calculant $\valu$, nous donne que $0=1$.
+
+    Réciproquement, si l'on suppose que l'existence d'un modèle implique que $T\nvdash \bot$, alors supposons que $T\vdash P$. Dans ce cas, $T,\lnot P \vdash \bot$ donc par contraposée de l'hypothèse, il n'existe aucun modèle de $T,\lnot P$. Donc si $\MM\models T$, alors $\valu_{\MM}(\lnot P)=0$, donc $\valu_{\MM}(P)=1$, ce qui signifie que $\MM\models P$.
+\end{proof}
+
+\subsection{Théorème de complétude de Gödel}
+
+L'autre sens, qui est donc le théorème de complétude, dû historiquement à Gödel (si les démonstrations modernes divergent de sa démonstration historique, on continue de l'appeler théorème de complétude de Gödel), est beaucoup plus dur à démontrer. Nous allons procéder par étapes pour cela, mais commençons par présenter le théorème :
+
+\begin{them}[Complétude de Gödel]
+    Si $T\vDash P$ alors $T\vdash P$.
+\end{them}
+
+Comme pour le théorème de correction, le théorème de complétude a une version équivalente liée à la contradiction (le fait de prouver $\bot$ d'un côté, le fait de ne pas avoir de modèle de l'autre). La version équivalente est évidemment la réciproque de la version équivalente du théorème de correction, mais dans le cas de la complétude c'est bien cette version équivalente que nous allons prouver.
+
+\begin{lem}[\'Enoncé équivalent de la complétude]
+    Le théorème de complétude est équivalent à la propriété suivante : si $T\nvdash \bot$ alors il existe un modèle $\MM\models T$.
+\end{lem}
+
+\begin{proof}
+    Supposons le théorème de complétude. Par contraposée, supposons qu'il n'existe aucun modèle de $T$, c'est-à-dire que $\valu_{\MM}(T)=0$ pour toute structure $\MM$. Alors pour toute proposition $P$, comme la prémisse $\MM\models T$ est fausse, on a $T\vDash P$, donc par complétude $T\vdash P$. On peut donc appliquer cet argument à $P$ et $\lnot P$ pour obtenir, par la règle $\lnot_\mathrm e$, que $T\vdash \bot$.
+
+    Réciproquement, supposons que si $T\nvdash\bot$ alors il existe un modèle $\MM\models T$. Supposons de plus que $T\vDash P$ et montrons que $T\vdash P$. Notre hypothèse nous dit que $T,\lnot P$ n'a pas de modèle, donc $T,\lnot P\vdash \bot$ par contraposée de l'hypothèse. Par l'utilisation de la règle $\bot_\mathrm c$, on en déduit que $T\vdash P$.
+\end{proof}
+
+Nous voulons donc construire un modèle en supposant que $T$ est une théorie cohérente. Cette construction, complexe, sera détaillée en plusieurs étapes. D'abord, nous allons avoir besoin de résultats sur les extensions d'un langage.
+
+\subsubsection{Extension d'un langage}
+
+L'idée d'une extension est de rajouter des fonctions ou des relations à notre signature, pour avoir des $\LL$-structures plus, justement.. Structurées.
+
+\begin{defi}[Extension d'un langage]
+    Soit $\LL = \langle \mathcal F,\mathcal R,\alpha_f,\alpha_r\rangle$ une signature, on dit que $\LL'=\langle \mathcal F',\mathcal R',\alpha_f',\alpha_f'\rangle$ est une extension de $\LL$ lorsque :
+    \begin{itemize}[label=$\bullet$]
+        \item $\mathcal F \subseteq \mathcal F'$
+        \item $\mathcal R \subseteq \mathcal R'$
+        \item pour tout $f\in\mathcal F, \alpha_f(f)=\alpha_f'(f)$
+        \item pour tout $r\in\mathcal R, \alpha_r(r)=\alpha_r'(r)$
+    \end{itemize}
+    Une extension est donc simplement un langage contenant le langage initial.
+\end{defi}
+
+\begin{expl}
+    Il est évident que le langage des anneaux est une extension du langage des groupes.
+\end{expl}
+
+Avec cette extension syntaxique intervient une extension sémantique :
+
+\begin{defi}[Enrichissement d'une structure]
+    Soit $\MM$ une $\LL$-structure et $\LL'$ une extension de $\LL$. On dit que $\MM'$ est un enrichissement de $\MM$ (par rapport à $\LL'$) si :
+    \begin{itemize}[label=$\bullet$]
+        \item $|\MM|=|\MM'|$
+        \item pour tout symbole de fonction $f$ de $\LL$, $f^\MM= f^{\MM'}$
+        \item pour tout symbole de relation $r$ de $\LL$, $r^\MM= r^{\MM'}$
+    \end{itemize}
+    C'est donc une structure $\MM'$ identique à $\MM$ vis-à-vis du langage $\LL$.
+\end{defi}
+
+\begin{expl}
+    En reprenant la comparaison entre groupe et anneau : tout anneau est l'enrichissement de sa structure de groupe additif sous-jacente. Cependant, pour un anneau $(A,+,\times)$, le groupe $(A^\times,\times)$ des éléments inversibles de $A$ n'est
+\end{expl}
+
+\begin{rmk}
+    \'Etant donné que $|\MM|=|\MM'|$, tout environnement sur $\MM$ est un environnement sur $\MM'$ et inversement (et ce, sans abus de notation).
+\end{rmk}
+
+L'idée intuitive est que la vérité des propositions dans $\LL$ ne dépendra pas des éléments de $\LL'$ hors de $\LL$. Nous formalisons cela par les lemmes suivants :
+
+\begin{lem}
+    Si $t$ est un terme de $\LL$, $\nu$ un environnement de $\MM$ et $\nu'$ un environnement de $\MM'$ avec $\MM'$ un enrichissement de $\MM$ tels que $\nu$ et $\nu'$ coïncident, alors $\nu(t)=\nu'(t)$.
+\end{lem}
+
+\begin{proof}
+    Par induction sur $t$ : si $t$ est une variable, $\nu(t)=\nu'(t)$ par hypothèse. Si $t$ est une fonction, c'est une fonction de $\LL$ et par définition de l'enrichissement d'une structure, on en déduit que $\nu(t)=\nu'(t)$.
+\end{proof}
+
+\begin{lem}
+    Si $P$ est une proposition de $\LL$ et $\nu$ un environnement, alors $$\valu_{\MM,\nu}(P)=\valu_{\MM',\nu}(P)$$
+\end{lem}
+
+\begin{exo}
+    Prouver le lemme précédent.
+\end{exo}
+
+On en déduit :
+
+\begin{prop}
+    Soit un langage $\LL$ permettant d'écrire les termes de $P$ et $\MM$ une $\LL$-structure, alors pour toute extension $\LL'$ de $\LL$ et enrichissement $\MM'$ de $\MM$ par rapport à $\LL'$, \begin{center}
+        $\MM'\models P$ si et seulement si $\MM\models P$
+    \end{center}
+\end{prop}
+
+\paragraph{Plan d'attaque de la preuve}
+
+
+Notre preuve vise à constuire un modèle à partir de $T$, qui soit \og canonique\fg{} : nous utiliserons comme interprétation des termes les termes directement. Mais plusieurs problèmes vont naitre de cette approche. Nous allons les lister ici, puis successivement les résoudre :
+\begin{itemize}[label=$\bullet$]
+    \item Le premier problème est que pour un terme $\exists x.P$, nous n'avons pas forcément d'objet $a$ tel que $P[x/a]$ (ce qui est la prémisse de la règle pour dériver cette proposition). Nous allons donc construire une extension de notre langage où nous ajouterons des constantes qui, pour chaque proposition de la forme $\exists x.P$, aura une constante $c_P$ et permettra d'avoir $\exists x.P \to P[x/c_P]$. Pour cela, nous étendront aussi notre théorie, mais il est évident que si l'on a construit un modèle pour une théorie plus large que $T$, on a aussi construit un modèle pour $T$.
+    \item Le deuxième problème est que, comme on l'a vu, l'ensemble des formules vraies sur un modèle est une théorie complète. Il nous faut donc chercher à étendre notre théorie en une théorie complète (cette étape peut sembler artificielle mais elle sera ensuite importante pour résoudre le troisième problème).
+    \item Il est possible d'avoir deux termes non égaux syntaxiquement mais qui devraient être égaux : par exemple en arithmétique on ne souhaiterait surtout pas que $2$ et $1+1$ soient des termes différents (pourtant, ils sont bien des termes différents pour l'instant). On doit donc quotienter notre ensemble de termes syntaxiques par les égalités que l'on peut prouver, pour nous donner des termes (puis vérifier que les relations et symboles passent bien au quotient).
+\end{itemize}
+
+A la fin, on se retrouve donc avec un modèle sur un langage énorme, d'une théorie bien plus grande que la théorie originelle. Heureusement, on a prouvé qu'être un modèle était invariant par extension du langage et que \og qui peut le plus peut le moins \fg{} : être modèle d'une surthéorie implique qu'on est modèle de la théorie d'origine.
+
+\subsubsection{Témoins de Henkin}
+
+Comme nous l'avons dit, nous allons enrichir notre langage, et augmenter notre théorie. Nous allons d'abord définir notre langage puis notre théorie. Cependant, par souci de lisibilité, nous allons désormais noter $P(x)$ une proposition possédant une seule variable libre, étant $x$ (de même pour n'importe quelle variable $\alpha\in\VV$) et dans ce cas, nous noterons $P(a)$ pour $P[x/a]$, là encore pour alléger l'écriture.
+
+\begin{defi}[Langage et théorie des témoins]
+    A partir du langage $\LL$ et de la théorie $T$, nous allons définir $\LL'$ et $T'$ par induction. Comme les conditions sont longues à écrire et que l'induction d'un ensemble se fait sur l'autre, nous allons faire la construction inductive directement. De plus, comme $\LL_0=\LL$ et que nous n'ajouterons que des constantes, nous travaillerons comme si $(\LL_n)$ était une suite d'ensembles (les arités des constantes étant $0$, elles s'induisent facilement, et les arités des autres symboles sont donnés par $\LL=\LL_0$). On va noter $\Prop_{1,\LL}$ l'ensemble des propositions sur le langage $\LL$ avec $1$ variable libre. La construction est alors :
+    \begin{itemize}[label=$\bullet$]
+        \item $\LL_0 = \LL, T_0 = T$
+        \item $\LL_{n+1} = \LL_n \cup \{ c_P \mid P \in \Prop_{1,\LL_n}\}$
+        \item $T_{n+1} = T_n \cup \{ (\exists x. P(x) \to P(c_P)) \mid P\in\Prop_{1,\LL_n} \}$
+    \end{itemize}
+    Et on définit alors $\LL' = \displaystyle{\bigcup_{n\in\nat} \LL_n}$ et $T' = \displaystyle{\bigcup_{n\in\nat}T_n}$.
+\end{defi}
+
+La définition est assez lourde, mais son intuition est claire : on ajoute à chaque formule $\exists x.P$ un témoin $c_P$.
+
+Il convient alors de prouver que $T'$ est encore cohérente. Là encore, nous allons devoir nous armer de nombreux lemmes de structure pour travailler sur les séquents.
+
+\begin{lem}[Généralisation d'une constante]
+    Soient $\Gamma$ un contexte et $A$ une formule, et $c$ une constante n'apparaissant pas dans $\Gamma$. Alors si $\Gamma\vdash P$, alors $\Gamma\vdash \forall x.P[c/x]$.
+\end{lem}
+
+\begin{proof}
+    Le but est évidemment d'appliquer $\forall_\mathrm i$. On procède par induction sur la preuve de $\Gamma\vdash P$ pour montrer que $\Gamma\vdash P[c/x]$ où $x$ est libre dans $\Gamma$ (l'idée est que si $c$ n'apparaît pas dans $\Gamma$, $x$ n'y apparaît pas non plus au long de l'arbre de dérivation pour $P[c/x]$). La règle s'applique ensuite directement.
+\end{proof}
+
+\begin{lem}[Propriété du témoin]
+    Pour toute propriété $P(x)$ sur $\LL'$, on a $T'\vdash \exists x.P(x)\to P(c_P)$.
+\end{lem}
+
+\begin{proof}
+    Il suffit de remarquer que $P(x)$ est un objet fini et utilise donc des symboles de $\LL'$ qui ne dépassent pas un certain rang $m$ : on peut donc utiliser la règle Ax dans la théorie $T_m$ puis par affaiblissement en déduire le résultat.
+\end{proof}
+
+\begin{lem}\label{lem:distrib}
+    Les séquents suivants sont dérivables : $(\forall x. (P(x)\to \bot)) \vdash ((\exists x. P(x))\to \bot)$ et $((\exists x.P(x))\to \bot)\vdash \forall x. (P(x)\to \bot)$
+\end{lem}
+
+\begin{exo}
+    Prouver ce lemme.
+\end{exo}
+
+\begin{lem}\label{lem:distrand}
+    Les séquents suivants sont dérivables : $\exists x.\exists y. (P(x)\land Q(y))\vdash (\exists x.P(x))\land (\exists y.Q(y))$ et $(\exists x.P(x))\land (\exists y.Q(y))\vdash \exists x.\exists y. P(x)\land Q(y)$
+\end{lem}
+
+\begin{exo}
+    Prouver ce lemme.
+\end{exo}
+
+\begin{lem}\label{lem:exidroite}
+    Les séquents suivants sont dérivables, si l'on suppose que $x$ n'est pas une variable libre de $P$ : $\exists x.(P\to Q)\vdash P\to (\exists x.Q)$ et $P\to (\exists x.Q)\vdash \exists x.(P\to Q)$.
+\end{lem}
+
+\begin{exo}
+    Prouver ce lemme.
+\end{exo}
+
+Il nous reste maintenant à prouver que $T'$ est encore cohérente :
+
+\begin{prop}[Cohérence de $T'$]
+    $T'$ est cohérente.
+\end{prop}
+
+\begin{proof}
+    Remarquons d'abord qu'avec l'exercice \ref{exo:compacitesynt}  le fait d'être finiment cohérent implique d'être cohérent (et toute partie finie de $T'$ se trouve dans un $T_n$), il nous suffit donc de prouver que $T_n$ est cohérente par récurrence :
+    \begin{itemize}[label=$\bullet$]
+        \item Par hypothèse, $T=T_0$ est cohérente.
+        \item Supposons que $T_n$ est cohérente. Raisonnons par l'absurde et supposons que $T_{n+1}$ est incohérente : $T_{n+1}\vdash \bot$. Par définition de $T_{n+1}$, et par compacité syntaxique, on trouve $A_1,\ldots ,A_k$ avec des propositions $P_1,\ldots,P_k$ à une variable libre écrites sur $\LL_n$ telles que $A_i = \exists x.P_i(x) \to P_i(c_{P_i})$ et $T_n,A_1,\ldots,A_k\vdash \bot$ ce que l'on va traduire alors. D'abord, on va transformer cette suite d'implications en une conjonction. En effet comme la règle \begin{prooftree} \hypo{A,B\vdash P}\infer1{A\land B\vdash P} \end{prooftree} est admissible, le fait qu'on ait une dérivation de $T_n,A_1,\ldots,A_k\vdash \bot$ nous permet d'en déduire une dérivation de $$T_n,\bigwedge_{i=1}^k A_i\vdash \bot$$ soit avec la règle $\to_\mathrm i$ que $$T_n\vdash \left( \bigwedge_{i=1}^k A_i \right)\to \bot$$
+        On peut alors utiliser pour chaque $c_{P_i}$ le lemme de généralisation d'une constante, puisque par définition les $c_{P_i}$ appartiennent à $\LL_{n+1}$ et n'apparaissent donc pas dans $T_n$, ce qui nous donne : $$T_n\vdash \forall y_1,\ldots,\forall y_k, \left( \bigwedge_{i=1}^k (\exists x. P_i(x)\to P_i(y_i)))\right)\to \bot$$ En utilisant maintenant le lemme \ref{lem:distrib} pour distribuer le $\forall$ à gauche du $\to \bot$ : $$T_n\vdash \left(\exists y_1,\ldots,\exists y_k. \bigwedge_{i=1}^k (\exists x.P_i(x)\to P_i(y_i)))\right)\to \bot$$ On utilise maintenant le lemme \ref{lem:distrand} pour faire passer chaque quantificateur existentiel de $y_i$ à l'intérieur de la conjonction : $$T_n\vdash \left(\bigwedge_{i=1}^k (\exists y_i.\exists x. P_i(x)\to P_i(y_i))\right)\to \bot$$ Enfin le dernier lemme nous donne : $$T_n\vdash \left(\bigwedge_{i=1}^k (\exists x. P_i(x) \to \exists y_i P(y_i))\right)\to\bot$$
+
+        Il nous reste à prouver cette conjonction, pour laquelle nous n'avons à prouver qu'un cas (chaque clause à la même forme) :
+        \begin{center}
+            \begin{prooftree}
+                \infer0[Ax]{\exists x. P(x)\vdash \exists x.P(x)}
+                \infer0[Ax]{\exists x. P(x), P(x)\vdash P(x)}
+                \infer1[$\exists_\mathrm i$]{\exists x.P(x), P(x)\vdash P(x)}
+                \infer2[$\exists_\mathrm e$]{\exists x. P(x)\vdash \exists y.P(y)}
+                \infer1[$\to_\mathrm i$]{\vdash \exists x. P(x)\to \exists y.P(y)}
+            \end{prooftree}
+        \end{center}
+        Ce qui, par un \textit{modus ponens}, nous permet de déduire $T_n\vdash \bot$, ce qui est en contradiction avec l'hypothèse de récurrence.
+    \end{itemize}
+
+    Ainsi, par récurrence, $T_n$ est cohérente et donc $T'$ l'est aussi.
+\end{proof}
+
+\subsubsection{Compléter une théorie}
+
+Pour les besoins de la preuve, nous voulons plonger $T'$ dans une théorie complète, c'est-à-dire une théorie $\Theor(T')$ telle que $T'\subseteq\Theor(T')$ et pour toute proposition $P$, $\Theor(T')\vdash P$ ou $\Theor(T')\vdash \lnot P$. Pour cela, nous allons utiliser le lemme de Zorn, que nous allons d'abord devoir énoncer.
+
+\begin{ax}[Lemme de Zorn]
+    Pour tout ensemble inductif, c'est-à-dire tout ensemble ordonné $(X,\leq)$ non vide tel que pour toute suite croissante, $(x_i)$ possède un majorant, il existe un élément maximal, c'est-à-dire un élément $x$ tel qu'il n'existe pas d'élément y tel que $x\leq y$.
+\end{ax}
+
+Nous allons utiliser ce lemme pour construire une théorie $\Theor(T')$ complète à partir de $T'$. Tout d'abord, nous allons appeler $\EE$ (pour extension) la partie engendrée par $T'$, au sens où $T'\subseteq \EE$ et si $T'\vdash P$ alors $P\in\EE$. De plus, si $P\in \EE$ et $Q\in \EE$, alors $P\land Q \in \EE$. On appelle cette structure le filtre engendré par $T'$. Remarquons qu'on peut interpréter $\EE$ comme l'ensemble des conséquences de la théorie $T'$.
+
+\begin{defi}[Filtre]
+    Soit l'ensemble $X = \Prop_{\LL'}$, alors une partie $\FF\subseteq X$ est appelé un filtre si :
+    \begin{itemize}[label=$\bullet$]
+        \item $\top \in \FF$
+        \item si $A\in \FF$ et $A\vdash B$ alors $B\in\FF$
+        \item si $A\in \FF$ et $B\in\FF$ alors $A\land B \in \FF$
+        \item $\bot\notin \FF$
+    \end{itemize}
+\end{defi}
+
+\begin{rmk}
+    Dans la littérature, la condition de ne pas avoir $\bot$ n'est pas toujours donnée, mais les filtres intéressants sont toujours ceux dits non triviaux, c'est-à-dire différents de $\mathcal \mathcal P(X)$, qui est le seul \og filtre\fg{} contenant la partie vide.
+\end{rmk}
+
+\begin{exo}
+    Montrer que $\mathrm{Sp}_F(X)$, l'ensemble des filtres de $X$ contenant un filtre fixé $F$, ordonné par l'inclusion, est un ensemble inductif.
+\end{exo}
+
+On en déduit le théorème suivant :
+
+\begin{them}[Extension de théorie]
+    Soit $T$ une théorie logique cohérente, alors il existe une théorie complète contenant $T$.
+\end{them}
+
+\begin{proof}
+    On considère donc $\EE$ l'extension de la théorie $T$, et par le résultat de l'exercice précédent et le lemme de Zorn, on déduit l'existence de $\Theor(T)$ un filtre maximal pour la conséquence logique qui contient $T$ (de par la définition de l'ensemble inductif). Montrons alors que $\Theor(T)$ est complète, pour cela, soit $P$ une proposition :
+    \begin{itemize}[label=$\bullet$]
+        \item Soit $\Theor(T)\vdash P$
+        \item Soit $\Theor(T)\vdash \lnot P$
+        \item Soit $\Theor(T)$ ne prouve ni $P$, ni $\lnot P$. Dans ce cas, on peut prendre au choix l'extension de $\Theor(T)\cup\{P\}$ ou $\Theor(T)\cup\{\lnot P\}$ : puisque les deux jouent un rôle symétrique, nous ne traiterons que le premier cas. Comme $\Theor(T)$ est maximal pour l'inclusion, cela signifie que l'ensemble des propositions découlant de $\Theor(T)$ et $P$ est l'ensemble des propositions (le filtre trivial), donc $\Theor(T),P\vdash \bot$ ce qui signifie que $\Theor(T)\vdash \lnot P$.
+    \end{itemize}
+    Dans tous les cas soit $\Theor(T)\vdash P$ soit $\Theor(T)\vdash \lnot P$ : nous avons complété notre théorie $T$.
+\end{proof}
+
+Nous pouvons donc appliquer ce théorie pour étendre $T'$ en $\Theor(T')$.
+
+\subsubsection{Construire le modèle à proprement parler}
+
+Nous avons un langage très expressif et une théorie très puissante, il est donc temps de construire notre modèle. L'idée première est de quotienter nos termes par l'égalité, en ce sens que si nos axiomes nous permettent de construire que $1+1=2$ alors $1+1$ et $2$ doivent représenter le même terme. Comme nous avons montré plus tôt (cd exo \ref{exo:releqeg}) la relation $=$ est une relation d'équivalence. Nous allons donc définir la relation $\sim$ sur nos termes clos (dont nous noterons l'ensemble $\mathcal C$) par $$t\sim t' \iff \Theor(T')\vdash t = t'$$ (remarquons que par exemple le témoin de $\exists x. x=x$ montre que notre ensemble n'est pas vide). Pour un terme $t$, on note $\overline t$ sa classe. On définit alors pour notre modèle :
+\begin{itemize}[label=$\bullet$]
+    \item le domaine $|\MM| = \quot{\mathcal C}{\sim}$
+    \item pour interpréter une fonction $f$ d'arité $p$, on définit $f^\MM(\overline{t_1},\ldots,\overline{t_p}) = \overline{f(t_1,\ldots,t_p)}$. Cela signifie évidemment que pour une constante $c$, on définit $c^\MM = \overline c$. Bien sûr, il faut vérifier que cette interprétation est bien définie, c'est-à-dire que la valeur de notre fonction ne dépend pas des représentants choisis, nous allons montrer par récurrence sur $k$ que si pour tout $i$, $\Theor(T')\vdash t_i=u_i$, alors $$\Theor(T')\vdash f(t_1,\ldots,t_p)=f(u_1,,\ldots,u_k,t_{k+1},\ldots,t_p)$$
+    \begin{itemize}
+        \item Dans le cas de base, par $=_\mathrm i$ on a directement $\Theor(T')\vdash f(t_1,\ldots,t_p) = f(t_1,\ldots,t_p)$.
+        \item Si l'on suppose que $\Theor(T')\vdash f(t_1,\ldots,t_p)=f(u_1,,\ldots,u_k,t_{k+1},\ldots,t_p)$, alors en utilisant $=_\mathrm e$ et sachant que $\Theor(T')\vdash t_{k+1}=u_{k+1}$, on en déduit que $\Theor(T')\vdash f(t_1,\ldots,t_p)=f(u_1,,\ldots,u_k,u_{k+1},t_{k+2},\ldots,t_p)$
+    \end{itemize}
+    Ce qui montre notre résultat par récurrence finie. Donc notre interprétation $f^\MM$ est bien définie.
+    \item Si $r$ est un symbole de relation d'arité $p$, alors on définit directement $(\overline{t_1},\ldots \overline{t_p})\in r^\MM\iff \Theor(T')\vdash r(t_1,\ldots,t_p)$. 
+\end{itemize}
+
+Montrons un dernier lemme avant d'aboutir à la complétude de notre système :
+
+\begin{lem}[Modèle et théorie]
+    Soit $P$ une formule à $p$ variable libre et $t_1,\ldots, t_p$ des termes clos. Alors $\MM\models F(\overline{t_1},\ldots,\overline{t_p})$ si et seulement si $\Theor(T')\vdash P(t_1,\ldots,t_p)$
+\end{lem}
+
+\begin{proof}
+    La preuve se faire par induction sur $P$. Nous ne traiterons pas tous les cas, mais seulement des cas représentatifs que sont $\bot$, les relations, $\lnot$, $\lor$ et $\exists$. On pourrait justifier que toute formule est équivalence à une formule constituée seulement de ces constructeurs, mais le lecteur assidu pourra vérifier l'induction dans les autres cas.
+    \begin{itemize}[label=$\bullet$]
+        \item Cas $\bot$ : si $\MM\models \bot$, on arrive à une contradiction. De même, comme $\Theor(T')$ est par hypothèse cohérente, elle ne prouve pas $\bot$, donc l'équivalence est vérifiée dans ce cas.
+        \item Cas $P=r(u_1,\ldots,u_k)$ où les $u_i$ sont des termes non nécessairement clos. Alors on va nommer $v_i := u_i[x_1,\ldots,x_p/t_1,\ldots,t_p]$ qui sont, eux des termes clos. Par définition, $P(t_1,\ldots,t_p) = r(v_1,\ldots,v_k)$ et par définition de la substitution. Par définition de $\valu$, on sait que $$\MM\models P(\overline{t_1},\ldots,\overline{t_p}) \iff \MM\models r(\overline{v_1},\ldots,\overline{v_k})$$ ce qui est, comme on parle ici de modéliser une relation, équivalent de façon définitionnelle à $\Theor(T')\vdash r(v_1,\ldots,v_p)$, ce qui est bien équivalent à $\Theor(T')\vdash r(u_1,\ldots,u_p)[x_1,\ldots,x_p/t_1,\ldots,t_p]$.
+        \item Cas $P = \lnot Q$ : on considère $t_1\ldots,t_p$ des termes clos. Alors $\MM\models \lnot Q(t_1,\ldots,t_p)$ est équivalent à $\valu_{\MM}(Q(t_1,\ldots,t_p))=0$, ce qui par hypothèse d'induction est équivalent à $\Theor(T')\nvdash Q(t_1,\ldots,t_p)$ donc à $\Theor(T')\vdash \lnot Q(t_1,\ldots t_p)$.
+        \item Cas $P = Q\lor R$ : d'abord, $Q\lor R (t_1,\ldots,t_p) = (Q(t_1,\ldots,t_p))\lor (R(t_1,\ldots t_p))$ que nous abrégerons par $Q'\lor R'$. Par disjonction de cas et analyse des règle, on remarque que pour avoir $\valu_{\MM}(P(\overline{t_1},\ldots,\overline{t_p})\lor Q(\overline{t_1},\ldots,\overline{t_p}))=1$, il soit avoir soit $\MM\models P(\overline{t_1},\ldots,\overline{t_p})$ auquel cas l'hypothèse d'induction nous donne que $\Theor(T')\vdash P'$ et donc $\Theor(T')\vdash P'\lor Q'$, soit l'autre cas avec $Q$. Pour que la valeur soit $0$, il faudrait que $\valu_{\MM}(P(\overline{t_1},\ldots,\overline{t_p}))=0$ et $\valu_{\MM}(Q(\overline{t_1},\ldots,\overline{t_p}))=0$, ce qui signifie par hypothèse d'induction que $\Theor(T')\nvdash P'$ et $\Theor(T')\nvdash Q'$, ce qui nous donne bien une équivalence entre les deux.
+        \item Cas $P = \exists x. Q$ : soient $t_1,\ldots,t_p$ des termes clos. $\MM\models \exists x. Q(\overline{t_1},\ldots,\overline{t_p})$ est équivalent à dire qu'il existe un terme clos $t$ (par définition du domaine de $\MM$) et $\MM\models Q(\overline{t_1},\ldots,\overline{t_p},\overline t)$ ce qui est équivalent, par hypothèse d'induction, à ce que $\Theor(T')\vdash G(t_1,\ldots,t_p,t)$, ce qui est équivalent par la propriété du témoin et la règle $\exists_\mathrm i$ à $\Theor(T')\vdash G(t_1,\ldots,t_p)$.
+    \end{itemize}
+    Cette induction conclut le lemme.
+\end{proof}
+
+\begin{rmk}
+    On voit l'importance des témoins de Henkin en particulier à la fin, où il faut pouvoir avoir une équivalence sur le $\exists$. De plus, le fait d'avoir considéré une théorie complète nous a permis de gérer le cas $\lnot$.
+\end{rmk}
+
+\begin{prop}
+    $\MM\models \Theor(T')$
+\end{prop}
+
+\begin{proof}
+    Toute formule close $P$ dans $\Theor(T')$, par la règle Ax, est telle que $\Theor(T')\vdash P$, donc $\MM\models P$.
+\end{proof}
+
+\begin{them}
+    Si $T$ est telle que $T\nvdash \bot$, alors il existe $\MM$ une $\LL$-structure telle que $\MM\models T$.
+\end{them}
+
+\begin{proof}
+    On a donc, à force de constructions, prouvé qu'il existait $\MM$ un modèle de $\Theor(T')$, or $T\subseteq T'\subseteq \Theor(T')$ donc pour toute proposition $P\in T$, $\MM\models P$, ce qui signifie que $\MM\models T$.
+\end{proof}
+
+\begin{them}[Unification de la logique du premier ordre]
+    Ainsi les deux relation $\vdash$ et $\vDash$ coïncident pour les formules du calcul du précidat du premier ordre.
+\end{them}
+
+\section{Un peu de théorie des modèles}
+
+Maintenant que nous avons la correction et la complétude de notre logique, nous allons étudier les résultats les plus important de la théorie des modèles, ainsi que leur conséquences. 
+
+\subsection{Théorème de compacité}
+
+D'abord, le théorème de compacité syntaxique énoncé plus tôt, et l'équivalence entre $\vdash$ et $\vDash$ nous permet de déduire le théorème important suivant :
+
+\begin{them}
+    Soit $\Gamma$ un ensemble de formules closes. Alors $\Gamma$ possède un modèle si et seulement si toute partie finie $\Gamma_0\subseteq\Gamma$ possède un modèle.
+
+    De façon équivalente, $\Gamma$ ne possède pas de modèle si et seulement s'il existe une partie finie $\Gamma_0\subseteq\Gamma$ qui ne possède ne pas de modèle.
+\end{them}
+
+\begin{proof}
+    Dans un sens, si $\MM\models \Gamma$ alors $\MM\models\Gamma_0$ pour toute partie finie $\Gamma_0$. Dans l'autre sens, comme posséder un modèle est équivalent à être cohérent, supposons que $\Gamma_0\nvdash \bot$ pour toute partie finie $\Gamma_0$ : alors par théorème de complétude syntaxique, si $\Gamma\vdash\bot$ alors on trouverait un $\Gamma_0$ tel que $\Gamma_0\vdash\bot$, donc $\Gamma\nvdash\bot$, donc il existe un modèle de $\Gamma$.
+
+    La formulation équivalente est juste l'équivalence des négations.
+\end{proof}
+
+Ce théorème est essentiel pour construire des modèles. Donnons un exemple avec le résultat suivant :
+
+\begin{prop}
+    Si $T$ est une théorème admettant des modèles finis arbitrairement grands, c'est-à-dire que pour tout $n\in\mathbb N$ il existe un modèle $\MM\models T$ tel que $\# |\MM| \geq n$, alors $T$ admet un modèle infini.
+\end{prop}
+
+\begin{proof}
+    D'abord,  considérons la famille de formules $$\varphi_n := \exists x_1,\ldots,\exists x_n.\bigwedge_{k=1}^n \bigwedge_{p=1}^{k-1} \lnot(x_k=x_p)$$ qui signifie \og il y a au moins $n$ éléments\fg{}. Alors on considère $T' = T \cup \displaystyle{\left(\bigcup_{n\in\nat}\varphi_n\right)}$ et on veut montrer qu'il existe un modèle de $T'$, qui serait alors un modèle infini de $T$.
+
+    Soit $\Gamma\subseteq T'$ un ensemble fini de formules. Il contient un nombre fini de formules de la forme $\varphi_n$ donc on peut trouver $i\in\nat$ tel que toutes les formules $\varphi_k$ pour $k> i$ n'appartiennent pas à $\Gamma$. Cela signifie qu'un modèle de $T$ de taille supérieure à $i$ est un modèle de $\Gamma$. Donc toute partie finie de $T'$ a un modèle, donc $T$ a un modèle infini.
+\end{proof}
+
+\begin{exo}
+    Montrer qu'il n'existe pas de théorie des groupes finis (du premier ordre).
+\end{exo}
+
+\subsection{Théorème de Löwenheim-Skolem}
+
+Remarquons aussi un point important : la construction que nous avons faite avec les témoins de Henkin nous fournit un modèle $\MM$ pour une théorie $T$ cohérente mais dont le cardinal est le maximum entre celui de $\LL$ et $\aleph_0$ (nous étudierons les cardinaux plus en détail plus tard, mais $\aleph_0$ est le cardinal de $\mathbb N$, i.e. qu'être de cardinal $\aleph_0$ signifie être dénombrable), c'est-à-dire que si $\LL$ est fini ou dénombrable, alors $\MM$ est un modèle dénombrable de $T$. Cela nous pousse à définir le théorème suivant :
+
+\begin{them}[Löwenheim-Skolem descendant]
+    Soit $\MM$ un modèle infini sur un langage $\LL$. Alors il existe un modèle $\NN$ de cardinal $\max(|\LL|,\aleph_0)$ de $\MM$ qui lui est équivalent au sens où pour toute proposition $P$ dans le langage $\LL$, on a $\MM\models P$ si et seulement si $\NN\models P$.
+\end{them}
+
+\begin{proof}
+    Comme nous l'avons dit, nous pouvons effectuer la construction sur n'importe quelle théorie cohérente. De plus, nous avons défini plus tôt $\Theor(\MM)$ l'ensemble des propositions vraies sur $\MM$, qui est une théorie complète. Alors en appliquant notre construction sur $\Theor(\MM)$ on a construit un modèle $\NN$ de $\Theor(\MM)$ du cardinal voulu. De plus, si $\NN\models P$ alors par les résultats précédent, cela signifie que $\Theor(\MM)\vdash P$ (car $P$ est écrit dans $\LL$), c'est-à-dire $\MM\models P$.
+\end{proof}
+
+\begin{rmk}
+    Nous n'avons pas utilisé l'hypothèse que $\MM$ est infini, mais le théorème de Löwenheim-Skolem a pour but de changer le cardinal d'un modèle sans en modifier ses propriétés logiques. Ainsi, nous avons appelé ce résultat-ci le résultat descendant car il nous donne une borne inférieure de la taille d'un modèle logiquement équivalent à notre modèle $\MM$. Nous allons ensuite prouver la version ascendante, qui utilise le fait que $\MM$ est infini : nous aurons donc ensuite un théorème général qui fonctionne pour tous les cardinaux souhaités.
+\end{rmk}
+
+\begin{them}[Théorème de Löwenheim-Skolem]
+    Soit $\MM$ un modèle infini sur un langage $\LL$, et $\kappa$ un cardinal supérieur au cardinal de $\LL$. Alors il existe un modèle $\NN$ de cardinal $\kappa$ équivalent à $\MM$, au sens où pour tout $P$ écrit dans $\LL$, $\MM\models P$ si et seulement si $\NN\models P$.
+\end{them}
+
+\begin{proof}
+    Soit $K$ de cardial $\kappa$, alors on construit pour chaque élément $i\in K$ une constante $c_i$ et pour $i,j \in K$ une proposition $\varphi_{i,j} := \lnot (c_i = c_j)$. Alors la théorie $\Theor(\MM)\cup\displaystyle{\bigcup_{i,j \in K}\varphi_{i,j}}$ a $\MM$ induit un modèle pour toute partie finie (comme $\MM$ est infinie, on peut toujours trouver assez d'éléments différents à assigner aux $c_i$ pour qu'ils soient différents, étant donné qu'on n'a qu'un nombre fini de $c_i$ à assigner, tous les autres pouvant valoir la même valeur). Il existe donc un modèle $\NN$ de cardinal $\kappa$ tel que $\NN\models \Theor(\MM)$, donc si $\MM\models P$ alors $\NN\models P$. Dans le sens inverse, si $\NN\models P$, comme $P$ est écrit dans $\LL$, soit $\MM\models P$ soit $\MM\models \lnot P$ mais le second cas est impossible car cela impliquerait que $\NN\models \lnot P$.
+\end{proof}
+
+\begin{rmk}
+    Des conséquences particulièrement contre-intuitives arrivent alors :
+    \begin{itemize}[label=$\bullet$]
+        \item Il existe un modèle de la théorie de $\mathbb R$ en tant que corps ordonné (c'est-à-dire muni de ses loi usuelles et de $\leq$ défini comme habituellement) qui est dénombrable.
+        \item Il existe un modèle de ZF, la théorie des ensembles, qui est dénombrable, et dans laquelle on peut démontrer que $\mathbb R$ est indénombrable.
+    \end{itemize}
+
+    On appelle cela le \textit{paradoxe de Skolem}, mais il ne faut pas s'y tromper : il n'y a aucune réelle contradiction ici, car il ne faut pas confondre le cardinal du modèle et la notion de cardinal définie dans la théorie. Moralement, un modèle dénombrable de $\reel$ signifie que l'on ne s'intéresse qu'aux nombres que l'on peut nommer, décrire par une proposition : la plupart des nombres de $\reel$ ne seront jamais explicités, et nous ne construirons toujours qu'un nombre fini de nombres explicitement, donc pour notre usage (avec des arbres finis, des propositions finis et qui plus est sur un langage fini), les infinis ne font aucune différence.
+\end{rmk}
+
+Nous allons en voir une application possible dans le théorème de Łos-Vaught.
+
+\begin{defi}[Théorie $\kappa$-catégorique]
+    On dit qu'une théorie $T$ est $\kappa$-catégorique pour un cardinal $\kappa$ donné s'il n'existe qu'un modèle de $T$ de cardinal $\kappa$ à isomorphisme près.
+\end{defi}
+
+\begin{them}[Łos-Vaught]
+    Une théorie $T$ dans un langage $\LL$ sans modèle fini, $\kappa$-catégorique où $\kappa \geq \max(|\LL|,\aleph_0)$ est complète.
+\end{them}
+
+\begin{proof}
+    Soit $P$ une proposition écrite dans $\LL$. Soit un modèle $\MM\models T$, alors par Löwenheim-Skolem on construit un modèle équivalent $\MM'$ de cardinal $\kappa$. Comme il n'existe qu'un modèle de cardinal $\kappa$, alors $\MM$ est équivalent à ce modèle (que nous appellerons $\mathcal U$). Par définition, $\mathcal U\models P$ ou $\mathcal U\models \lnot P$, donc soit $\MM\models P$ soit $\MM\models \lnot P$, ce qui signifie par complétude que soit $T\vdash P$ soit $T\vdash \lnot P$ : $T$ est donc complète.
+\end{proof}
+
+\begin{exo}
+    Soit $\LL = \{=,\sim\}$ un langage où l'on a seulement les deux symboles de relation binaire $=$ et $\sim$.
+    \begin{itemize}[label=$\bullet$]
+        \item Définir des propositions exprimant que $\sim$ est une relation d'équivalence.
+        \item On va nommer $T_{\sim}$ la théorie décrivant que $\sim$ est une relation d'équivalence. Trouver une famille de proposition $(T_i)$ telle qu'un modèle de $T_{\sim}\cup\bigcup_i T_i$ est exactement un ensemble où $\sim$ possède une infinité de classes d'équivalences.
+        \item Trouver de même une théorie $T$ dont les modèles sont les ensembles munis d'une relation d'équivalence $\sim$ telle qu'il y a une infinité de classes d'équivalences, où chacune possède une infinité d'éléments.
+        \item Montrer que $T$ est complète. \textit{Indication : on montrera d'abord que cette théorie est $\aleph_0$-catégorique.}
+    \end{itemize}
+\end{exo}
+
+
+\newpage
+\thispagestyle{empty}

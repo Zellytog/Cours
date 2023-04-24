@@ -1,0 +1,481 @@
+\section{Définition du lambda-calcul}
+
+L'idée première du lambda-calcul est d'étudier des fonctions. Le système consiste donc en un ensemble d'expressions dont on peut considérer qu'elles sont toutes des fonctions, mais nous commencerons pour donner l'intuition en ajoutant des constantes permettant de donner un sens plus évident à certaines notions. Une expression sera donc une fonction, de la forme $x\mapsto \Phi$ où $\Phi$ est une expression contenant $x$, ou bien l'application d'une fonction (i.e. d'une expression) à une autre expression.
+
+\begin{defi}[Lambda-terme]
+    On se donne un ensemble $\VV$ infini de variables, que l'on notera $x,y,\ldots$ et on définit l'ensemble des lambda-termes (ou expressions) $\Lambda_0$ par la grammaire suivante : $$M,N ::= x \mid \lambda x.M\mid (M\;N)$$ où $x\in\VV$ et $M,N\in\Lambda_0$. On dit que $M$ est une $\lambda$-abstraction si c'est un terme de la forme $\lambda x.M$ et que c'est une application si c'est un terme de la forme $(M\;N)$.
+\end{defi}
+
+Moralement, le terme $\lambda x.M$ va représenter la fonction $x\mapsto M$, et le terme $(M\;N)$ va représenter l'application de $M$ à l'argument $N$. Quand cela n'est pas nécessaire, on peut oublier les parenthèses extérieures et l'application est prioritaire sur la $\lambda$-abstraction (par exemple le terme $\lambda x.x\;x$ doit se lire $\lambda x.(x\;x)$ et est a priori différent de $(\lambda x.x)x$). Enfin on considère l'asssociativité de l'application à droite, ce qui signifie que le terme $M\;N\;P$ doit se lire $(M\;N)\;P$.
+
+Un point important est la notion de curryfication : pour écrire une fonction de la forme $(x,y)\mapsto \Phi$, on utilise le fait que cette fonction à deux variables est équivalente à une fonction à une variable renvoyant une fonction à une variable, c'est-à-dire qu'on va considérer à la place la fonction $x\mapsto (y\mapsto \Phi)$. Cela signifie que si nous utilisons des fonctions à plusieurs variables, nous aurons à introduire autant de lambda-abstractions. Pour alléger les notations, on écrire $\lambda x\;y\;z.M$ au lieu de $\lambda x.\lambda y.\lambda z.M$.
+
+On introduit les notions de variables libres et de variables libres dans les lambda-termes de façon analogue aux variables libres dans les propositions :
+
+\begin{defi}[Variable libre]
+    Soit $M\in\Lambda_0$, on définit par induction l'ensemble $\varlib M$ :
+    \begin{itemize}[label=$\bullet$]
+        \item si $M = x \in \VV$, alors $\varlib M = \{x\}$.
+        \item si $M = \lambda x.M'$ alors $\varlib M = \varlib{M'}\setminus \{x\}$.
+        \item si $M = (M'\;N')$ alors $\varlib M = \varlib{M'}\cup \varlib{N'}$.
+    \end{itemize}
+
+    On dit que $M$ est un terme clos si $\varlib M = \varnothing$.
+\end{defi}
+
+\begin{rmk}
+    Dans un lambda-terme comme $M := (\lambda x.x)x$, $x\in\varlib M$ var malgré le $\lambda$ qui supprime la liberté de $x$ à gauche, le terme de droite $x$ est bien constitué d'une variable libre.
+\end{rmk}
+
+Pour pouvoir définir les manipulations qui suivront, nous avons besoin de la notion de substitution, que nous allons définir rigoureusement par induction sur la structure de $\Lambda_0$.
+
+\begin{defi}[Substitution]
+    Soient $M,N\in\Lambda_0$ et $x\in\VV$. On définit la substitution de $x$ par $N$ dans $M$, que l'on note $M[N/x]$, par induction sur $M$ :
+    \begin{itemize}[label=$\bullet$]
+        \item si $M = x$ alors $M[N/x] = N$.
+        \item si $M = y\in\VV$, $y\neq x$, alors $M[N/x] = y$.
+        \item si $M = \lambda x.M'$ alors $M[N/x] = M$.
+        \item si $M = \lambda y.M'$, $y\neq x$, alors on trouve $z\notin\varlib N$ et $M[N/x] = \lambda z. M'[y/z][N/x]$.
+        \item si $M = M'\;N'$ alors $M[N/x] = (M[N/x])\;(N'[N/x])$.
+    \end{itemize}
+\end{defi}
+
+\begin{rmk}
+    Le fait de ne pas reprendre $y$ dans la substitution de $\lambda y.M'$ permet d'éviter la capture de variable dans le cas où $y\in\varlib N$. Par exemple en considérant $M = \lambda y.x$ et $N = y\;y$, la substitution $M[N/x]$ vaudrait $\lambda y.y\;y$ qui sans la modification, là où avec notre ajustement on a $M[N/x] = \lambda z.y\;y$ qui fait plus sens, car $z$ comme $y$ sont des variables muettes et changer $y$ en $z$ ne change pas le sens de l'expression (nous allons détailler cette notion juste après avec l'$\alpha$-conversion).
+
+    Cependant, pour que notre définition fonctionne, il faut que le choix de $z\notin\varlib N$ dans la définition ne soit pas ambigu. Un moyen de régler ce problème est de considérer que chaque variable est numérotée, c'est-à-dire qu'on pourrait écrire $\VV = \{v_0,v_1,\ldots\}$ et considérer $z = v_i$ où $i = \min \{j\mid j\in\nat, v_j\notin\varlib N\}$ par exemple. Ces considérations sont assez peu profondes et concernent surtout les ajustements à effectuer pour que les définitions fonctionnent de façon non approximative.
+\end{rmk}
+
+\begin{exo}
+    Montrer que la substitution est bien définie. \textit{Indication : on associera à chaque terme une quantité dans $\nat$ qui décroît strictement à chaque étape de la substitution, en particulier pour passer de $M$ à $M'[y/z][N/x]$ dans le quatrième cas.}
+\end{exo}
+
+\subsection{Alpha-conversion et indices de De Bruijn}
+
+Nous allons commencer par rendre rigoureuse la phrase \og changer $y$ en $z$ ne change pas le sens de l'expression\fg{}. Le sens de cette phrase étant que l'on veut qu'une variable liée puisse être renommée sans changement sémantique. Renommer une variable liée signifie identifier, pour un terme $M\in\Lambda_0$, les deux termes $\lambda x.M$ et $\lambda y.M[y/x]$ : nous allons effectuer cette identification en quotientant $\Lambda_0$ à partir de la clôture d'équivalence de toutes les telles identifications.
+
+\begin{defi}[$\alpha$-équivalence]
+    On définit la relation $=_\alpha$ sur $\Lambda_0$ par induction :
+    \begin{center}
+        \begin{prooftree}
+            \infer0{M =_\alpha M}
+        \end{prooftree}
+        \qquad
+        \begin{prooftree}
+            \hypo{M =_\alpha N}
+            \infer1{N =_\alpha M}
+        \end{prooftree}
+        \qquad
+        \begin{prooftree}
+            \hypo{M =_\alpha N}
+            \hypo{N =_\alpha P}
+            \infer2{M =_\alpha P}
+        \end{prooftree}
+        
+        \vspace{0.5cm}
+
+        \begin{prooftree}
+            \hypo{M =_\alpha M'}
+            \hypo{N =_\alpha N'}
+            \infer2{M\;N=_\alpha M'\;N'}
+        \end{prooftree}
+        \quad
+        \begin{prooftree}
+            \hypo{M =_\alpha N}
+            \infer1[$x\in\VV$]{\lambda x.M =_\alpha \lambda x.N}
+        \end{prooftree}
+        \quad
+        \begin{prooftree}
+            \infer0[$y\notin\varlib M$]{\lambda x.M =_\alpha \lambda y.M[y/x]}
+        \end{prooftree}
+    \end{center}
+\end{defi}
+
+\begin{defi}
+    On définit maintenant l'ensemble des lambda-termes $\Lambda$ comme $\Lambda = \quot{\Lambda_0}{=_\alpha}$.
+\end{defi}
+
+\begin{exo}
+    Soient $M,N\in\Lambda_0$ tels que $M=_\alpha N$ et $P,Q\in\Lambda_0$ tels que $P=_\alpha Q$. Montrer que pour tout $x\in\VV, M[P/x] =_\alpha N[Q/x]$.
+\end{exo}
+
+On peut donc en déduire que la substitution passe au quotient.
+
+\begin{exo}
+    Soit $M\in\Lambda$ et $x\in\VV$, montrer que $M[x/x] = M$.
+\end{exo}
+
+\begin{rmk}
+    Les mots \og lambda-termes\fg{} ou \og expressions\fg{} deviennent alors ambigus, mais dans la pratique on considère uniquement l'ensemble $\Lambda$, l'ensemble $\Lambda_0$ ne servant qu'en première étape de construction, donc nous ne travaillerons plus avec des lambdas-termes sans identifier par $\alpha$-équivalence. De même on confond par abus de notation $M$ et $[M]$, le terme syntaxique et sa classe d'équivalence et $M[N/x]$ représentera en général $[M[N/x]]$.
+\end{rmk}
+
+Pour l'implémentation du lambda-calcul en tant que langage de programmation, la gestion des variables et de l'alpha-conversion est principalement une perte de temps. Pour pallier cela, et puisque la lisibilité n'est pas un critère important pour la machine, on considère la notation des indices de De Bruijn, qui remplace les variables par des nombres correspondant à la profondeur pour laquelle il faut remonter pour trouver une abstraction.
+
+\begin{defi}[Lambda-terme en indices de De Bruijn]
+    On définit l'ensemble des lambda-termes en indices de De Bruijn $\Lambda_B$ par induction : $$M,N ::= n \mid \lambda M\mid (M\;N)$$ où $n\in\nat$ et $M,N\in\Lambda_B$.
+\end{defi}
+
+On peut déjà faire correspondre une représentation en indices de De Bruijn à $\lambda x. (\lambda y.x\;y)x$ en considérant $(\lambda ((\lambda (1\;0))0)$. On doonne dans la figure \ref{bruijn} la façon de comprendre les notations en indices de De Bruijn.
+
+\includefig{Curry-Howard/lambda_calc_nt/de_bruijn.tex}{Représentation de $\lambda ((\lambda (1\;0))0)$}\label{bruijn}
+
+Pour pouvoir définir convenablement une traduction $\Lambda \cong \Lambda_B$ en indices de De Bruijn, nous procédons par induction forte. Pour pouvoir faire cela, commençons par définir la notion de sous-terme.
+
+\begin{defi}[Sous-terme]
+    Soit $M\in\Lambda$, on définit un sous-terme de $M$ par un mot $u$ dans $\{0,1,2\}^*$ de la façon suivante :
+    \begin{itemize}[label=$\bullet$]
+        \item si $u=\varepsilon$ alors le sous-terme correspondant à $u$ est $M$.
+        \item si $M = \lambda x.M'$ et $u = 0\cdot u'$ alors le sous-terme correspondant à $u$ est le sous-terme correspondant $u'$ dans $M'$.
+        \item si $M = M'\;N'$, alors soit $u = 1\cdot u'$ et le sous-terme correspondant à $u$ est le sous-terme correspondant à $u'$ dans $M'$, soit $u = 2\cdot u'$ et le sous-terme correspondant à $u$ est le sous-terme correspondant à $u'$ dans $N'$.
+    \end{itemize}
+
+    Pour un terme $M\in\Lambda$ fixé, on notera $M_u$ le sous-terme de $M$ correspondant à $u$. On dit qu'un sous-terme $u$ de $M$ est atomique s'il n'existe pas de mot $v$ dont $u$ est préfixe tel que $v$ est un sous-terme de $M$. On note $\mathrm{Sub}(M)$ l'ensemble des sous-termes de $M$.
+\end{defi}
+
+\begin{expl}
+    Pour le terme $Y := \lambda f.(\lambda x.f(x\;x))(\lambda x.f(x\;x))$, le sous-terme $Y_{01022}$ est $x$ et le sous-terme $Y_{02}$ est $\lambda x.f(x\;x)$.
+\end{expl}
+
+\begin{exo}
+    Montrer que la définition de sous-terme ne dépend pas du représentant choisi pour $M$.
+\end{exo}
+
+\begin{exo}
+    Montrer que pour toute variable $x$ apparaissant dans $M$, il existe un ensemble $M_x$ de sous-termes tels que $\forall u\in M_x, M_u = x$.
+\end{exo}
+
+Montrons qu'on peut définir une fonction sur un lambda-terme en définissant la fonction sur les sous-termes atomiques et son comportement sur les constructeurs. Ce résultat sera évident une fois qu'on aura montré que les sous-termes atomiques correspondent exactement aux variables d'un lambda-terme.
+
+\begin{prop}
+    Soit $M\in\Lambda$, alors un sous-terme $u$ de $M$ est atomique si et seulement s'il est une variable.
+\end{prop}
+
+\begin{proof}
+    Supposons que $u$ est atomique. Par définition, $M$ est construit de l'une des façons suivantes : $(M = x \in\VV) \lor (M = \lambda x.M')\lor (M = M'\;N')$ mais on remarque immédiatement que dans les deux cas suivants, on peut considérer respectivement $u\cdot 0$ et $u\cdot 1$ pour avoir un sous-terme dont $u$ est préfixe, donc $M_u$ est une variable.
+
+    Réciproquement, supposons que $u$ est une variable. Par définition d'un sous-terme, il n'existe pas de cas inductif sur $M_u$ permettant de définir un sous-terme dont $u$ est préfixe, donc $u$ est atomique.
+\end{proof}
+
+\begin{prop}
+    Soit $M\in\Lambda$ et $E$ un ensemble, on suppose que :
+    \begin{itemize}[label=$\bullet$]
+        \item pour chaque sous-terme atomique $u$ on associe un certain $f(u)\in E$
+        \item on dispose d'une fonction $g : E \to E$
+        \item on dispose d'une fonction $h : E \times E \to E$
+    \end{itemize} 
+    Alors il existe une unique fonction $f^* : \mathrm{Sub}(M)\to E$ telle que si $u$ est atomique, $f^*(M_u) = f(u)$, si $M_u = \lambda x. M'$ alors $f^*(M_u) = g(f^*(M_{0\cdot u}))$ et si $M_u = M'\;N'$ alors $f^*(M_u) = h(f^*(M_{1\cdot u}),f^*(M_{2\cdot u}))$.
+\end{prop}
+
+\begin{proof}
+    Le résultat est analogue à la définition d'une fonction par induction, mais nous allons prouver ce résultat en raisonnant sur les sous-termes de $M$ directement. Tout d'abord, la taille d'un sous-terme (en nombre de lettres) est majorée, puisque $M$ est défini par induction (c'est un objet d'une profondeur finie). Comme cette profondeur est finie, soit $m$ le maximum des longueurs des sous-termes de $M$. A un sous-terme $u$, on associe $\overline u = m - |u|$ et on construit alors notre fonction $f^*$ par étages :
+    \begin{itemize}[label=$\bullet$]
+        \item $f_0$ est définie sur l'ensemble des sous-termes $u$ tels que $\overline u = 0$, et $f_0(u) = f(u)$. La fonction est bien définie car par définition, si $\overline u = 0$ alors $u$ est atomique. Elle est la seule fonction à vérifier la proposition sur les mots tels que $\overline u = 0$.
+        \item si $f_n$ est définie pour $n\in\nat$ sur les sous-termes tels que $\overline u \leq n$ de façon unique vérifiant la proposition initiale, alors on définit $f_{n+1}$ sur les mots tels que $\overline u \leq n+1$ en posant $f_{n+1} = f_n$ sur l'ensemble de définition de $f_n$, et en traitant le reste par disjonction de cas :
+        \begin{itemize}
+            \item si $u$ est atomique, alors $f_{n+1}(M_u) = f(u)$.
+            \item si $u$ n'est pas atomique et que $M_u$ est de la forme $\lambda x.M'$, alors $v := u\cdot 0$ est tel que $\overline v = n$, donc $f_n(M_v)$ est défini. On définit alors $f_{n+1}(M_u) = g(f_n(M_v))$
+            \item si $u$ n'est pas atomique et que $M_u$ est de la forme $M'\;N'$, alors on pose $v := u\cdot 1$ et $w:= u\cdot 2$, et comme $\overline v = \overline w = n$ on peut définir l'image de $u$, en posant $f_{n+1}(u) = h(f_n(v),f_n(w))$.
+        \end{itemize}
+        Il n'y a alors qu'une seule fonction $f_{n+1}$ définie pour $\overline u \leq n+1$ qui vérifie la proposition initiale.
+    \end{itemize}
+
+    Ainsi par récurrence finie pour $n \leq m$ on définit une fonction $f^*$ sur les sous-termes $u$ tels que $\overline u \leq 0$, i.e. sur tous les sous-termes $u$, qui vérifie la proposition. Cette fonction est de plus unique.
+\end{proof}
+
+\begin{rmk}
+    Comme $M_\varepsilon = M$, cette fonction permet d'associer un élément de $E$ à $M$.
+\end{rmk}
+
+On peut maintenant définir la traduction en indices de De Bruijn :
+
+\begin{defi}
+    Soit $M\in\Lambda$ un terme clos. On définit la traduction $\overline M \in \Lambda_B$ par induction sur les sous-termes de $M$ :
+    \begin{itemize}[label=$\bullet$]
+        \item Pour $u$ un sous-terme atomique, en notant $x = M_u$, on considère $v$ le plus grand préfixe de $u$ tel que $M_v = \lambda x.M'$ (ce préfixe existe car $M_u$ n'est pas libre dans $M$) et on associe à $u$ le nombre $|u|_0-|v|_0-1$ où $|-|_0$ associe à un mot le nombre de $0$ qui apparaissent dedans.
+        \item On considère la fonction $\fonction{\lambda}{\Lambda_B}{\Lambda_B}{M}{\lambda M}$.
+        \item On considère la fonction $\fonction{\mathrm{app}}{\Lambda_B\times\Lambda_B}{\Lambda_B}{(M,N)}{M\;N}$.
+    \end{itemize}
+
+    Si $M$ n'est pas clos, on fixe un environnement $\rho : \VV\to \nat$ qui est une fonction partielle contenant toutes les variables libres de $M$, et on définit la traduction $\overline M^\rho$ comme $\overline M$ mais en associant à une occurrence libre $x$ de $M$ le nombre $\rho(x)+|u|_0$ où $u$ est le sous-terme associé.
+\end{defi}
+
+\begin{rmk}
+    La traduction de $(\lambda x.x)x$ sera bien $(\lambda 0)\rho(x)$ et non $(\lambda \rho(x))\rho(x)$. Il faut donc définir $f(u)$ dans la fonction sur les sous-termes par disjonction de cas suivant s'il existe un préfixe de $u$ tel que $M_u = \lambda x.M'$ et $M_u = x$ ou non.
+\end{rmk}
+
+\begin{exo}
+    Montrer que si $\rho$ et $\rho'$ sont deux environnements qui coïncident sur les variables libres de $M$ alors $\overline M^\rho =\overline M ^{\rho'}$.
+\end{exo}
+
+\begin{prop}
+    Soit $M\in\Lambda$ et $x\in\VV$, alors $$\overline{\lambda x.M}^\rho = \lambda \overline{M}^{\rho_x}$$ où $\rho_x : y \mapsto \rho(y)+1$ si $y\neq x$ et $\rho(x) = 0$.
+\end{prop}
+
+\begin{proof}
+    Remarquons d'abord qu'un sous-terme $u$ de $M$ correspond exactement au sous-terme $0\cdot u$ de $\lambda x.M$. \'Etant donnée la définition de $\overline -^\rho$, il suffit de montrer que $\overline{\lambda x.M}^\rho$ et $\lambda \overline M^{\rho_x}$ coïncident sur les sous-termes atomiques, i.e. sur les variables. Si $y\in\VV$ est une occurrence de variable liée de $M$ et que $u$ est le sous-terme associé, alors en notant $v$ le plus grand préfixe de $u$ tel que $f(u) = |u|_0-|v|_0-1$, on remarque que comme chaque sous-terme dans $\lambda x.M$ est un sous-terme de $M$ avec $0$ avant, on a $f(0\cdot u) = 1+|u|_0 - 1 - |v|_0 - 1 = f(u)$. Si $y\in\VV$ est une occurrence libre dans $M$ associée à $u$, alors $y$ est remplacé dans $M$ par $\rho_x(y) = 1 + \rho(y) + |u|_0$, et $y$ est remplacé dans $\lambda x.M$ par $\rho(y) + |0\cdot u|_0 = \rho(y) + |u|_0 + 1$. Enfin, pour une occurrence libre de $x$ associée à $u$, la valeur associée dans $M$ est $\rho_x(x) = |u|_0$ et celle dans $\lambda x.M$ est $|0\cdot u|_0 - 1 = |u|_0$ car le préfixe de $u$ le plus grand de la forme $\lambda x.M$ dans $\lambda x.M$ est $\varepsilon$, sinon $x$ ne serait pas libre dans $M$.
+
+    Ainsi les deux termes coïncident sur les sous-termes atomiques, ce qui implique qu'ils sont identiques.
+\end{proof}
+
+\begin{exo}
+    Montrer que la traduction en indices de De Bruijn est bijective entre les termes clos de $\Lambda$ et  ceux de $\Lambda_B$, en appelant terme clos de $\Lambda_B$ un terme $M$ tel que pour toute variable $n$ apparaissant dans $M$, chaque sous-terme de $M$ valant $n$ possède au moins $n+1$ fois la lettre $0$.
+\end{exo}
+
+\subsection{Beta-réduction}
+
+Nous allons nous intéresser à la notion de calcul en introduisant la $\beta$-réduction. L'idée derrière cette réduction est élémentaire : si l'on considère une fonction $f$ et un argument $a$, alors $f(a)$ est équivalent à l'expression dans $f$ où l'on remplace l'argument par $a$. On peut définir la $\beta$-réduction pour ne considérer que des remplacements les plus externes possibles, mais nous allons directement traiter la réduction à l'intérieur des sous-termes en donnant une relation qui commute avec les constructeurs.
+
+\begin{defi}[$\beta$-réduction]
+    On définit la relation $\reduc \subseteq \Lambda\times\Lambda$ par les règles suivantes :
+    \begin{center}
+        \begin{prooftree}
+            \hypo{M\reduc M'}
+            \infer1{\lambda x.M\reduc \lambda x.M'}
+        \end{prooftree}
+        \qquad
+        \begin{prooftree}
+            \hypo{M\reduc M'}
+            \infer1{M\;N\reduc M'\;N}
+        \end{prooftree}
+        \qquad
+        \begin{prooftree}
+            \hypo{N\reduc N'}
+            \infer1{M\;N\reduc M\;N'}
+        \end{prooftree}
+
+        \vspace{0.5cm}
+
+        \begin{prooftree}
+            \infer0{(\lambda x.M)N\reduc M[N/x]}
+        \end{prooftree}
+    \end{center}
+
+    On dit que $M$ se réduit en un pas vers $M'$ lorsque $M\reduc M'$. On dit que $M$ se réduit en $M'$ lorsque $M\reduc^* M'$, où $\reduc^*$ est la clôture réflexive et transitive de $\reduc$. Une définition possible de $M\reduc^* M'$ est qu'il existe une suite finie $(M_i)_{i=1,\ldots,n}$ avec $M_1 = M, M_n = M'$ et $\forall i \in\{ 1,\ldots,n-1\},M_i\reduc M_{i+1}$.
+\end{defi}
+
+\begin{expl}
+    On définit le lambda-terme $I := \lambda x.x$. Pour tout lambda-terme $M \in\Lambda$, on a $I\;M \reduc M$
+    \begin{align*}
+        I\;M &= (\lambda x.x)M\\
+        &\reduc x[M/x] = M
+    \end{align*}
+\end{expl}
+
+\begin{exo}
+    Montrer que la définition de $\reduc^*$ donne bien la plus petite relation réflexive et transitive contenant $\reduc$.
+\end{exo}
+
+\begin{exo}
+    Soit le lambda-terme $\omega := \lambda x.x\;x$. On définit $\Omega := \omega \omega$. Chercher vers quel terme se réduit $\Omega$.
+\end{exo}
+
+\begin{exo}
+    Réduire le plus possible le lambda-terme suivant : $$(\lambda f.\lambda x.f\;(f\;(f\;x)))(\lambda f.\lambda x.f\;(f\;x))$$
+\end{exo}
+
+On peut considérer la $\beta$-réduction comme l'exécution d'un calcul, et la notion de résultat correspond à ce qu'on appelle une forme normale.
+
+\begin{defi}[Forme normale, terme normalisable]
+    On dit que $M\in\Lambda$ est une forme normale si $\forall N\in\Lambda. M\not\!\reduc N$.
+
+    Un terme $M\in\Lambda$ est dit faiblement normalisable s'il existe une forme normale $N$ telle que $M\reduc^* N$.
+
+    Un terme $M\in\Lambda$ est dit fortement normalisable si toute suite $(M_n)$ telle que $\forall i\in\nat, M_i\reduc M_{i+1}$ et $M_0 = M$ est finie.
+\end{defi}
+
+Comme le nom l'indique, un terme fortement normalisable est aussi faiblement normalisable.
+
+On définit de plus la clôture d'équivalence de $\reduc$ par $=_\beta$, qui sera la notion que nous utiliserons pour dire que deux termes ont le même sens.
+
+\begin{defi}[$beta$-équivalence]
+    On définit $=_\beta$ comme la plus petite relation d'équivalence contenant $\reduc$ (de façon équivalente, contenant $\reduc^*$). Une définition de $M\beteq M'$ et qu'il existe une suite finie $(M_i)_{i=1,\ldots,n}$ telle que $M_1 = M$, $M_n = M'$ et $\forall i \in\{1,\ldots,n\}, (M_i\reduc M_{i+1})\lor (M_{i+1}\reduc M_i)$.
+\end{defi}
+
+\begin{exo}
+    Montrer que cette définition donne bien la plus petite relation d'équivalence contenant $\reduc$.
+\end{exo}
+
+On définit enfin un opérateur important pour traiter les fonctions : la composition $\circ$.
+
+\begin{defi}
+    On définit le lambda-terme $\mathrm{rond}$ par $\mathrm{rond} := \lambda f.\lambda g.\lambda x.f\;(g\;x)$ et on note $g\circ f := \mathrm{rond}\;g\;f$.
+\end{defi}
+
+Nous allons donner plusieurs lemmes utiles sur la substitution et $\reduc$.
+
+\begin{prop}
+    Soit $M\in\Lambda$ et $M'$ tel que $M\reduc M'$ alors $\varlib{M'}\subseteq\varlib M$.
+\end{prop}
+
+\begin{proof}
+    On montre d'abord, par induction sur $N$, que $\varlib{N[P/x]} \subseteq (\varlib{N}\setminus \{x\})\cup\varlib{P}$ :
+    \begin{itemize}[label=$\bullet$]
+        \item Si $N = x$ alors $N[P/x] = P$ et le résultat est direct.
+        \item Si $N = y,y\neq x$ alors $N[P/x] = y$ et le résultat est direct.
+        \item Si $N = K\;Q$ avec $\varlib{K[P/x]} \subseteq (\varlib{K}\setminus \{x\})\cup\varlib{P}$ et $\varlib{Q[P/x]} \subseteq (\varlib{Q}\setminus \{x\})\cup\varlib{P}$ alors $N[P/x] = K[p/x]\;Q[P/x]$ donc \begin{align*} \varlib{N[P/x]} &\subseteq (\varlib{K}\setminus \{x\})\cup\varlib{P} \cup (\varlib{Q}\setminus \{x\})\cup\varlib{P}\\ &= ((\varlib{K}\cup\varlib{Q})\setminus\{x\})\cup\varlib P \\&= (\varlib{K\;Q}\setminus\{x\})\cup\varlib P \end{align*}
+        \item Si $N = \lambda y.Q$ avec $\varlib{Q[P/x]} \subseteq (\varlib{Q}\setminus \{x\})\cup\varlib{P}$ alors l'inclusion est encore valide en retirant $\{y\}$ de chaque côté.
+    \end{itemize}
+    D'où le résultat par induction.
+
+    On raisonne ensuite par induction sur $M\reduc M'$ :
+    \begin{itemize}[label=$\bullet$]
+        \item Si $M = (\lambda x.N)\;P$ alors $\varlib M = (\varlib N\setminus \{x\})\cup\varlib P$ et par le lemme précédent, on en déduit que $\varlib{N[P/x]}\subseteq \varlib M$.
+        \item Pour les autres règles de $M\reduc M'$ on remarque qu'on applique des fonctions ensemblistes croissantes, donc l'inclusion est préservée.
+    \end{itemize}
+    Ce qui montre le résultat.
+\end{proof}
+
+\begin{prop}
+    Pour tous $M,N,P\in\Lambda$ et $x,y\in\VV,x\neq y$ où $x\notin\varlib P$ on a $$M[N/x][P/y] = M[P/y][N[P/y]/x]$$.
+\end{prop}
+
+\begin{proof}
+    On procède par induction sur $M$ :
+    \begin{itemize}[label=$\bullet$]
+        \item si $M = x$ alors $M[N/x] = N$ donc $M[N/x][P/y] = N[P/y] = M[P/y][N[P/y]/x]$.
+        \item si $M = y$ alors $M[N/x] = y$ donc $M[N/x][P/y] = P = M[P/y][N[P/y]/x]$ car $x\notin\varlib P$ donc $P[Q/x] = P$ pour n'importe quel $Q\in\Lambda$.
+        \item si $M = \lambda z.M'$ avec $M'[N/x][P/y] = M'[P/y][N[P/y]/x]$ alors par définition de la substitution d'une abstraction $(\lambda z.M'[N/x][P/y]) = M[P/y][N[P/y]/x]$.
+        \item si $M = M'\;M''$ où l'hypothèse d'induction est vérifiée pour $M'$ et $M''$, alors $M[N/x][P/y] = M[P/y][N[P/y]/x]$.
+    \end{itemize}
+\end{proof}
+
+\begin{prop}
+    Si $M\reduc M'$ alors pour tout $y\notin\varlib M$, $M[y/x]\reduc M'[y/x]$.
+\end{prop}
+
+\begin{proof}
+    On raisonne par induction sur $M\reduc M'$ :
+    \begin{itemize}[label=$\bullet$]
+        \item si $M = \lambda z.P$ et $M'=\lambda z.P'$ avec $P[y/x]\reduc P'[y/x]$, alors $(\lambda z.P[y/x])\reduc (\lambda z.P'[y/x])$
+        \item si $M = P\;Q$ et $M'=P'\;Q$ avec $P[y/x]\reduc P'[y/x]$ alors $P[y/x]\;Q[y/x]\reduc P'[y/x]\;Q[y/x]$ donc $M[y/x]\reduc M'[y/x]$.
+        \item si $M = P\;Q$ et $M'=P\;Q'$ avec $Q[y/x]\reduc Q'[y/x]$ alors $M[y/x]\reduc M'[y/x]$.
+        \item si $M = (\lambda z.P)\;Q$ et $M' = P[Q/z]$ alors comme $z\notin\varlib y$ (parce que $y\notin\varlib M$), $P[Q/z][y/x] = P[y/x][Q[y/x]/z]$ donc $M[y/x]\reduc M'[y/x]$.
+    \end{itemize}
+\end{proof}
+
+\begin{prop}
+    Si $M\reduc^* M'$ alors $\forall y\notin\varlib M, M[y/x]\reduc^* M'[y/x]$.
+\end{prop}
+
+\begin{proof}
+    Soit une suite $(M_i)_{i=1,\ldots,n}$ témoignant que $M\reduc^* M'$, on va montrer par récurrence sur $n$ que $M[y/x]\reduc M'[y/x]$ et que $y\notin\varlib{M'}$ :
+    \begin{itemize}[label=$\bullet$]
+        \item Si $n = 1$ alors on a de façon évidente $M[y/x]\reduc^* M[y/x]$ et par hypothèse $x\in \varlib M$.
+        \item Si la proposition est vraie pour un certain $n$, alors soit une suite de taille $n+1$ : on considère $N = M_n$. Par hypothèse de récurrence, $M[y/x]\reduc N[y/x]$ et $y\notin\varlib N$. On peut donc appliquer la proposition précédente à la réduction $N\reduc M'$ pour en déduire que $N[y/x]\reduc M'[y/x]$ et comme $\varlib{M'}\subseteq \varlib N$, cela signifie que $y\notin\varlib{M'}$.
+    \end{itemize}
+    Ainsi par récurrence $M[y/x]\reduc^*M'[y/x]$.
+\end{proof}
+
+\subsection{Réduction avec les indices de De Bruijn}
+
+On peut se demander comment se comporte la réduction sur les termes dans $\Lambda_B$. La première étape est de considérer l'action de la substitution. Dans un cas simple, si l'on considère par exemple $M = \lambda \lambda 1$ et $N$ un terme clos, alors remplacer le $1$ dans $M$ (et supprimer le $\lambda$ extérieur) va simplement nous donner $\lambda N$ car l'ensemble des variables utilisées dans $N$ ne \og sort\fg{} pas du terme. Cependant, cela ne suffit pas dans le cas où $N$ n'est pas libre.
+
+\begin{expl}
+    Si l'on prend $M = \lambda x.\lambda y. x\;y$ et $N = z$, alors $P :=\lambda z.(M\;N)\reduc \lambda z.\lambda y.z\;y$ mais on remarque que la traduction de $N$ n'est pas définie car $z$ est libre dans $N$. Cependant, cette variable libre dans $N$ mais pas dans le terme total $P$ peut être récupérée en indice de De Bruijn.
+\end{expl}
+
+On définit donc la fonction de lifting, qui va actualiser dans une situation comme celle ci-dessus, actualiser les variables libres de $N$ pour changer leur référence. Cela sera utile dans la définition de substitution sur les indices de De Bruijn.
+
+\begin{defi}[Lifting]
+    Soit $M\in\Lambda_B$, on définit l'opération de lifting, notée $\;\lift_i^j$ par induction sur $M$ :
+    \begin{itemize}[label=$\bullet$]
+        \item si $M = n \in\nat$ et $n < i$ alors $M\lift_i^j = M$.
+        \item si $M = n\in\nat$ et $n\geq i$ alors $M\lift_i^j = n+j$.
+        \item si $M = \lambda M'$ alors $M\lift_i^j = \lambda (M'\lift_{i+1}^j)$.
+        \item si $M = M'\;N'$ alors $M\lift_i^j = (M'\lift_i^j)\;(N'\lift_i^j)$.
+    \end{itemize}
+\end{defi}
+
+\begin{exo}
+    Montrer que $M\lift_i^j\;\lift_i^k = M\lift_i^{j+k}$. 
+\end{exo}
+
+Cela nous permet de définir la substitution : le lifting $\;\lift_0^j$ va augmenter la référence de toutes les variables libres de $N$ de $j$ et il suffit donc d'ajuster $j$ pour être le nombre de $\lambda$ rencontrés dans $M$.
+
+\begin{defi}[Substitution]
+    Soit $M\in\Lambda_B$, $N\in\Lambda_B$ et $i\in\nat$. On définit $M[N/i]$ par induction sur $M$ :
+    \begin{itemize}[label=$\bullet$]
+        \item si $M = i$ alors $M[N/i] = N$.
+        \item si $M = n$ et $n\neq i$ alors $M[N/i] = n$.
+        \item si $M = \lambda M'$ alors $M[N/i] = \lambda (M'[N\lift_0^1/i+1])$.
+        \item si $M = M'\;N'$ alors $M[N/i] = M'[N/i]\;N'[N/i]$.
+    \end{itemize}
+\end{defi}
+
+\begin{them}
+    Soient $M,N\in\Lambda$, $\rho$ un environnement contenant les variables libres de $M$ et $N$ et $x\in\varlib M$, alors $$\overline{M[N/x]}^\rho = \overline M^\rho[\overline N^\rho/\rho(x)]$$
+\end{them}
+
+\begin{rmk}
+    Si $x$ n'est pas une variable libre de $M$ alors la substitution donne simplement $M$ ce qui n'est pas intéressant.
+\end{rmk}
+
+\begin{proof}
+    On va montrer ce résultat par induction sur $M$, pour tout $N\in\Lambda$, tout environnement $\rho$ contenant les variables libres de $M$ et $N$ et tout $x\in\varlib M$ :
+    \begin{itemize}[label=$\bullet$]
+        \item si $M = x$ alors soient $N\in\Lambda$, $\rho$ environnement convenable et $x\in\varlib M$. $M[N/x] = N$ et $\overline M^\rho = \rho(x)$ donc $\overline M^\rho [\overline N^\rho/\rho(x)] = \overline N^\rho = \overline{M[N/x]}^\rho$.
+        \item si $M = y,y\neq x$ alors soient $M\in\Lambda,\rho$ et $x$ convenables. Alors $M[N/x] = y$ et $\overline M^\rho = \rho(y)$ donc $\overline M^\rho[\overline N^\rho/\rho(x)] = \rho(y) = \overline{M[N/x]}^\rho$.
+        \item si $M = \lambda y.M',y\neq x$ alors soient $N,\rho,x$ vérifiant les hypothèses. Quitte à effectuer une $\alpha$-conversion sur $M$, $y$ est libre dans $M'$ et n'apparaît pas dans $N$, et $M[N/x] = \lambda y. M'[N/x]$. Par hypothèse d'induction on sait que $\overline{M'[N/x]}^\rho = \overline{M'}[\overline N^\rho/\rho(x)]$. Par définition, $$\overline{M[N/x]}^\rho = \lambda (\overline{M'[N/x]}^{\rho_y}) = \lambda (\overline{M'}^{\rho_y}[\overline N^{\rho_y}/\rho(x)+1])$$ en utilisant l'hypothèse d'induction et le fait que $\rho_y(x) = \rho(x)+1$. De plus, $$\overline M^\rho [\overline N^\rho/\rho(x)] = \lambda (\overline{M'}^{\rho_y}[(\overline N^\rho)\lift_0^1/\rho(x)+1])$$ Il nous suffit donc de montrer que $(\overline N^\rho)\lift_0^1 = \overline N^{\rho_y}$. Pour cela, on raisonne par induction sur $N$ en généralisant la situation à $\lift_k^1$ pour $k\in\nat$ et $\rho_{y,k}$ qui est défini comme $\rho_{y,k}(z) = \rho(z)+1$ si $\rho(z) \geq k$ et $\rho(z)$ sinon, et $\rho_{y,k}(y) = 0$, c'est-à-dire qu'on montre que $(\overline N^\rho)\lift_k^1 = \overline N^{\rho_{y,k}}$ pour tout $\rho$ :
+        \begin{itemize}[label=$\bullet$]
+            \item si $N = z\in\VV$, sachant que $z\neq y$ par hypothèse, alors $\overline N^{\rho_{y,k}} = \rho_{y,k}(z)$ et $(\overline N^\rho)\lift_k^1 = (\rho(z))\lift_k^1$. Si $\rho(z)\geq k$ alors les deux valeurs valent $\rho(z) + 1$, et sinon elles valent $\rho(z)$.
+            \item si $N = \lambda z. N'$ alors $(\overline{\lambda z.N'}^\rho)\lift_k^1 = (\lambda \overline{N'}^{\rho_{z,0}})\lift_k^1 = \lambda (\overline{N'}^{\rho_{z,0}}\lift_{k+1}^1)$ et $\overline {\lambda z.N'}^{\rho_{y,k}} = \lambda (\overline{N'}^{(\rho_{y,k})_{z,0}})$. Par hypothèse d'induction, on peut écrire $\lambda(\overline{N'}^{\rho_{z,0}}\lift_{k+1}^1) = \lambda (\overline{N'}^{(\rho_{z,0})_{y,k+1}})$. On veut donc montrer que $(\rho_{z,0})_{y,k+1} = (\rho_{y,k})_{z,0}$. Soit $\alpha\in\VV$ (on ignore le cas $\alpha = y$ car $y$ n'apparaît pas dans nos termes), si $\rho(\alpha) = 0$ ou $\alpha = z$ alors son image par les deux fonctions est $2$ si $k = 0$ et $1$ sinon. Si $\rho(\alpha) < k$ alors les deux fonctions renvoient $\rho(\alpha) + 1$. Si $\rho(\alpha) \geq k$ alors les deux fonctions renvoient $\rho(\alpha) + 2$. Les deux fonctions coïncident donc : elles sont égales.
+            \item si $N = M'\;N'$ alors $(\overline N^\rho)\lift_0^1 = (\overline{M'}^\rho)\lift_0^1\;(\overline{N'}^\rho)\lift_0^1$ puis par hypothèse d'induction on en déduit $(\overline N^\rho)\lift_0^1 = \overline{M'}^{\rho_y}\;\overline{N'}^{\rho_y} = \overline{N}^{\rho_y}$.
+        \end{itemize}
+        Donc en particulier $(\overline N^\rho)\lift_0^1 = \overline N^{\rho_y}$, d'où l'égalité.
+        \item si $M = \lambda x.M'$ alors par $\alpha$-conversion on peut poser $M=\lambda y.M'[y/x]$ avec $y\neq x$, permettant de se ramener au cas précédent.
+        \item si $M = M'\;N'$ alors soient $N,\rho,x$ vérifiant les hypothèses. Par définition de la substitution, $M[N/x] = M'[N/x]\;N'[N/x]$ donc $\overline{M[N/x]}^\rho = \overline{M'[N/x]}^\rho\;\overline{N'[N/x]}^\rho$ par définition de la traduction, ce qui, en utilisant l'hypothèse d'induction, donne $$\overline{M[N/x]}^\rho = (\overline{M'}^\rho[\overline N^\rho/\rho(x)])\;(\overline{N'}^\rho[\overline N^\rho/\rho(x)])$$ qui est par définition $\overline{M'\;N'}^\rho[\overline N^\rho/\rho(x)] = \overline M^\rho[\overline N^\rho/x]$.
+    \end{itemize}
+
+    Ainsi, par induction, l'égalité est vérifiée.
+\end{proof}
+
+On peut donc définir une $\beta$-réduction sur $\Lambda_B$ par transport de structure, mais nous donnerons d'abord la définition purement axiomatique.
+
+\begin{defi}[$\beta$-réduction dans $\Lambda_B$]
+    On définit sur $\Lambda_B$ la relation $\reduc$ par les règles suivantes :
+
+    \begin{center}
+        \begin{prooftree}
+            \hypo{M\reduc M'}
+            \infer1{\lambda M\reduc \lambda M'}
+        \end{prooftree}
+        \qquad
+        \begin{prooftree}
+            \hypo{M\reduc M'}
+            \infer1{M\;N\reduc M'\;N}
+        \end{prooftree}
+        \qquad
+        \begin{prooftree}
+            \hypo{N\reduc N'}
+            \infer1{M\;N\reduc M\;N'}
+        \end{prooftree}
+
+        \vspace{0.5cm}
+
+        \begin{prooftree}
+            \infer0{(\lambda M)N\reduc M[N/0]}
+        \end{prooftree}
+    \end{center}
+\end{defi}
+
+\begin{prop}
+    Soient $M,N\in\Lambda$ des termes et $\rho$ un environnement pour les traduire. Si $M\reduc N$ alors $\overline M^\rho\reduc\overline N^\rho$.
+\end{prop}
+
+\begin{proof}
+    On prouve le résultat par induction :
+    \begin{itemize}[label=$\bullet$]
+        \item si $\overline M^\rho\reduc \overline{M'}^\rho$, alors $\overline{\lambda x.M}^\rho = \lambda \overline M^{\rho[x\mapsto 0]} \reduc \lambda \overline{M'}^{\rho[x\mapsto 0]} = \overline{\lambda x.M'}^\rho$.
+        \item si $\overline M^\rho\reduc \overline{M'}^\rho$ alors $\overline{M\;N}^\rho = \overline M^\rho\;\overline N^\rho\reduc \overline{M'}^\rho\;\overline N^\rho = \overline{M'\;N}^\rho$.
+        \item si $\overline N^\rho\reduc \overline{N'}^\rho$ alors $\overline{M\;N}^\rho = \overline M^\rho\;\overline N^\rho\reduc \overline{M}^\rho\;\overline{N'}^\rho = \overline{M\;N'}^\rho$.
+        \item $\overline{(\lambda x.M)N}^\rho\reduc \overline{M[N/x]}^\rho$ car $\overline{(\lambda x.M)N}^\rho = (\lambda \overline M^{\rho[x\mapsto 0]})\overline N^\rho$ et $\overline{M[N/x]}^{\rho[x\mapsto 0]} = \overline M^\rho[\overline N^\rho/0]$ d'après le théorème précédent.
+    \end{itemize}
+\end{proof}
+
+\begin{cor}
+    Si $M\reduc N$ alors $\overline M\reduc \overline N$ pour tous $M,N\in\Lambda$ clos.
+\end{cor}
+
+\begin{cor}
+    Si $M\reduc^* N$ alors $\overline M^\rho\reduc^* \overline N^\rho$.
+\end{cor}

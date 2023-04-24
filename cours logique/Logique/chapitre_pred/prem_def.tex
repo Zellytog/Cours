@@ -1,0 +1,635 @@
+\section{Langage et propositions sur un langage}
+
+Comme nous l'avons dit, le calcul des prédicats, plutôt que de simplement porter sur les relations logiques entre des variables, va s'intéresser aux relations entre des objets mathématiques. Les propositions, sont en quelque sorte, l'équivalent mathématiques des phrases pour le langage naturel, et à ce titre, il convient d'abord de se donner un alphabet pour écrire nos phrases. Si nous avons vu les éléments purement connectifs de notre alphabets (les connecteurs logiques), nous allons ici devoir nous munir d'un alphabet permettant de désigner les objets mathématiques eux-mêmes. Cependant, au lieu d'appeler cela un alphabet, on appelle cela une signature. Nous travaillerons dans une logique du premier ordre, ce qui signifie que nos formules auront pour but de se quantifier sur un domaine entier : on pourra formuler une propriété sur tous les objets, mais pas sur une partie seulement des objets (ce serait une quantification au second ordre).
+
+\begin{defi}[Signature]
+    Une signature $\Sigma$ est la donnée d'un quadruplet $\langle \FF,\RR,\alpha_f,\alpha_r\rangle$ où $\FF$ est appelé l'ensemble des symboles de fonctions, $\RR$ l'ensemble des symboles de relations, $\alpha_f : \FF \to \nat$ et $\alpha_r : \RR \to \nat$. On supposera, sauf mention explicite du contraire, qu'il existe une relation $=$ appartenant à $\RR$ telle que $\alpha_= = 2$ représentant l'égalité.
+\end{defi}
+
+\begin{rmk}
+    On parlera souvent, à la place de signature $\Sigma$, de langage $\LL$, et il arrivera fréquemment de simplement noter la liste des symboles puis d'expliciter leur arité et s'ils correspondent à des fonctions ou à des relations.
+\end{rmk}
+
+Comme leur nom l'indique, l'ensemble des symboles de fonctions représente des fonctions, et la fonction $\alpha_f$ est donc l'arité associée à chaque symbole de fonction (un symbole d'arité nulle est un symbole de constante) et l'ensemble des symboles de relations représente des relations, de nombre d'arguments donné par $\alpha_r$. Nous allons alors constituer ce que l'on appelle des termes, qui seront la brique atomique des propositions manipulées dans ce formalisme, et qui permettront donc de définir les propositions.
+
+\vspace{1cm}
+
+\begin{rmk}
+    Nous parlons ici de propositions, comme dans le chapitre précédent, mais il n'y a pas d'ambiguïté : nous ignorons simplement la notion précédente de propositions (qui nous aiderons dans notre compréhension des propositions de ce chapitre, car elles en sont un modèle simplifié).
+\end{rmk}
+
+\begin{defi}[Expression, terme, proposition]
+    On se donne un ensemble $\VV$ dénombrable de variables (dont nous noterons $x,y,\ldots$ les éléments), et on définit l'ensemble $\mathcal E_\Sigma$ des expressions sur notre signature $\Sigma$ par la BNF suivante : $$e,e',\ldots ::= x \mid f(e,e',\ldots)$$ où $f\in \FF$ et où le nombre d'arguments de $f$ est $\alpha_f(f)$ (on se convainc à partir de notre construction inductive depuis une BNF que cette construction est cohérente). 
+    
+    On définit alors l'ensemble $\mathcal T_\Sigma$ des termes par $$\mathcal T_\Sigma = \{ r(e_1,\ldots,e_{\alpha_r(r)})\mid r\in \RR, (e_1,\ldots,e_{\alpha_r(r)})\in\mathcal E^{\alpha_r(r)}\}$$
+
+    Enfin, l'ensemble $\mathcal P_\Sigma$ des propositions sur une signature $\Sigma$ est défini par : $$P,Q ::= t\mid \top\mid\bot \mid P\to Q \mid P\lor Q \mid P \land Q \mid \lnot P\mid\exists x.P\mid\forall x.P$$ en notant $t$ un élément de $\mathcal T_\Sigma$ (et en gardant la convention que $x$ est un élément quelconque de $\VV$).
+\end{defi}
+
+Nous connaissons déjà le sens intuitif des connecteurs logiques, mais nous allons préciser le sens de $\exists$ et $\forall$, appelés quantificateurs :
+\begin{itemize}[label=$\bullet$]
+    \item la proposition $\forall x.P$ signifie intuitivement que pour n'importe quel objet $a$, la proposition $P[x/a]$ obtenue en remplaçant les occurrences de $x$ par $a$, est vraie : on lit donc \og pour tout $x$, $P$\fg{}.
+    \item la proposition $\exists x.P$ signifie intuitivement qu'un certain objet $a$ existe tel que $P[x/a]$ est vraie : on lit donc \og il existe $x$ tel que $P$\fg{}.
+\end{itemize}
+
+\begin{expl}[Langage des groupes]\label{expl:langagegrp}
+    Le langage des groupes est constitué d'une constante (i.e. une fonction sans argument) $e$, d'une fonction d'arité $2$ noté $\cdot$ et d'une fonction d'arité $1$ notée $-^{-1}$ ou encore $i$. Il contient aussi l'égalité. Voici des exemples de propositions dans le langage des groupes :
+    \begin{itemize}[label=$\bullet$]
+        \item $\forall x. x\cdot e = y^{-1}$
+        \item $e^{-1}\cdot e = e$
+        \item $\lnot(\forall x. x=x)\lor (\exists y. x^{-1}=e)$
+    \end{itemize}
+\end{expl}
+
+Remarquons que ces propositions, en elles-mêmes, semblent avoir peu de sens. La deuxième proposition est compréhensible, mais qui est $y$ dans la première proposition, et qui est $x$ dans la deuxième propositions ? est-ce que $x$ de $\forall x.$ plus tôt ? Pourtant, il n'est pas dans le même terme. Nous allons donc introduire, pour mieux analyser nos propositions, la notion de variable libre.
+
+\begin{rmk}
+    Lorsqu'on considère une constante comme une fonction sans argument, on peut se demander à quelle réalité cela correspond quand on interprète notre langage. Une fonction d'arité $n$ sera interprétée par une fonction $X^n \to X$ (avec $X$ à préciser, ce sera le sujet d'une section prochaine) et une fonction d'arité $0$ sera alors une fonction $1 \to X$ avec $1$ un ensemble à un élément connu (souvent noté $*$). Ainsi au lieu d'écrire $c(*)$ pour parler de la constante associée par $c$ à $*$, on parlera directement de la constante $c$.
+\end{rmk}
+
+\begin{defi}[Variable libre, formule close]
+    Une variable libre dans une proposition est une variable dont la présence n'est pas précédée par un quantificateur. Moralement, c'est une variable pour laquelle il est nécessaire d'attribuer une valeur pour que la proposition ait un sens.
+    Dans une proposition, on construit l'ensemble inductif $\varlib{P}$ des variables libres de $P$ de la façon suivant :
+    \begin{itemize}[label=$\bullet$]
+        \item Pour une expression $e$, $\varlib{e}$ est l'ensemble des variables apparaissant dans $e$ (si on représente $e$ comme un arbre, c'est l'ensemble des feuilles qui ne sont pas des constantes).
+        \item Pour une proposition, on construit $\varlib{P}$ par induction :
+        \begin{center}
+            \begin{prooftree}
+                \infer0{\varlib{r(e_1,\ldots,e_p)} = \displaystyle{\bigcup_{i=1}^p}\varlib{e_i}}
+            \end{prooftree}
+            \quad 
+            \begin{prooftree}
+                \infer0{\varlib \top = \varnothing}
+            \end{prooftree}
+            \quad
+            \begin{prooftree}
+                \infer0{\varlib \bot = \varnothing}
+            \end{prooftree}
+            \quad
+            \begin{prooftree}
+                \hypo{\varlib{P} = E}
+                \infer1{\varlib{\lnot P} = E}
+            \end{prooftree}
+            \\
+            \vspace{0.5cm}
+            \begin{prooftree}
+                \hypo{\varlib{P} = E}
+                \hypo{\varlib{Q} = F}
+                \infer2{\varlib{P\lor Q} = E \cup F}
+            \end{prooftree}
+            \quad
+            \begin{prooftree}
+                \hypo{\varlib{P} = E}
+                \hypo{\varlib{Q} = F}
+                \infer2{\varlib{P\land Q} = E \cup F}
+            \end{prooftree}
+            \quad
+            \begin{prooftree}
+                \hypo{\varlib{P} = E}
+                \hypo{\varlib{Q} = F}
+                \infer2{\varlib{P\to Q} = E \cup F}
+            \end{prooftree}
+            \\
+            \vspace{0.5cm}
+            \begin{prooftree}
+                \hypo{\varlib{P} = E}
+                \infer1{\varlib{\forall x.P} = E\setminus \{x\}}
+            \end{prooftree}
+            \quad
+            \begin{prooftree}
+                \hypo{\varlib{P} = E}
+                \infer1{\varlib{\exists x.P} = E\setminus \{x\}}
+            \end{prooftree}
+        \end{center}
+    \end{itemize}
+
+    On dit qu'une variable est liée si elle n'est pas libre.
+    On appelle formule close une proposition $P$ telle que $\varlib{P} = \varnothing$, c'est-à-dire une formule dont toutes les variables sont liées.
+\end{defi}
+
+\begin{rmk}
+    On retrouve cette notion de variable liée par exemple dans les intégrales : $$\int_a^b f(t)\mathrm dt$$ fait bien intervenir la variable $t$, mais celle-ci est liée (elle peut donc être vue comme interchangeable, de la même façon que dans notre cas dire \og pour tout $x$, $P(x)$\fg{} et \og pour tout $y$, $P(y)$\fg{} reviennent à la même chose).
+\end{rmk}
+
+\begin{exo}
+    Pour chaque proposition de l'exemple \ref{expl:langagegrp}, donner l'ensemble de leurs variables libres (écrire au moins une dérivation au complet parmi les trois cas). Y a-t-il des formules closes ? Si oui, lesquelles ?
+\end{exo}
+
+\section{Déduction naturelle et théorie logique}
+
+Cette fois-ci, nous aborderons d'abord l'aspect syntaxique (nous ne donnerons pas de définition au sens intrinsèque d'une proposition avant la sous-section suivante, mais nous comptons sur notre intuition préalable pour faire sens des règles syntaxiques). Les règles sont les mêmes pour les connecteurs logiques : il nous suffit juste de donner des règles d'introduction et d'élimination pour les quantificateurs. Pour cela, nous avons besoin d'une définition rigoureuse de substitution (la notation $P[x/a]$ présentée plus bas).
+
+\begin{defi}[Substitution dans une proposition]
+    On appelle substitution de $x$ par $a$ dans l'expression $e$, notée $e[x/a]$, la fonction inductive suivante :
+    \begin{itemize}[label=$\bullet$]
+        \item Cas $x$ : $x[x/a] = a$
+        \item Cas $y$ (où $y\neq x$) : $y[x/a] = y$
+        \item Cas $f(e_1,\ldots,e_p)$ : $f(e_1,\ldots,e_p)[x/a] = f(e_1[x/a],\ldots,e_p[x/a])$
+    \end{itemize}
+
+    Enfin, cette définition s'étend inductivement aux propositions :
+    \begin{center}
+        \begin{prooftree}
+            \infer0{r(e_1,\ldots,e_p)[x/a] = r(e_1[x/a],\ldots,e_p[x/a])}
+        \end{prooftree}
+        \quad
+        \begin{prooftree}
+            \infer0{\top[x/a] = \top}
+        \end{prooftree}
+        \quad
+        \begin{prooftree}
+            \infer0{\bot[x/a] = \bot}
+        \end{prooftree}
+        \\
+        \vspace{0.5cm}
+        \begin{prooftree}
+            \hypo{P[x/a] = P'}
+            \hypo{Q[x/a] = Q'}
+            \infer2{(P\lor Q)[x/a] = P'\lor Q'}
+        \end{prooftree}
+        \quad
+        \begin{prooftree}
+            \hypo{P[x/a] = P'}
+            \hypo{Q[x/a] = Q'}
+            \infer2{(P\land Q)[x/a] = P'\land Q'}
+        \end{prooftree}
+        \quad
+        \begin{prooftree}
+            \hypo{P[x/a] = P'}
+            \hypo{Q[x/a] = Q'}
+            \infer2{(P\to Q)[x/a] = P'\to Q'}
+        \end{prooftree}
+        \\
+        \vspace{0.5cm}
+        \begin{prooftree}
+            \hypo{P[x/a] = P'}
+            \infer1[$[x\neq y]$]{(\exists y.P)[x/a] = \exists y.P'}
+        \end{prooftree}
+        \quad
+        \begin{prooftree}
+            \hypo{P[x/a] = P'}
+            \infer1[$[x\neq y]$]{(\forall y.P)[x/a] = \forall y.P'}
+        \end{prooftree}
+        \\
+        \vspace{0.5cm}
+        \begin{prooftree}
+            \infer0{(\exists x.P)[x/a] = \exists x.P}
+        \end{prooftree}
+        \quad 
+        \begin{prooftree}
+            \infer0{(\forall x.P)[x/a] = \forall x.P}
+        \end{prooftree}
+    \end{center}
+\end{defi}
+
+\begin{rmk}
+    Le choix des deux dernières règles est simple : puisque la variable $x$ est liée dans une formule quantifiée sur $x$, elle ne peut se remplacer par une substitution \og extérieure\fg{}.
+\end{rmk}
+
+Nous pouvons maintenant définir notre déduction naturelle, qui ne change de celle du calcul propositionnel que par les règles sur les quantifications et la règle d'égalité.
+
+\begin{defi}[Déduction naturelle]
+    Soit $\Gamma$ un ensemble de formules présenté sous forme de liste, on définit la relation inductive, appelée \og jugement\fg{}, par les règles inductives de la figure \ref{fig:deducnatpred}
+\end{defi}
+
+\begin{figure}[htb]
+    \centering
+    \rule{17cm}{0.5pt}\\
+    \vspace{0.5cm}
+    \begin{prooftree}
+        \infer0[$\top_\mathrm{i}$]{\Gamma\vdash \top}
+    \end{prooftree}
+    \quad
+    \begin{prooftree}
+        \infer0[Ax]{\Gamma,P\vdash P}
+    \end{prooftree}
+    \quad
+    \begin{prooftree}
+        \hypo{\Gamma,P\vdash Q}
+        \infer1[$\to_\mathrm i$]{\Gamma\vdash P\to Q}
+    \end{prooftree}
+    \quad
+    \begin{prooftree}
+        \hypo{\Gamma\vdash P\to Q}
+        \hypo{\Gamma\vdash P}
+        \infer2[$\to_\mathrm e$]{\Gamma\vdash Q}
+    \end{prooftree}
+    \\
+    \vspace{0.5cm}
+    \begin{prooftree}
+        \hypo{\Gamma\vdash P}
+        \hypo{\Gamma\vdash Q}
+        \infer2[$\land_\mathrm i$]{\Gamma\vdash P\land Q}
+    \end{prooftree}
+    \quad
+    \begin{prooftree}
+        \hypo{\Gamma\vdash P\land Q}
+        \infer1[$\land_\mathrm e^\mathrm g$]{\Gamma\vdash P}
+    \end{prooftree}
+    \quad
+    \begin{prooftree}
+        \hypo{\Gamma\vdash P\land Q}
+        \infer1[$\land_\mathrm e^\mathrm d$]{\Gamma\vdash Q}
+    \end{prooftree}
+    \\
+    \vspace{0.5cm}
+    \begin{prooftree}
+        \hypo{\Gamma\vdash P}
+        \infer1[$\lor_\mathrm i^\mathrm g$]{\Gamma\vdash P \lor Q}
+    \end{prooftree}
+    \quad
+    \begin{prooftree}
+        \hypo{\Gamma\vdash Q}
+        \infer1[$\lor_\mathrm i^\mathrm d$]{\Gamma\vdash P \lor Q}
+    \end{prooftree}
+    \quad
+    \begin{prooftree}
+        \hypo{\Gamma\vdash P \lor Q}
+        \hypo{\Gamma,P\vdash C}
+        \hypo{\Gamma,Q\vdash C}
+        \infer3[$\lor_\mathrm e$]{\Gamma\vdash C}
+    \end{prooftree}
+    \\
+    \vspace{0.5cm}
+    \begin{prooftree}
+        \hypo{\Gamma,A\vdash \bot}
+        \infer1[$\lnot_\mathrm i$]{\Gamma\vdash \lnot A}
+    \end{prooftree}
+    \quad
+    \begin{prooftree}
+        \hypo{\Gamma\vdash A}
+        \hypo{\Gamma\vdash \lnot A}
+        \infer2[$\lnot_\mathrm e$]{\Gamma\vdash \bot}
+    \end{prooftree}
+    \quad
+    \begin{prooftree}
+        \hypo{\Gamma,\lnot A\vdash \bot}
+        \infer1[$\bot_\mathrm c$]{\Gamma\vdash A}
+    \end{prooftree}
+    \\
+    \vspace{0.5cm}
+    \begin{prooftree}
+        \hypo{\Gamma\vdash P}
+        \infer1[$[x\notin \varlib\Gamma]\;\forall_\mathrm i$]{\Gamma\vdash \forall x.P}
+    \end{prooftree}
+    \quad
+    \begin{prooftree}
+        \hypo{\Gamma\vdash \forall x.P}
+        \infer1[$\forall_\mathrm e$]{\Gamma\vdash P[x/a]}
+    \end{prooftree}
+    \\
+    \vspace{0.5cm}
+    \begin{prooftree}
+        \hypo{\Gamma\vdash P[x/a]}
+        \infer1[$\exists_\mathrm i$]{\Gamma\vdash \exists x.P}
+    \end{prooftree}
+    \quad
+    \begin{prooftree}
+        \hypo{\Gamma\vdash \exists x.P}
+        \hypo{\Gamma,P\vdash C}
+        \infer2[$[x\notin\varlib{\Gamma,C}]\;\exists_\mathrm e$]{\Gamma\vdash C}
+    \end{prooftree}
+    \\
+    \vspace{0.5cm}
+    \begin{prooftree}
+        \infer0[$=_\mathrm i$]{\Gamma\vdash a = a}
+    \end{prooftree}
+    \quad
+    \begin{prooftree}
+        \hypo{\Gamma\vdash a = b}
+        \hypo{\Gamma\vdash P[x/a]}
+        \infer2[$=_\mathrm e$]{\Gamma\vdash P[x/b]}
+    \end{prooftree}
+    \\
+    \vspace{0.5cm}
+    \rule{17cm}{0.5pt}
+    \caption{Règles de déduction de la déduction naturelle du calcul des prédicats}
+    \label{fig:deducnatpred}
+\end{figure}
+
+Une façon de visualiser le comportement de $\forall$ et $\exists$ est de les voir respectivement comme une conjonction sur l'univers et une disjonction sur l'univers.
+
+Ceci signifie que prouver $\forall x.P$, il faut prouver pour un $x$ quelconque la proposition $P$, d'où la condition non syntaxique que $x\notin\varlib\Gamma$ : $x$ doit être choisi quelconque (c'est d'ailleurs bien ainsi qu'on raisonne pour montrer \og pour tout $x$, $P(x)$\fg{} : on considère un $x$ quelconque et on prouve qu'il possède cette propriété). L'élimination est très proche, elle aussi, de l'élimination de $\land$ : à partir de cette conjonction universelle, on peut extraire un cas particulier, c'est-à-dire déduire $P[x/a]$ pour un élément $a$.
+
+L'introduction de $\exists$, de même, est simplement un analogue de l'introduction de $\lor$ : il suffit de prouver que l'un des $P[x/a]$ est vrai pour prouver qu'il existe bien $x$ tel que $P$. L'élimination, quant à elle, peut sembler compliquée, mais elle est juste un analogue à la disjonction de cas : le principe est que si l'on a prouvé $\exists x.P$, alors pour prouver une proposition $C$, il suffit de la prouver sous l'hypothèse $P$. Cependant, nous devons prendre une variable $x$ non présente dans $C$ et $\Gamma$. C'est ainsi que l'on procède en général d'ailleurs : si l'on sait qu'il existe $x$ tel que $P(x)$, alors on introduit un tel $x$ pour prouver notre proposition.
+
+Les deux dernières règles, liées à l'égalité, sont assez naturelles : un élément est égal à lui-même et pour toute propriété, $P$, si $a=b$ alors on peut remplacer les occurrences de $a$ par $b$ dans $P$.
+
+\begin{exo}[L'égalité est une relation d'équivalence]\label{exo:releqeg}
+    Dériver le fait que l'égalité est une relation d'équivalence, c'est-à-dire :
+    \begin{itemize}[label=$\bullet$]
+        \item $\vdash \forall x.x=x$
+        \item $\vdash \forall x. \forall y. (x=y) \to (y=x)$
+        \item $\vdash \forall x. \forall y. \forall z. (x=y) \to (y=z) \to (x=z)$
+    \end{itemize}
+\end{exo}
+
+\begin{rmk}
+    Pour pouvoir utiliser plus convenablement nos propositions, on considère que les propositions $\forall x.P$ et $\forall z.P[x/z]$ avec $z\notin\varlib P$ sont équivalentes, et pareil pour $\exists x.P$. Cela nous permet d'introduire de nouvelles variables à chaque fois et donc de gagner en lisibilité. De plus, le quantificateur sera de priorité minimale : $\forall x. x=c\lor d=e$ sera lu comme $\forall x. ( (x=c)\lor (d=e))$.
+\end{rmk}
+
+\begin{rmk}
+    Encore pour gagner en lisibilité, nous noterons souvent $P(x)$ si l'on considère une proposition où $x$ en est une variable libre. Cela permet par exemple d'écrire $\forall x.P(x)$ devenant $P(a)$ en utilisant $\forall_\mathrm e$. Nous avons déjà utilisé quelques fois cette convention, mais nous la considérerons comme usuelle maintenant.
+\end{rmk}
+
+\begin{rmk}
+    Les règles $\lnot_\mathrm i$ et $\lnot_\mathrm e$ permettent d'identifier directement $\lnot A$ et $A\to \bot$. Dans notre logique actuelle le rôle de la négation est assez fort, aussi nous continuerons de garder ces règles, mais nous verrons plus tard qu'elles peuvent être une mauvaise manière de considérer la négation.
+\end{rmk}
+
+\begin{expl}
+    Considérons un langage simple : $\mathcal L = \{ f,r\}$ où $f$ est une fonction d'arité $1$ et $r$ est une relation elle aussi d'arité $1$. Montrons alors que $$(\forall x. r(x)\to r(f(x)))\to(\forall x.r(x)\to r(f(f(x))))$$ avec l'arbre de dérivation suivant (pour alléger la lecture de l'arbre, définissons $\Gamma := \forall x\;r(x)\to r(f(x)),r(t)$) :
+    \begin{center}
+        \begin{prooftree}
+            \infer0[Ax]{\Gamma\vdash r(t)}
+            \infer0[Ax]{\Gamma\vdash \forall x\; r(x)\to r(f(x))}
+            \infer1[$\forall_\mathrm e$]{\Gamma\vdash r(t)\to r(f(t))}
+            \infer2[$\to_\mathrm e$]{\Gamma\vdash r(f(t))}
+            \infer0[Ax]{\Gamma\vdash\forall x\; r(x)\to r(f(x))}
+            \infer1[$\forall_\mathrm e$]{\Gamma\vdash r(f(t))\to r(f(f(t)))}
+            \infer2[$\to_\mathrm e$]{\forall x\;r(x)\to r(f(x)),r(t) \vdash r(f(f(t)))}
+            \infer1[$\to_\mathrm i$]{\forall x\;r(x)\to r(f(x))\vdash r(t)\to r(f(f(t)))}
+            \infer1[$\forall_\mathrm i$]{\forall x\;r(x)\to r(f(x))\vdash \forall x\;r(x)\to r(f(f(x)))}
+            \infer1[$\to_\mathrm i$]{\vdash (\forall x\; r(x)\to r(f(x)))\to(\forall x\; r(x)\to r(f(f(x))))}
+        \end{prooftree}
+    \end{center}
+\end{expl}
+
+Comme avant, utiliser la déduction naturelle est laborieuse et les arbres de preuve sont longs et peu lisibles. Ceci dit, leur correspondance avec la manière naturelle de rédiger des preuves en maths en fait un bon outil pour savoir ce qui fait une bonne rédaction.
+
+\subsection{Théorie logique}
+
+Nous nous trouvons alors devant un blocage assez fort : la déduction naturelle ne nous parle pas de l'intérieur des termes. Par exemple, nous ne savons pas comment se comporte une fonction $f$ donnée dans notre langage. Ainsi si nous pouvons à la limite ajouter des règles sur le prédicat égalitaire, il en reste que nous n'avons pas d'ensemble de règles qui permette de décrire chaque fois le comportement de notre signature. Heureusement, nous pouvons amener un ensemble d'hypothèses dans nos raisonnements en les mettant à gauche du symbole $\vdash$ : notre règle axiome correspond exactement à utiliser un axiome que nous avons placé au préalable à gauche du symbole $\vdash$. Nous en venons donc naturellement à la notion de théorie logique.
+
+\begin{defi}[Théorie logique]
+    Une théorie logique est un ensemble $T$ de formules closes appelées axiomes (le risque de confusion entre cette utilisation du mot axiome et la règle du même nom est peu important, puisque dans la plupart des cas ils signifient la même chose). On dira que $P$ est dérivable dans $T$ lorsque $T\vdash P$. Une théorie logique pourra en particulier comporter une infinité d'axiomes.
+\end{defi}
+
+\begin{expl}[Théorie des groupes]
+    Nous avons vu le langage des groupes, et nous allons maintenant définir la théorie des groupes (qui se construit donc sur ce langage) :
+    \begin{align*}
+            \mathrm{Ax}_1 &:=\forall x.e\cdot x = x\\
+            \mathrm{Ax}_2 &:=\forall x.x \cdot e = x\\
+            \mathrm{Ax}_3 &:=\forall x.\forall y.\forall z. x\cdot (y\cdot z) = (x\cdot y)\cdot z\\
+            \mathrm{Ax}_4 &:=\forall x. x\cdot (x^{-1}) = e\\
+            \mathrm{Ax}_5 &:=\forall x. x^{-1}\cdot x = e
+    \end{align*}
+    On définit alors $T_{\mathrm{Grp}} = \{\mathrm{Ax}_1,\mathrm{Ax}_2,\mathrm{Ax}_3,\mathrm{Ax}_4,\mathrm{Ax}_5\}$.
+\end{expl}
+
+\begin{rmk}
+    Le symbole $:=$ sert à donner la définition d'une formule, d'abord pour éviter de confondre cela avec une égalité au sein de la théorie syntaxique, et ensuite pour expliciter l'introduction de notre proposition.
+\end{rmk}
+
+\begin{exo}
+    Prouver que $T_{\mathrm{Grp}}\vdash (x^{-1})^{-1}=x$
+\end{exo}
+
+Si nous avions jusque là travaillé avec des logiques \og pures\fg{} (au sens où elles ne considéraient que des tautologies), l'introduction de théorie logique nous fait considérer des propriétés qui leur sont liées.
+
+\begin{defi}[Théorie cohérente, incohérente, complète]
+    On dit qu'une théorie $T$ est cohérente si $T\nvdash \bot$, c'est-à-dire s'il n'existe aucune dérivation de $\bot$ avec les axiomes de $T$.
+
+    Au contraire, si une théorie $T$ est telle que $T\vdash \bot$, on dit qu'elle est incohérente.
+
+    Enfin, on dit qu'une théorie $T$ est complète si $T$ est cohérente et si pour toute proposition $P$ soit $T\vdash P$ soit $T\vdash \lnot P$ (remarquons que l'hypothèse que $T$ est cohérente force ce choix à être exclusif).
+\end{defi}
+
+\begin{exo}[Compacité syntaxique]\label{exo:compacitesynt}
+    Montrer que si $P$ est dérivable dans la théorie $T$, alors il existe un ensemble fini $T_0$ tel que $T_0\vdash P$. \textit{Indication : tous les objets impliqués sont finis.}
+
+    Montrer (c'est un énoncé équivalent) que si $T$ est finiment cohérente, alors elle est cohérente.
+\end{exo}
+
+Les théorie intéressantes sont évidemment les théories cohérentes, mais la complétude d'une théorie, au contraire, est trop difficilement atteignable pour être réellement satisfaisante (à cause des célèbres théorèmes d'incomplétude de Gödel, dont nous reparlerons).
+
+\section{Structures et modèles}
+
+Cette section s'attardera à l'aspect sémantique du calcul des prédicats : nous chercherons comment définir le sens d'une proposition. Il y a effectivement un fossé entre la simple valuation étant une fonction $2^\VV$ et l'interprétation d'une proposition pouvant désigner des objets. Nous verrons donc, dans un premier temps, la notion de $\LL$-structure, permettant d'interpréter un langage, puis celle de valuation dans une $\LL$-structure, avant de définir ce qu'est un modèle.
+
+\subsection{Définitions préliminaires}
+
+\begin{defi}[$\LL$-structure]
+    Soit $\LL$ un langage fixé, on appelle $\LL$-structure un triplet $\sS=(|\sS|,\iota_\FF,\iota_\RR)$ où :
+    \begin{itemize}[label=$\bullet$]
+        \item $|\sS|$ est un ensemble qu'on appelle le domaine de $\sS$
+        \item $\iota_\FF$ est une fonction qui, à chaque élément $f\in\FF$ associe une fonction $f^\sS : |\sS|^{\alpha_f(f)}\to|\sS|$
+        \item $\iota_\RR$ est une fonction qui, à chaque élément $r\in\RR$ associe une partie $r^\sS \subseteq |\sS|^{\alpha_r(r)}$.
+    \end{itemize}
+\end{defi}
+
+\begin{rmk}
+    Tout d'abord, on notera en général $\sS$ le domaine de $\sS$ au lieu de $|\sS|$ (pour alléger l'écriture). De plus, on n'utilisera bien sûr pas les fonctions $\iota_\FF$ et $\iota_\RR$ explicitement : on parlera directement d'une relation $r^\sS$ pour parler de l'interprétation du symbole $r$ par exemple.
+\end{rmk}
+
+Un $\LL$-structure est donc simplement une interprétation de notre langage dans un ensemble fixé, où l'on interprète nos fonctions et relations de façon naturelle (rappelons que dire que $x_1,\ldots,x_n$ sont en relation pour une relation $r$ peut s'écrire $(x_1,\ldots,x_n)\in r$ et donc qu'on peut voir une relation comme une partie d'une puissance de notre ensemble).
+
+\begin{expl}[La structure de groupe $\mathbb Z$]\label{expl:grp}
+    On donne un exemple évident de structure pour le langage des groupes :
+    \begin{itemize}[label=$\bullet$]
+        \item Le domaine est $\mathbb Z$.
+        \item Le symbole de fonction $\cdot$ est interprété par l'opération $+ : \mathbb Z \times \mathbb Z \to \mathbb Z$ usuelle.
+        \item Le symbole de fonction $-^{-1}$ est interprété par la fonction $x\mapsto -x$.
+    \end{itemize}
+\end{expl}
+
+Sur cet exemple, nous voyons bien qu'en plus d'être une structure pour le langage des groupes, les conditions de $T_{\mathrm{Grp}}$ sont vérifiées : c'est ce que l'on appelle un modèle. Cependant, cette idée intuitive de condition vérifiée se doit d'être formalisée.
+
+Avant de formaliser la notion de modèle, nous allons définir les morphismes entre structures. Comme en algèbre (ou pour les algèbres de Boole), un morphisme est une fonction qui préserve la structure, mais ce sens peut être fait de façon bien plus générale avec notre formalisme.
+
+\begin{defi}[Morphisme de $\LL$-structure]
+    Soit $\LL$ un langage et $\sS,\MM$ deux $\LL$-structures, on appelle morphisme de $\LL$-structure (ou $\LL$-morphisme, ou simplement morphisme si le contexte évite les ambiguïtés) une fonction $h : |\sS|\to|\MM|$ telle que :
+    \begin{itemize}[label=$\bullet$]
+        \item pour tout symbole de fonction $f$ d'arité $p$, on a $$h(f^\sS(e_1,\ldots,e_p)) = f^\MM(h(e_1),\ldots,h(e_2))$$
+        \item pour tout symbole de relation $r$ d'arité $p$, on a $$(e_1,\ldots,e_p)\in r^\sS \implies (h(e_1),\ldots,h(e_p))\in r^\MM$$
+    \end{itemize}
+\end{defi}
+
+\begin{exo}[$\LL$-structures comme catégories]
+    Soit un langage $\LL$, $\sS$,$\MM$ et $\mathcal N$ trois $\LL$-structures. Soient $f : \sS\to\MM$ et $g : \MM\to\mathcal N$ deux morphismes. Montrer que la composée $g\circ f$ est un morphisme de $\sS$ vers $\mathcal N$.
+
+    Montrer que pour une $\LL$-structure $\sS$, $\mathrm{id}_\sS$ est un $\LL$-morphisme.
+\end{exo}
+
+\begin{defi}[Isomorphisme]
+    Soient $\sS$ et $\MM$ deux $\LL$-structures. On dit qu'un morphisme $f : \sS\to\MM$ est un isomorphisme s'il existe $g$ un $\LL$-morphisme tel que $f\circ g = \mathrm{id}_{\MM}$ et $g\circ f = \mathrm{id}_\sS$. On dit alors que $\sS$ et $\MM$ sont isomorphes.
+\end{defi}
+
+\begin{exo}
+    Soit $f : \sS\to\MM$ un $\LL$-morphisme tel que pour chaque relation la condition de la forme $x\in r^\sS\implies y \in r^\MM$ est remplacée par $x\in r^\sS\iff y \in r^\MM$. Montrer que $f$ est un isomorphisme si et seulement si $f$ est bijective.
+\end{exo}
+
+\begin{rmk}
+    Nous verrons tout au long de cette section l'influence des morphismes sur les éléments logiques. En effet, ils permettent en quelque sorte d'interpréter des structures au sein d'autres, et possèdent donc une forme \og d'uniformité\fg{}.
+\end{rmk}
+
+\subsection{\'Evaluation}
+
+A la différence du calcul propositionnel, il nous faut ici considérer des éléments d'un ensemble, et donc introduire une notion d'évaluation des expressions pour pouvoir travailler sur nos termes. Pour cela, remarquons que toute variable apparaissant dans une expression est libre (elle ne peut être liée qu'au niveau de la proposition). Nous définissons donc d'abord la notion d'environnement.
+
+\begin{defi}[Environnement]
+    Soit $\LL$ un langage et $\sS$ une $\LL$-structure, on appelle environnement une fonction partielle $\nu : \VV \to \sS$ et on note $\mathrm{dom}(\nu)$ l'ensemble des variables où l'environnement $\nu$ est défini.
+\end{defi}
+
+\begin{defi}[\'Evaluation d'expression]
+    Soit $\LL$ un langage, $\sS$ une $\LL$-structure, $\nu$ un environnement et $e$ une expression telle que $\varlib{e}\subseteq \domm(\nu)$. Alors on définit l'évaluation $\evall(\nu,e)$ par induction :
+    \begin{itemize}[label=$\bullet$]
+        \item $\evall(\nu,x_i) = \nu(x_i)$
+        \item $\evall(\nu,f(e_1,\ldots,e_p)) = f^\sS(\evall(\nu,e_1),\ldots,\evall(\nu,e_p))$
+    \end{itemize}
+
+    On notera généralement $\nu$ la fonction $\evall(\nu,-)$ qui évalue une expression dans un contexte donné.
+\end{defi}
+
+\begin{exo}
+    Soient $e$ une expression, $\nu$ et $\nu'$ deux environnement. Montrer que si $\nu$ et $\nu'$ sont égales sur $\varlib e$ alors $\nu(e)=\nu'(e)$.
+\end{exo}
+
+\begin{exo}[Evaluation par un morphisme]\label{exo:morph}
+    Soit $\nu$ un environnement sur une structure $\sS$, et $f : \sS\to\MM$ un $\LL$-morphisme. On note $f(\nu)$ l'environnement $x_i\mapsto f(\nu(x_i))$. Montrer alors que $$f(\evall(\nu,e))=\evall(f(\nu),e)$$ pour tout expression $e$.
+\end{exo}
+
+Ainsi, comme pour le calcul propositionnel, la valeur de $\nu$ n'a d'intérêt quant à une expression $e$ que pour les variables apparaissant dans $e$.
+
+Finalement, avant de définir la notion de valuation, comme les quantificateurs nécessitent de faire des substitutions, nous allons nous en tirer en modifiant directement l'environnement : on va noter $\nu[x \leftarrow a]$ l'environnement $\nu$ dans lequel on a remplacé la valeur de $\nu(x)$ par $a$ (si $\nu$ n'était pas défini en $x$, alors on étend $\nu$).
+
+On peut alors définir une valuation par rapport à une environnement :
+
+\begin{defi}[Valuation]
+    Soit $\LL$ un langage, $\sS$ une $\LL$-structure et $\nu$ un environnement, on définit $\valu_{\sS,\nu} : \mathcal P_\LL \to \{0,1\}$ par induction :
+    \begin{center}
+        \begin{prooftree}
+            \infer0{\valu_{\sS,\nu}(\top) = 1}
+        \end{prooftree}
+        \quad
+        \begin{prooftree}
+            \infer0{\valu_{\sS,\nu}(\bot)=0}
+        \end{prooftree}
+        \quad
+        \begin{prooftree}
+            \hypo{(\nu(e_1),\ldots,\nu(e_{\alpha_r(r)}))\in r^\sS}
+            \infer1{\valu_{\sS,\nu}(r(e_1,\ldots,e_{\alpha_r(r)}))=1}
+        \end{prooftree}
+        \quad
+        \begin{prooftree}
+            \hypo{(\nu(e_1),\ldots,\nu(e_{\alpha_r(r)}))\notin r^\sS}
+            \infer1{\valu_{\sS,\nu}(r(e_1,\ldots,e_{\alpha_r(r)}))=0}
+        \end{prooftree}
+        \\
+        \vspace{0.5cm}
+        \begin{prooftree}
+            \hypo{\valu_{\sS,\nu}(P)=b_1}
+            \hypo{\valu_{\sS,\nu}(Q)=b_2}
+            \infer2{\valu_{\sS,\nu}(P\lor Q) = b_1 + b_2 - b_1 \times b_2}
+        \end{prooftree}
+        \quad
+        \begin{prooftree}
+            \hypo{\valu_{\sS,\nu}(P)=b_1}
+            \hypo{\valu_{\sS,\nu}(Q)=b_2}
+            \infer2{\valu_{\sS,\nu}(P\land Q) = b_1 \times b_2}
+        \end{prooftree}
+        \\
+        \vspace{0.5cm}
+        \begin{prooftree}
+            \hypo{\valu_{\sS,\nu}(P)=b_1}
+            \hypo{\valu_{\sS,\nu}(Q)=b_2}
+            \infer2{\valu_{\sS,\nu}(P\to Q) = 1 - b_1 + b_1 \times b_2}
+        \end{prooftree}
+        \quad
+        \begin{prooftree}
+            \hypo{\valu_{\sS,\nu}(P)=b_1}
+            \infer1{\valu_{\sS,\nu}(\lnot P) = 1 - b_1}
+        \end{prooftree}
+        \\
+        \vspace{0.5cm}
+        \begin{prooftree}
+            \infer0[$[\valu_{\sS,\nu[x \leftarrow s]}(P) = b_s]$]{\valu_{\sS,\nu}(\forall x.P) = \min_{s\in \sS}(b_s)}
+        \end{prooftree}
+        \quad
+        \begin{prooftree}
+            \infer0[$[\valu_{\sS,\nu[x \leftarrow s]}(P) = b_s]$]{\valu_{\sS,\nu}(\exists x.P) = \max_{s\in \sS}(b_s)}
+        \end{prooftree}
+    \end{center}
+\end{defi}
+
+Si cette notion de valuation n'est pas parfaitement satisfaisante (la valuation des quantificateurs demande un nombre potentiellement infini de conditions, et elles ne sont pas à strictement parler syntaxiques à cause de cette infinité), elle permet une définition plutôt lisible : la valuation de $\forall x.P$ est la plus petite valuation possible de $P$ quand $x$ varie dans $\sS$ et inversement $\exists x.P$ est la plus grand valuation obtenue en faisant varier $x$ dans $\sS$. Nous allons maintenant introduire un lemme important :
+
+\begin{lem}\label{lem:remplace}
+    Soient $\nu$ et $\nu'$ identiques partout sauf sur une variable $x$, alors la valuation de $\forall x.P$ et $\exists x.P$ reste inchangée selon si on se place dans l'environnement $\nu$ ou l'environnement $\nu'$.
+\end{lem}
+
+\begin{proof}
+    Nous considérerons juste $\forall x.P$ puisque le raisonnement est identique pour $\exists x.P$. Par définition de la valuation de $\forall x.P$, nous évaluons $\valu_{\sS,\nu[x\leftarrow m]}(P)$ et $\valu_{\sS,\nu'[x\leftarrow m]}(P)$ mais par hypothèse, comme $\nu$ et $\nu'$ sont identiques ailleurs qu'en $x$, il en résulte que ces deux valeurs sont égales : donc l'ensemble de valeurs décrites est le même, donc le minimum (et le maximum) est identique : on en déduit que $$\valu_{\sS,\nu}(\forall x.P) = \valu_{\sS,\nu'}(\forall x.P)$$
+\end{proof}
+
+On peut alors prouver par induction que si $P$ est une formule close, alors $\valu_{\sS,\nu}(P)$ est identique pour tout environnement $\nu$.
+
+\begin{exo}
+    Prouver ce résultat.
+\end{exo}
+
+La satisfiabilité dans le calcul des prédicats en découle naturellement :
+
+\begin{defi}[Satisfiabilité]
+    On dit qu'une formule $P$ sur un langage $\LL$ est satisfiable dans un modèle $\sS$ et dans un environnement $\nu$ si $\valu_{\sS,\nu}(P)=1$. On note alors $\sS,\nu\models P$.
+
+    Si $P$ est une formule close, alors on dit simplement qu'elle est satisfiable si elle est satisfiable dans tout environnement (de façon équivalente dans un environnement, de façon équivalente dans l'environnement vide), et on note alors $\sS\models P$.
+\end{defi}
+
+Ainsi on peut définir ce qu'est un modèle :
+
+\begin{defi}[Modèle d'une théorie]
+    Soit $T$ une théorie sur un langage $\LL$, on dit qu'une $\LL$-structure $\MM$ est un modèle de $T$, et on note $\MM\models T$, si pour toute formule $P\in T$, $\MM\models P$.
+\end{defi}
+
+\begin{defi}[Conséquence sémantique]
+    Soit $T$ une théorie logique. On dit que $P$ est conséquence sémantique de $T$, et on note $T\vDash P$ si pour tout modèle $\MM\models T$, on a $\MM\models P$.
+\end{defi}
+
+\begin{exo}
+    Vérifier que la structure donnée dans l'exemple \ref{expl:grp} est bien un modèle de $T_{\mathrm{Grp}}$.
+\end{exo}
+
+\subsection{Sous-modèle et morphisme}
+
+Les isomorphismes consistent en des transformations gardant pleinement l'information : on veut que deux modèles isomorphes satisfassent les mêmes propositions.
+
+\begin{lem}[Invariance des valuations par isomorphisme]
+    Soient $\MM$ et $\NN$ deux $\LL$-structure, avec $f : \MM\to\NN$ un $\LL$-isomorphisme de réciproque $g$, et $T$ une théorie sur $\LL$. Alors pour tout environnement $\nu$ sur $\MM$, $\valu_{\MM,\nu}(P) = \valu_{\NN,f(\nu)}(P)$.
+\end{lem}
+
+\begin{proof}
+    Remarquons que l'exercice \ref{exo:morph} va nous servir. Nous allons raisonner par induction sur $\valu_{\MM,\nu}$ :
+    \begin{itemize}[label=$\bullet$]
+        \item Cas $\top$ et $\bot$ : le calcul ne fait rien intervenir, le résultat est immédiat.
+        \item Cas d'un terme appartenant à une relation : supposons que $(\nu(e_1),\ldots,\nu(e_p))\in r^\MM$, alors on en déduit, puisque $f$ est un morphisme que $(f(\nu(e_1)),\ldots,f(\nu(e_p)))\in r^\NN$, qui est une écriture non ambiguë grâce à l'exercice \ref{exo:morph} (en effet, l'implication nous donne $f(\evall(\nu,e))$, mais par le résultat démontré en exercice nous pouvons le remplacer par $\evall(f(\nu),e)$). Alors, en appliquant la règle d'induction, on en déduit que $$\valu_{\NN,f(\nu)}(r(e_1,\ldots,e_p)) = 1 = \valu_{\MM,\nu}(r(e_1,\ldots,e_p))$$
+        \item Cas d'un terme n'appartenant pas à une relation : l'autre règle se traite exactement de la même façon mais en utilisant la réciproque $g$ pour avoir l'implication réciproque, nous donnant alors que $$\valu_{\NN,f(\nu)}(r(e_1,\ldots,e_p)) = \valu_{\MM,\nu}(r(e_1,\ldots,e_p))$$
+        \item Les autres cas se traitent de façon directe jusqu'aux quantificateurs.
+        \item Cas des quantificateurs : on montre d'abord que $f(\nu[x\leftarrow m]) = f(\nu)[x\leftarrow f(m)]$ pour tout $m$ dans $|\MM|$, nous donnant alors l'égalité des valuations. La démonstration de l'égalité sur l'image d'un environnement par rapport à un remplacement de valeur peut se faire sur la définition inductive de $[x\leftarrow m]$ mais nous ne le ferons pas ici (le lecteur assidu peut le faire). Enfin, la surjectivité de $f$ signifie que $$\max_{m\in\MM} \valu_{\NN,f(\nu)[x\leftarrow f(m)])}(P) = \max_{n\in\NN} \valu_{\NN,f(\nu[x\leftarrow n])}(P)$$ et de même pour $\min$.
+    \end{itemize}
+\end{proof}
+
+\begin{them}[Invariance par isomorphisme]
+    Soient $\MM$ et $\NN$ deux $\LL$-structures, $f : \MM\to\NN$ un $\LL$-isomorphisme de réciproque $g$, et $T$ une théorie sur $\LL$. $\MM\models T$ si et seulement $\NN\models T$.
+\end{them}
+
+\begin{proof}
+    Le lemme précédent nous permet directement de conclure que pour tout $P\in T$, $\valu_{\MM}(P) = \valu_{\NN}(P)$ et donc que $\MM\models T$ si et seulement si $\NN\models T$.
+\end{proof}
+
+Nous savons par exemple que dans les groupes, l'image par un morphisme d'un groupe est un sous-groupe du groupe d'arrivée. Cette idée se généralise aux $\LL$-structures.
+
+\begin{defi}[Sous-structure]
+    Soit $\LL$ un langage, $\sS$ une $\LL$-structure. On dit qu'une $\LL$-structure $\MM$ est une sous-structure de $\sS$ si $|\MM|\subseteq |\sS|$ et :
+    \begin{itemize}[label=$\bullet$]
+        \item pour chaque symbole de fonction $f$, $f^\sS_{|\,|\MM|}=f^\MM$, c'est-à-dire que $f^\sS$ et $f^\MM$ coïncident sur $\MM$. En particulier, cela signifie que pour un symbole de constante $c$, $c^\sS = c^\MM$.
+        \item pour chaque symbole de relation $r$ d'arité $p$, on a $r^\MM = r^\sS\cap |\MM|^p$
+    \end{itemize}
+\end{defi}
+
+\begin{prop}
+    Si $f : \MM\to\NN$ est un $\LL$-morphisme injectif, alors $\MM$ est isomorphe à une sous-structure de $\NN$.
+\end{prop}
+
+\begin{exo}
+    Démontrer ce résultat.
+\end{exo}

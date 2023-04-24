@@ -1,0 +1,469 @@
+\section{Types des structures habituelles}
+
+Cette section sera séparée en plusieurs parties : nous allons chaque fois renforcer notre grammaire de typage et les termes que l'on peut construire, en partant de la notion la plus simple, celle-ci étant de simplement ajouter des types aux lambda-termes habituels.
+
+\subsection{Types des fonctions}
+
+Commençons par introduire la notion de types. On définit pour cela un ensemble de types de base $\iota\in \mathcal B$ qui pourra moralement représenter tous les types habituels concrets, leur donnée exacte n'étant pas pertinente dans l'étude théorique du lambda-calcul simplement typé. On ajoute le constructeur de type $\to$ qui dénote, étant donnés deux types $\sigma$ et $\tau$, le type des fonctions qui à un argument de type $\sigma$ associe une sortie de type $\tau$.
+
+\begin{defi}[Grammaire des types]
+    On définit inductivement l'ensemble $T_{\to}$ des types par la grammaire suivante :
+    $$\sigma,\tau ::= \iota \mid \sigma\to \tau$$ où $\sigma,\tau\in T_{\to}$ et $\iota\in\mathcal B$.
+\end{defi}
+
+\begin{rmk}
+    On utilisera une associativité à droite de la flèche : $\tau\to\tau'\to\sigma$ se lira $(\tau\to\tau')\to\sigma$. Cela se justifie de la même manière que notre convention d'associativité à gauche de l'application, car une fonction de la forme $f : (x,y) \mapsto f(x,y)$, une fois curryfiée, donnera une fonction de la forme $f : x\mapsto (y\mapsto f(x,y))$ qui, pour $x$ de type $\tau$, $y$ de type $\tau'$ et $f(x,y)$ de type $\sigma$, a le type $\tau\to(\tau'\to\sigma)$. Comme cette situation arrive très fréquemment, on simplifie l'écriture pour n'avoir qu'à écrire $\tau\to\tau'\to\sigma$.
+\end{rmk}
+
+Deux choix sont possibles pour définir un lambda-calcul typé : considérer les termes comme des lambda-termes classiques et y ajouter des annotations de type, ou bien construire des termes déjà typés en partie. Nous opterons pour le second, car il nous semble plus proche de la philosophie de la théorie des types, où les lambda-termes dépendent des types.
+
+\begin{defi}[Lambda-terme typé]
+    On définit l'ensemble des pré-lambda-termes typés $\Lambda_0^{\to}$ par la grammaire suivante :
+    $$M,N ::= x^\tau\mid \lambda x^\tau.M\mid (M\;N)$$ où $x\in \VV,\tau\in T, M,N\in \Lambda_0^{\to}$.
+\end{defi}
+
+Le typage est alors l'action d'associer à un lambda-terme donné, un type. Remarquons que le processus se fait en deux temps : on commence par définir le lambda-terme, avant de définir son type. Cependant, comme nous le prouverons plus tard, la procédure qui à un lambda-terme associe son type est univoque. Nous utiliserons une notation déjà vue en logique, qui est celle des séquents. Pour pouvoir l'utiliser, nous allons définir la notion d'environnement de typage avant de définir les jugements de typage.
+
+Dans $\Lambda_0^{\to}$, nous avons ajouté des annotations de types aux variables et aux abstractions, mais nous noterons rarement les annotations sur les variables. Pour les abstractions, on pourra aussi noter $\lambda (x : \tau).$ à la place de $\lambda x^\tau.$ mais le deuxième étant plus court, il sera privilégié ici.
+
+\begin{defi}[Environnement de typage]
+    Un environnement de typage est une liste $\Gamma := (\VV\times T)^*$. On notera en général la liste dans le sens inverse du sens habituel : l'élément de tête sera à droite. L'intuition d'un environnement $\Gamma$ est d'associer à un nombre fini de variables un certain type. Plutôt que $[(x_1,\sigma_1),\ldots,(x_n,\sigma_n)]$ nous écrirons $x_1 : \sigma_1,\ldots,x_n : \sigma : n$ pour écrire la liste, et $\Gamma,x : \sigma$ pour signifie la liste à laquelle on ajoute $(x,\sigma)$ en tête de liste.
+\end{defi}
+
+\begin{defi}[Jugement de typage]
+    On définit par induction une relation $\vdash \subseteq (\VV\times T)^* \times (\Lambda_0^{\to} \times T)$, nommée relation de typage, qu'on notera $\Gamma\vdash M : \sigma$ pour $\vdash (\Gamma,(M,\sigma))$, par la relation suivante :
+    \begin{center}
+        \begin{prooftree}
+            \infer0{\Gamma,x : \tau \vdash x^\tau : \tau}
+        \end{prooftree}
+        \qquad
+        \begin{prooftree}
+            \hypo{\Gamma\vdash M : \tau}
+            \infer1[$x\notin \varlib M$]{\Gamma,x : \sigma \vdash M : \tau}
+        \end{prooftree}
+        
+        \vspace{0.5cm}
+        
+        \begin{prooftree}
+            \hypo{\Gamma,x : \sigma\vdash M :\tau}
+            \infer1{\Gamma\vdash \lambda x^\sigma. M : \sigma \to \tau}
+        \end{prooftree}
+        \qquad
+        \begin{prooftree}
+            \hypo{\Gamma\vdash M : \sigma\to\tau}
+            \hypo{\Gamma\vdash N : \sigma}
+            \infer2{\Gamma\vdash (M\;N) : \tau}
+        \end{prooftree}
+    \end{center}
+
+    On appelle jugement de typage une instance de cette relation. Si $\Gamma$ est la liste vide, on notera $\vdash M : \tau$ pour $\varnothing \vdash M : \tau$.
+\end{defi}
+
+\begin{expl}
+    Nous allons montrer que l'on peut typer le terme $\lambda f^{\iota\to\iota}.\lambda x^{\iota}.f\;(f\;x)$ dans l'environnement vide :
+    \begin{center}
+        \begin{prooftree}
+            \hypo{f : \iota\to\iota \vdash f : \iota\to\iota}
+            \infer1{f : \iota\to\iota,x : \iota \vdash f : \iota\to\iota}
+            \hypo{f : \iota\to\iota \vdash f : \iota\to\iota}
+            \infer1{f : \iota\to\iota,x : \iota \vdash f : \iota\to\iota}
+            \hypo{f : \iota\to\iota, x : \iota\vdash x^\iota : \iota}
+            \infer2{f : \iota\to\iota, x : \iota \vdash f\; x^\iota : \iota}
+            \infer2{f : \iota\to\iota, x :\iota \vdash f\;(f\;x^\iota) : \iota}
+            \infer1{f : \iota\to\iota\vdash \lambda x^\iota.f\;(f\;x^\iota) : \iota\to\iota}
+            \infer1{\vdash \lambda f^{\iota\to\iota}.\lambda x^\iota. f\;(f\;x^\iota) : (\iota\to\iota)\to\iota\to\iota}
+        \end{prooftree}
+    \end{center}
+\end{expl}
+
+Nous allons maintenant montrer des résultats de structure sur la relation de typage. Ceux-ci seront essentiels pour pouvoir montrer des résultats de façon rapide.
+
+\begin{prop}[Unicité du typage]
+    Soient $M\in\Lambda_0^{\to}$ et $\Gamma,\Gamma'$ deux environnements tels que $\Gamma\vdash M : \tau$ et $\Gamma'\vdash M : \sigma$, alors $\tau = \sigma$.
+\end{prop}
+
+\begin{proof}
+    On procède par induction sur $\Gamma\vdash M : \tau$ :
+    \begin{itemize}[label=$\bullet$]
+        \item Si $\Gamma\vdash x^{\tau'} : \tau$ où $\Gamma = \Delta,x : \tau$, alors on raisonne par induction sur $\Gamma'\vdash x^{\tau'} : \sigma$ :
+        \begin{itemize}[label=$\bullet$]
+            \item Si $\Gamma'\vdash x^{\tau'} : \sigma$ où $\Gamma' = \Delta', x : \sigma$ alors par construction $\sigma = \tau'$ et de même $\tau = \tau'$ donc au total $\tau = \sigma$.
+            \item Si $\Delta'\vdash x^{\tau'} : \sigma'$ où $\Delta = \Delta',y : \tau'',y\notin\varlib M$ et $\sigma' = \tau$ alors $\Delta \vdash x^{\tau'} : \sigma'$ et $\sigma = \sigma'$ par hypothèse d'induction donc $\sigma = \tau = \sigma'$.
+            \item Dans les deux autres cas $M$ ne peut pas être mis sous la forme voulue, donc la prémisse est fausse, menant à une conclusion vraie peu importe la conclusion.
+        \end{itemize}
+        \item Si $\Delta\vdash M : \tau'$ où $\Gamma = \Delta,x : \tau'$ avec $x\notin\varlib M$ et $\tau' = \sigma$ alors $\Gamma\vdash M : \tau$ et $\tau = \tau' = \sigma$.
+        \item Si $M = \lambda x^{\tau'}.N$ et que $\Gamma,x : \tau' \vdash N : \tau''$ où $\tau = \tau'\to\tau''$, alors on raisonne par induction sur $\Gamma'\vdash M$ en éliminant les deux cas non pertinents :
+        \begin{itemize}[label=$\bullet$]
+            \item Si $\Delta'\vdash M :\sigma$ avec $\Delta',y : \sigma' = \Delta, y \notin\varlib N$ et $\sigma = \tau$ alors on en déduit que $\tau = \sigma$ et $\Delta\vdash M : \sigma$.
+            \item Si $\Gamma', x : \tau'\vdash N : \sigma'$ alors par hypothèse d'induction $\sigma' = \tau$ donc $\Gamma'\vdash \lambda x^{\tau'}. N :\tau'\to\sigma'$ et $\Gamma\vdash \lambda x^{\tau'}.N : \tau'\to\sigma'$ donc $\tau = \sigma$.
+        \end{itemize}
+        \item Si $M = P\;Q$ alors on raisonne de façon analogue au cas précédent pour montrer que $\tau = \sigma$.
+    \end{itemize}
+    Donc $\tau = \sigma$.
+\end{proof}
+
+\begin{exo}
+    Montrer le lemme de structure suivant, pour $x\neq y$ : si $\Gamma,x : \tau,y : \tau',\Gamma'\vdash M : \sigma$ alors $\Gamma,y : \tau',x : \tau,\Gamma'\vdash M : \sigma$.
+\end{exo}
+
+\begin{exo}
+    Montrer le lemme de structure suivant : si $x\notin\varlib M$ et que $\Gamma\vdash M : \tau$ alors $\Gamma'\vdash M : \tau$ où $\Gamma'$ est l'environnement $\Gamma$ où l'on a retiré la dernière occurrence de $x$.
+\end{exo}
+
+\begin{defi}[Terme typable]
+    On dit qu'un terme $M$ est typable s'il existe un environnement $\Gamma$ et type $\tau$ tels que $\Gamma\vdash M : \tau$. On dit que $M$ est typable dans l'environnement $\Gamma$ s'il existe un type $\tau$ tel que $\Gamma\vdash M : \tau$. On dit que $\tau$ est habité s'il existe un lambda-terme $M$ tel que $\vdash M : \tau$.
+\end{defi}
+
+\begin{rmk}
+    Si $M$ est typable alors le type associé est unique d'après une propriété précédente.
+\end{rmk}
+
+Nous voulons alors quotienter les lambda-termes par $\alpha$-équivalence pour définir $\Lambda^{\to} = \quot{\Lambda_0^{\to}}{=_\alpha}$, mais il faut pour cela définir la substitution sur les termes typés, qui prend en compte la cohérence des types.
+
+\begin{prop}[Substitution typée]
+    Soient $M,N\in\Lambda_0^{\to}$, $x\in\VV$ et $\Gamma$ un environnement tel que $$\Gamma\vdash M : \tau\qquad \Gamma\vdash N : \sigma\qquad \Gamma\vdash x : \sigma$$ alors $\Gamma\vdash M[N/x] : \tau$ où $M[N/x]$ est défini comme pour une substitution non typée.
+\end{prop}
+
+\begin{proof}
+    On procède par induction sur $M[N/x]$ :
+    \begin{itemize}[label=$\bullet$]
+        \item Si $M = x$, alors $\Gamma\vdash x : \tau$ donc par l'exercice précédent $\tau = \sigma$, d'où $\Gamma\vdash N : \tau$.
+        \item Si $M = y$, alors $\Gamma\vdash y : \tau$.
+        \item Si $M = \lambda y^{\tau'}.M'$ pour $y\notin\varlib{N}$, et par hypothèse d'induction $\Gamma, y : \tau'\vdash M'[N/x] : \tau''$ et $\tau = \tau'\to\tau''$, alors en appliquant la règle de typage correspondante on en déduit que $\Gamma\vdash \lambda y.M' : \tau'\to\tau''$ d'où $\Gamma\vdash M[N/x] : \tau$.
+        \item Si $M = (P\;Q)$, $\Gamma\vdash P[N/x] : \tau'\to\tau$ et $\Gamma\vdash Q[N/x] : \tau'$ alors on en déduit que $\Gamma\vdash (P[N/x]\;Q[N/x]) : \tau$ donc par définition de $[N/x]$ cela signifie $\Gamma\vdash M[N/x] : \tau$.
+    \end{itemize}
+    Donc par induction $\Gamma\vdash M[N/x] : \tau$.
+\end{proof}
+
+\begin{exo}
+    Montrer que si $\Gamma\vdash (\lambda x.M) : \tau$ alors $\Gamma'\vdash (\lambda y.M[y/x]) : \tau$ où $y\notin\varlib M\cup\Gamma$ et $\Gamma'$ est l'environnement $\Gamma$ dans lequel on a remplacé chaque couple de la forme $(x,\sigma)$ par $(y,\sigma)$. En déduire que $\lambda x.M$ est typable si et seulement si $\lambda y.M[y/x]$ l'est aussi.
+\end{exo}
+
+\begin{defi}[$\alpha$-équivalence]
+    On définit notre $\alpha$-équivalence $=_\alpha$ comme la plus petite congruence vérifiant la règle suivante :
+    \begin{center}
+        \begin{prooftree}
+            \infer0[$y\notin\varlib M$]{\lambda x.M =_\alpha \lambda y.M[y/x]}
+        \end{prooftree}
+    \end{center}
+
+    On pose alors $\Lambda^{\to} = \quot{\Lambda_0^{\to}}{=_\alpha}$ l'ensemble des termes typés.
+\end{defi}
+
+\begin{exo}
+    Montrer que si $M =_\alpha N$ et $\Gamma\vdash M : \tau$ alors $\Gamma\vdash N : \tau$ et donc que le typage est bien défini sur $\Lambda^{\to}$.
+\end{exo}
+
+\begin{them}[Préservation du typage]
+    En adaptant la réduction $\reduc$ aux lambda-termes typés de façon évidente, si $\Gamma\vdash M : \tau$ et $M\reduc N$ alors $\Gamma\vdash N : \tau$.
+\end{them}
+
+\begin{proof}
+    On raisonne par induction sur $M\reduc N$ :
+    \begin{itemize}[label=$\bullet$]
+        \item Si $\Gamma\vdash M : \tau$ et que $M = (\lambda x^\sigma.P)Q$ avec $N = Q[P/x]$ alors on peut prendre $x\notin\varlib Q$ et faire une inversion sur le typage pour trouver que $\Gamma\vdash Q : \sigma$ et $\Gamma,x : \sigma\vdash P : \tau$, mais cela signifie aussi que $\Gamma,x : \sigma\vdash Q : \sigma$ et $\Gamma, x:\sigma\vdash x : \sigma$ donc $\Gamma,x : \sigma \vdash P[Q/x] : \tau$. De plus comme $x\notin\varlib P[Q/x]$, on en déduit que $\Gamma\vdash P[Q/x] : \tau$.
+        \item Les autres cas se déroulent directement en appliquant les hypothèses d'induction.
+    \end{itemize}
+\end{proof}
+
+On en déduit que $\Lambda^\to_\beta = \quot{\Lambda^{\to}}{\beteq}$ est compatible avec la relation de typage.
+
+\begin{exo}
+    Vérifier que le théorème de Church-Rosser s'applique encore pour $\Lambda^{\to}$.
+\end{exo}
+
+\begin{exo}
+    Vérifier que l'ajout de la règle $\eta$ a les mêmes propriétés que pour $\Lambda$.
+\end{exo}
+
+\subsection{Type des paires}
+
+On définit ici un nouveau lambda-calcul, nommé $\Lambda^{\to\times 1}$ qui permet de considérer des paires. En effet, contrairement au lambda-calcul non typé, il n'est pas possible en lambda-calcul de coder directement les paires et les projections. L'argument intuitif est que le codage $\langle M,N\rangle := \lambda p. p\;M\;N$ quantifie $p$ sur tous les types possibles et il faudrait donc pouvoir définir une fonction prenant un type quelconque. Nous verrons que cela est possible si on autorise des quantifications de second ordre, mais le typage simple est juste un typage qui n'utilise pas ces quantifications. On ajoute donc en parallèle les types produits, que l'on peut voir comme des analogues des produits cartésiens, le type unit qui est un type contenant un unique élément, et les fonctions permettant à ces types d'être construits et utilisés.
+
+\begin{defi}[Types produit]
+    On définit un nouvel ensemble de types, que l'on notera $T_{\to\times 1}$, par la grammaire suivante :
+    $$\sigma,\tau ::= \iota\mid \unit\mid \sigma\to\tau\mid \sigma \times \tau$$ où $\iota\in\mathcal B$, $\unit$ est une constante de type, et $\sigma,\tau\in T_{\to\times 1}$.
+\end{defi}
+
+\begin{rmk}
+    On note $\times$ prioritaire sur $\to$, donc $\sigma\times\tau\to\kappa$ se lit $(\sigma\times\tau)\to\kappa$.
+\end{rmk}
+
+\begin{defi}[$\Lambda_0^{\to\times 1}$]
+    On définit l'ensemble $\Lambda_0^{\to\times 1}$ par la grammaire enrichie sur celle de $\Lambda^{\to}$ suivante :
+    $$M,N ::= \ldots \mid \langle M,N\rangle \mid \pi_1\;M\mid \pi_2\;M\mid \langle\rangle$$ On définit $=_\alpha$ de la même façon que pour $\Lambda_0^{\to}$ et on définit alors $\Lambda^{\to\times 1} = \quot{\Lambda_0^{\to\times 1}}{=_\alpha}$.
+\end{defi}
+
+\begin{defi}[Typage dans $\Lambda^{\to\times 1}$]
+    On définit la relation de typage $\vdash$ en ajoutant des règles à la relation de typage $\vdash$ dans $\Lambda^{\to}$ :
+    \begin{center}
+        \begin{prooftree}
+            \hypo{\Gamma\vdash M : \tau}
+            \hypo{\Gamma\vdash N : \sigma}
+            \infer2{\Gamma\vdash \langle M,N\rangle : \tau\times \sigma}
+        \end{prooftree}
+        \qquad
+        \begin{prooftree}
+            \hypo{\Gamma\vdash M : \tau\times\sigma}
+            \infer1{\Gamma\vdash \pi_1\;M : \tau}
+        \end{prooftree}
+        \qquad
+        \begin{prooftree}
+            \hypo{\Gamma\vdash M : \tau\times\sigma}
+            \infer1{\Gamma\vdash \pi_2\;M : \sigma}
+        \end{prooftree}
+
+        \vspace{0.5cm}
+
+        \begin{prooftree}
+            \infer0{\Gamma\vdash \langle\rangle : \unit}
+        \end{prooftree}
+    \end{center}
+\end{defi}
+
+\begin{exo}
+    Montrer que la relation de typage est bien définie sur $\Lambda^{\to\times 1}$ i.e. que si $M=_\alpha N$ et $\Gamma\vdash M : \tau$ alors $\Gamma\vdash N : \tau$. \textit{Indication : on généralisera d'abord les propriétés de structure nécessaires de $\Lambda_0^{\to}$.}
+\end{exo}
+
+\begin{defi}[$\beta$-réduction]
+    On définit aussi la relation $\reduc\subseteq\Lambda^{\to\times 1}\times\Lambda^{\to\times 1}$ comme la plus petite relation compatible contenant les règles suivantes :
+    \begin{center}
+        \begin{prooftree}
+            \infer0{(\lambda x^{\tau}.M)\;N\reduc M[N/x]}
+        \end{prooftree}
+        \qquad
+        \begin{prooftree}
+            \infer0{\pi_1\;\langle M,N\rangle\reduc M}
+        \end{prooftree}
+        \qquad
+        \begin{prooftree}
+            \infer0{\pi_2\;\langle M,N\rangle\reduc N}
+        \end{prooftree}
+    \end{center}
+
+    Et $\beteq$ comme la congruence associée.
+\end{defi}
+
+\begin{rmk}
+    Comme nous avons augmenté le nombre de constructeurs, les relations que vérifie une congruence ou une relation compatible sont aussi plus nombreuses : 
+    \begin{center}
+        \begin{prooftree}
+            \hypo{M\;\RR\;M'}
+            \infer1{\langle M,N\rangle\;\RR\;\langle M',N\rangle}
+        \end{prooftree}
+        \qquad
+        \begin{prooftree}
+            \hypo{N\;\RR\;N'}
+            \infer1{\langle M,N\rangle\;\RR\;\langle M,N'\rangle}
+        \end{prooftree}
+
+        \vspace{0.5cm}
+
+        \begin{prooftree}
+            \hypo{M\;\RR\;M'}
+            \infer1{\pi_1\;M\;\RR\;\pi_1\;M'}
+        \end{prooftree}
+        \qquad
+        \begin{prooftree}
+            \hypo{M\;\RR\;M'}
+            \infer1{\pi_2\;M\;\RR\;\pi_2\;M'}
+        \end{prooftree}
+    \end{center}
+\end{rmk}
+
+\begin{exo}
+    Vérifier que la préservation du typage est encore vraie.
+\end{exo}
+
+\begin{exo}
+    Vérifier que $(\Lambda^{\to\times 1},\reduc)$ vérifie bien la propriété de Church-Rosser.
+\end{exo}
+
+\begin{defi}[$\eta$-réduction]
+    On définit la relation $\reduc_{\beta\eta}\subseteq\Lambda^{\to\times 1}\times\Lambda^{\to\times 1}$ comme la plus petite relation compatible contenant $\reduc$ et les règles suivantes :
+    \begin{center}
+        \begin{prooftree}
+            \infer0[$x\notin\varlib M$]{\lambda x^\tau.M\;x\reduc_{\beta\eta} M}
+        \end{prooftree}
+        \qquad
+        \begin{prooftree}
+            \infer0{\langle \pi_1\;M,\pi_2\;M\rangle \reduc_{\beta\eta} M}
+        \end{prooftree}
+        \qquad
+        \begin{prooftree}
+            \infer0[$M : \unit$]{M\reduc_{\beta\eta} \langle\rangle}
+        \end{prooftree}
+    \end{center}
+
+    Et $=_{\beta\eta}$ comme la congruence associée.
+\end{defi}
+
+\begin{rmk}
+    La propriété de Church-Rosser ne tient pas pour $(\Lambda^{\to\times 1},\reduc_{\beta\eta})$ : en effet, si on prend $x : \tau\times\unit$ et qu'on considère $M := \lambda \pi_1\;x,\pi_2\;x\rangle$ alors on peut au choix réduire $M$ en $x$ ou bien en $\langle \pi_1\;x,\langle\rangle\rangle$ qui sont deux formes normales.
+\end{rmk}
+
+\begin{exo}
+    Définir la relation $\cong$ sur $\Lambda^{\to\times 1}$ et montrer qu'elle est égale à $=_{\beta\eta}$.
+\end{exo}
+
+\subsection{Types des unions disjointes}
+
+Nous allons enfin ajouter un constructeur de type analogue aux sommes d'ensembles, c'est-à-dire aux unions disjointes. En théorie des ensembles, $E + F$, que l'on note aussi $E\sqcup F$, est défini par $E + F := \{(x,0)\mid x\in E\}\cup \{(y,1)\mid y\in F\}$, et on possède alors les fonctions $$\fonction{\kappa_1}{E}{E+F}{x}{(x,0)}\qquad\fonction{\kappa_2}{F}{E+F}{y}{(y,1)}$$ qui sont universelle en ce sens que s'il existe deux fonctions $f : E \to G$ et $g : F\to G$ pour un ensemble $G$ quelconque, alors il existe une unique fonction $[f,g] : E+F\to G$ telle que $[f,g](x,0) = f(x)$ et $[f,g](y,1) = g(y)$ pour $x\in E, y\in F$. Cet ensemble de fonctions et cette propriété universelle caractérisent presque l'ensemble $E+F$ (en fait à bijection près) mais cela suffit largement pour décrire le comportement de l'objet $E+F$. D'un point de vue du lambda-calcul, cette définition utilisant principalement des fonctions est privilégiée à l'approche ensembliste de base car elle permet de définir facilement les constructeurs dont nous avons besoin : un constructeur qui se comporte comme $\kappa_1$, un autre comme $\kappa_2$ et un constructeur de la forme $[-,-]$ qui permet de construire des fonctions $E+F\to G$ à partir d'une fonction $E\to G$ et une fonction $F\to G$. On ajoute enfin un type vide, correspondant à l'ensemble $\varnothing$. En théorie des ensembles on possède une fonction $\varnothing \to E$ pour tout ensemble $E$, donc il faut introduire aussi une telle fonction.
+
+\begin{defi}[Types somme]
+    On définit $T_{\to\times 1+0}$ par la grammaire suivante : $$\sigma,\tau ::= \iota\mid\unit\mid\voidt\mid \sigma\to\tau\mid\sigma\times\tau\mid\sigma+\tau$$ où $\iota\in\mathcal B$, $\unit$ et $\voidt$ sont des constantes de types et $\sigma,\tau\in T_{\to\times 1+0}$.
+\end{defi}
+
+\begin{rmk}
+    On donne une priorité à $+$ intermédiaire entre $\times$ et $\to$ : $\tau\times\sigma+\kappa$ se lit $(\tau\times\sigma)+\kappa$ et $\tau+\sigma\to\kappa$ se lit $(\tau+\sigma)\to\kappa$.
+\end{rmk}
+
+\begin{defi}[$\Lambda^{\to\times 1+0}$]
+    En quotientant par $\alpha$-équivalence, on définit $\Lambda^{\to\times 1+0}$ en enrichissant la grammaire de $\Lambda^{\to\times 1}$ :
+    $$M,N,P::=\ldots\Big|\; \kappa_1\;M\;\Big|\kappa_2\;N\;\Big|\;\delta\;(x\mapsto M\mid y\mapsto N)\;P\;\Big|\; \delta_\bot\;M$$
+\end{defi}
+
+\begin{rmk}
+    La gestion des variables libre doit être actualisée par rapport au fait que $x$ est liée dans $\delta\;(x\mapsto M\mid y\mapsto N)\;P$, mais cette adaptation est un processus administratif. De plus le constructeur peut prendre des variables différentes, par exemple $\delta\;(a\mapsto M\mid b\mapsto N)\;P$ est aussi valide, et l'identification dans $=_\alpha$ a donc une règle en plus.
+\end{rmk}
+
+\begin{defi}[Typage dans $\Lambda^{\to\times 1+0}$]
+    On définit $\vdash$ sur $\Lambda^{\to\times 1+0}$ en enrichissant les règles précédentes :
+    \begin{center}
+        \begin{prooftree}
+            \hypo{\Gamma\vdash M : \tau}
+            \infer1{\Gamma\vdash \kappa_1\;M : \tau+\sigma}
+        \end{prooftree}
+        \qquad
+        \begin{prooftree}
+            \hypo{\Gamma\vdash M : \sigma}
+            \infer1{\Gamma\vdash \kappa_1\;M : \tau+\sigma}
+        \end{prooftree}
+        \qquad
+        \begin{prooftree}
+            \hypo{\Gamma\vdash P : \sigma+\tau}
+            \hypo{\Gamma,x : \sigma\vdash M : \kappa}
+            \hypo{\Gamma,y : \tau\vdash N : \kappa}
+            \infer3{\Gamma\vdash \delta\;(x\mapsto M\mid y\mapsto N)\;P : \kappa}
+        \end{prooftree}
+
+        \vspace{0.5cm}
+
+        \begin{prooftree}
+            \hypo{\Gamma\vdash M : \voidt}
+            \infer1{\Gamma\vdash \delta_\bot\;M : \tau}
+        \end{prooftree}
+    \end{center}
+\end{defi}
+
+\begin{rmk}
+    Il n'y a pas de constructeur de type $\voidt$, ce qui est normal pour un type vide. De plus au lieu de considérer une fonction $M : \sigma\to\kappa$ on considère un terme $M : \kappa$ en ajoutant $x : \sigma$ à l'environnement ; s'il est évident que les deux situations sont équivalentes, la deuxième nous permettra une meilleure visualisation de l'isomorphisme de Curry-Howard développé dans un chapitre ultérieur.
+\end{rmk}
+
+\begin{rmk}
+    La règle de typage pour $\delta_\bot$ fait qu'il n'y a plus unicité du type d'une expression. On peut contourner ce problème en définissant plutôt $\delta_\bot^\tau$ où on indique le type d'arrivée de $\delta_\bot$, et en considérant qu'on ne l'écrira jamais, de la même façon qu'on note $x$ une variable et non $x^\tau$.
+\end{rmk}
+
+On ajoute ensuite les réductions.
+
+\begin{defi}[$\beta$-relations]
+    On définit la relation $\reduc$ comme la plus petite relation compatible contenant les règles suivantes :
+    \begin{center}
+        \begin{prooftree}
+            \infer0{(\lambda x^{\tau}.M)\;N\reduc M[N/x]}
+        \end{prooftree}
+        \qquad
+        \begin{prooftree}
+            \infer0{\pi_1\;\langle M,N\rangle\reduc M}
+        \end{prooftree}
+        \qquad
+        \begin{prooftree}
+            \infer0{\pi_2\;\langle M,N\rangle\reduc N}
+        \end{prooftree}
+
+        \vspace{0.5cm}
+        
+        \begin{prooftree}
+            \infer0{\delta\;(x\mapsto M\mid y\mapsto N)\;(\kappa_1\;P)\reduc M[P/x]}
+        \end{prooftree}
+        \qquad
+        \begin{prooftree}
+            \infer0{\delta\;(x\mapsto M\mid y\mapsto N)\;(\kappa_2\;P)\reduc N[P/y]}
+        \end{prooftree}
+    \end{center}
+
+    Et $\beteq$ est alors la congruence associée.
+\end{defi}
+
+\begin{rmk}
+    On ajoute encore des relations pour la compatibilité :
+    \begin{center}
+        \begin{prooftree}
+            \hypo{M\;\RR\;M'}
+            \infer1{\kappa_1\;M\;\RR\;\kappa_1\;M'}
+        \end{prooftree}
+        \qquad
+        \begin{prooftree}
+            \hypo{M\;\RR\;M'}
+            \infer1{\kappa_2\;M\;\RR\;\kappa_2\;M'}
+        \end{prooftree}
+        \qquad
+        \begin{prooftree}
+            \hypo{M\;\RR\;M'}
+            \infer1{\delta\;(x\mapsto M\mid y\mapsto N)\;P\;\RR\;\delta\;(x\mapsto M'\mid y\mapsto N)\;P}
+        \end{prooftree}
+
+        \vspace{0.5cm}
+        
+        \begin{prooftree}
+            \hypo{N\;\RR\;N'}
+            \infer1{\delta\;(x\mapsto M\mid y\mapsto N)\;P\;\RR\;\delta\;(x\mapsto M\mid y\mapsto N')\;P}
+        \end{prooftree}
+        \qquad
+        \begin{prooftree}
+            \hypo{P\;\RR\;P'}
+            \infer1{\delta\;(x\mapsto M\mid y\mapsto N)\;P\;\RR\;\delta\;(x\mapsto M\mid y\mapsto N)\;P'}
+        \end{prooftree}
+
+        \vspace{0.5cm}
+        
+        \begin{prooftree}
+            \hypo{M\;\RR\;M'}
+            \infer1{\delta_\bot\;M\;\RR\;\delta_\bot\;M'}
+        \end{prooftree}
+    \end{center}
+\end{rmk}
+
+On notera aussi $\reduc_0$ la réduction en surface, qui est la version de $\reduc$ sans la compatibilité, c'est-à-dire n'effectuant une réduction que si celle-ci apparait directement dans le terme entier.
+
+\begin{defi}[$\beta$-$\eta$-relations]
+    On définit la relation $\reduc_{\beta\eta}$ comme la plus petite relation compatible contenant $\reduc$ et les règles suivantes :
+    \begin{center}
+        \begin{prooftree}
+            \infer0[$x\notin\varlib M$]{\lambda x^\tau.M\;x\reduc_{\beta\eta} M}
+        \end{prooftree}
+        \qquad
+        \begin{prooftree}
+            \infer0{\langle \pi_1\;M,\pi_2\;M\rangle \reduc_{\beta\eta} M}
+        \end{prooftree}
+        \qquad
+        \begin{prooftree}
+            \infer0[$M : \unit$]{M\reduc_{\beta\eta} \langle\rangle}
+        \end{prooftree}
+
+        \vspace{0.5cm}
+
+        \begin{prooftree}
+            \infer0{\delta\;(x\mapsto M\;(\kappa_1\;x)\mid y\mapsto M\;(\kappa_2\;y))\;P\reduc_{\beta\eta} M\;P}
+        \end{prooftree}
+    \end{center}
+
+    Et $=_{\beta\eta}$ comme la congruence associée.
+\end{defi}
+
+\begin{exo}[Booléens]
+    On définit le type $\boolt := \unit + \unit$ et $\top_\boolt := \kappa_1 \;\langle\rangle, \bot_\boolt := \kappa_2\;\langle\rangle$. Définir les opérations booléennes usuelles $\lnot,\land,\lor$ et vérifier qu'elles se comportent comme attendu. Soit $\tau \in T_{\to\times1+0}$, définir une fonction $\ifthenelsee{-}{-}{-} : \boolt\to\tau\to\tau\to\tau$ telle que \begin{align*}
+        \ifthenelsee{\top_\boolt}{M}{N} &\beteq M\\
+        \ifthenelsee{\bot_\boolt}{M}{N} &\beteq N
+    \end{align*}
+\end{exo}
